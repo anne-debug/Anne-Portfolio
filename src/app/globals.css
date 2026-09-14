@@ -1,26 +1,400 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ---------------------------------------------------------------------------
+   Design tokens ported from the Framer project "Anne Profolio (v4.0)".
+   Colour names match the Framer colour styles one-to-one so that node trees
+   can be translated mechanically.
+   --------------------------------------------------------------------------- */
+
+@theme {
+  /* Framer's default breakpoints: phone < 810, tablet >= 810, desktop >= 1200 */
+  --breakpoint-tablet: 810px;
+  --breakpoint-desktop: 1200px;
+
+  /* Neutrals */
+  --color-grey-200: rgb(48, 48, 48);
+  --color-grey-150: rgb(143, 143, 143);
+  --color-grey-100: rgb(218, 218, 218);
+  --color-grey-50: rgb(245, 245, 245);
+  --color-black: rgb(0, 0, 0);
+  --color-white: rgb(255, 255, 255);
+
+  /* Brand */
+  --color-orange: rgb(255, 89, 0);
+  --color-red: rgb(255, 34, 68);
+  --color-green: rgb(11, 222, 102);
+  --color-deep-blue: rgb(0, 22, 102);
+  --color-pink: rgb(255, 237, 243);
+  --color-ability-blue: rgb(202, 220, 252);
+
+  /* Text */
+  --color-dark-charcoal: rgb(42, 49, 50);
+  --color-light-grey: rgb(95, 101, 102);
+  --color-note-text: rgb(134, 134, 139);
+
+  /* Surfaces */
+  --color-off-white: rgb(248, 246, 243);
+  --color-light-grey-super: rgb(235, 233, 228);
+  --color-chestnut-bg: rgb(248, 246, 243);
+
+  /* Chrome */
+  --color-nav-bg: rgba(255, 255, 255, 0.9);
+  --color-nav-border: rgb(218, 218, 218);
+
+  /* Page-specific */
+  --color-404-color-dodge: rgb(0, 0, 0);
+  --color-404-soft-light: rgb(143, 143, 143);
+  --color-loading-circle: rgba(255, 255, 255, 0);
+  --color-metro-linear: rgba(0, 219, 117, 0);
+
+  /* Font families */
+  --font-dm-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-inter: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-baskerville: var(--font-baskerville), ui-serif, Georgia, serif;
+  --font-instrument: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-antonio: var(--font-antonio), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* ---------------------------------------------------------------------------
+   Text styles. Each Framer text style becomes one utility class so that a
+   layer using "Heading 1" in Framer becomes `class="ts-heading-1"` here.
+   Sizes step at Framer's own breakpoints.
+   --------------------------------------------------------------------------- */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer components {
+  .ts-heading-1 {
+    font-family: var(--font-baskerville);
+    font-weight: 400;
+    font-size: clamp(56px, calc(56px + 24 * (100vw - 390px) / 420), 80px);
+    line-height: 1.2em;
+    letter-spacing: -2px;
+    color: var(--color-dark-charcoal);
+  }
+
+  .ts-blog-title {
+    font-family: var(--font-antonio);
+    font-weight: 700;
+    font-size: clamp(56px, calc(56px + 40 * (100vw - 390px) / 420), 96px);
+    line-height: 1.1em;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--color-grey-200);
+  }
+
+  .ts-heading-2 {
+    font-family: var(--font-instrument);
+    font-weight: 400;
+    font-size: clamp(42px, calc(42px + 6 * (100vw - 390px) / 420), 48px);
+    line-height: 1.2em;
+    letter-spacing: -2px;
+    color: var(--color-grey-200);
+  }
+
+  .ts-section-title {
+    font-family: var(--font-antonio);
+    font-weight: 400;
+    font-size: clamp(24px, calc(24px + 8 * (100vw - 390px) / 420), 32px);
+    line-height: 1.3em;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--color-grey-200);
+  }
+
+  .ts-heading-3 {
+    font-family: var(--font-instrument);
+    font-weight: 400;
+    font-size: clamp(24px, calc(24px + 8 * (100vw - 390px) / 420), 32px);
+    line-height: 1.3em;
+    letter-spacing: -0.01em;
+    color: var(--color-grey-200);
+  }
+
+  .ts-heading-3b {
+    font-family: var(--font-baskerville);
+    font-weight: 700;
+    font-size: clamp(26px, calc(26px + 6 * (100vw - 390px) / 420), 32px);
+    line-height: 1.3em;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--color-grey-200);
+  }
+
+  .ts-heading-4 {
+    font-family: var(--font-dm-sans);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.3em;
+    letter-spacing: -0.03em;
+    color: var(--color-dark-charcoal);
+  }
+
+  .ts-heading-5 {
+    font-family: var(--font-dm-sans);
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 1.3em;
+    letter-spacing: -0.02em;
+    color: var(--color-dark-charcoal);
+  }
+
+  .ts-heading-6 {
+    font-family: var(--font-dm-sans);
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 1.3em;
+    letter-spacing: -0.02em;
+    color: var(--color-dark-charcoal);
+  }
+
+  .ts-heading-6-small {
+    font-family: var(--font-dm-sans);
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.2em;
+    letter-spacing: -0.02em;
+    color: var(--color-dark-charcoal);
+  }
+
+  .ts-small-label {
+    font-family: var(--font-dm-sans);
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1em;
+    letter-spacing: 0.21em;
+    color: var(--color-dark-charcoal);
+  }
+
+  .ts-body-large {
+    font-family: var(--font-dm-sans);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.3em;
+    letter-spacing: 0;
+    text-transform: capitalize;
+    color: var(--color-dark-charcoal);
+  }
+
+  .ts-body-large-italic {
+    font-family: var(--font-dm-sans);
+    font-weight: 600;
+    font-style: italic;
+    font-size: 18px;
+    line-height: 1.5em;
+    letter-spacing: -0.02em;
+  }
+
+  .ts-body {
+    font-family: var(--font-dm-sans);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.3em;
+    letter-spacing: -0.01em;
+    color: var(--color-dark-charcoal);
+  }
+
+  .ts-body-medium-bold {
+    font-family: var(--font-dm-sans);
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: 0;
+    color: var(--color-grey-200);
+  }
+
+  .ts-body-medium-italic {
+    font-family: var(--font-dm-sans);
+    font-weight: 600;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.02em;
+  }
+
+  .ts-body-small {
+    font-family: var(--font-dm-sans);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.4em;
+    letter-spacing: -0.02em;
+    color: var(--color-dark-charcoal);
+  }
+
+  .ts-body-small-bold {
+    font-family: var(--font-dm-sans);
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.5em;
+    letter-spacing: 0;
+    color: var(--color-grey-200);
+  }
+
+  .ts-body-small-light {
+    font-family: var(--font-dm-sans);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.5em;
+    letter-spacing: 0;
+    color: var(--color-grey-150);
+  }
+
+  .ts-nav-link {
+    font-family: var(--font-inter);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: 0;
+    color: var(--color-grey-150);
+  }
+
+  /* The hero tagline is set directly on the layer rather than via a text
+     style, so it gets its own class. */
+  .ts-hero-tagline {
+    font-family: var(--font-dm-sans);
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 1.3em;
+    letter-spacing: -0.2px;
+  }
+
+  /* The "More Projects" rule heading. Framer draws it at 60px on desktop. */
+  .ts-more-projects {
+    font-family: var(--font-chonburi);
+    font-weight: 400;
+    font-size: clamp(30px, calc(30px + 14 * (100vw - 390px) / 420), 44px);
+    line-height: 1.3em;
+  }
+
+  .ts-button {
+    font-family: var(--font-dm-sans);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: 0;
+    color: var(--color-dark-charcoal);
+  }
+
+  /* Tablet and up */
+  @media (width >= 810px) {
+    .ts-heading-1 { font-size: 80px; }
+    .ts-blog-title { font-size: clamp(96px, calc(96px + 24 * (100vw - 810px) / 390), 120px); }
+    .ts-heading-2 { font-size: clamp(48px, calc(48px + 24 * (100vw - 810px) / 390), 72px); }
+    .ts-section-title { font-size: clamp(32px, calc(32px + 8 * (100vw - 810px) / 390), 40px); }
+    .ts-heading-3 { font-size: clamp(32px, calc(32px + 23 * (100vw - 810px) / 390), 55px); }
+    .ts-heading-3b { font-size: clamp(32px, calc(32px + 6 * (100vw - 810px) / 390), 38px); }
+    .ts-heading-4 { font-size: clamp(20px, calc(20px + 8 * (100vw - 810px) / 390), 28px); }
+    .ts-body-large { font-size: 32px; }
+    .ts-body { font-size: 16px; line-height: 1.2em; }
+    .ts-more-projects { font-size: clamp(44px, calc(44px + 16 * (100vw - 810px) / 390), 60px); }
+  }
+
+  /* Desktop */
+  @media (width >= 1200px) {
+    /* Framer's stored Heading 1 breakpoint for >=1200px is 96px, but every
+       render of the Desktop frame measures 80px, which is also the only size
+       that keeps "Hi, this is Anne Lin" on one line inside its 720px box.
+       Matching the render; see the note in README-port.md. */
+    .ts-heading-1 { font-size: 80px; line-height: 1.1em; }
+    .ts-blog-title { font-size: 120px; }
+    .ts-heading-2 { font-size: 72px; }
+    .ts-section-title { font-size: 40px; }
+    .ts-heading-3 { font-size: 55px; }
+    .ts-heading-3b { font-size: 38px; }
+    .ts-heading-4 { font-size: 28px; }
+    .ts-body-large { font-size: 20px; }
+    .ts-body { font-size: 16px; line-height: 1.3em; }
+    .ts-more-projects { font-size: 60px; }
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Skills stage
+
+   Framer draws the scattered ability field at a fixed 1060x687. It has to be
+   scaled to fit anything narrower, and stepping that scale at the desktop
+   breakpoint made the whole field jump by 39% as the window crossed 1200px.
+   `tan(atan2())` turns the width into a plain number, which is the one way CSS
+   can interpolate a scale, so the field now grows smoothly from 0.72 at the
+   tablet breakpoint to 1 at the desktop one. Browsers without those functions
+   fall back to the stepped pair below.
+   --------------------------------------------------------------------------- */
+
+.skills-stage {
+  transform: scale(0.72);
+  transform: scale(
+    clamp(0.72, 0.72 + 0.28 * tan(atan2(100vw - 810px, 390px)), 1)
+  );
+}
+
+@media (width >= 1200px) {
+  .skills-stage {
+    transform: scale(1);
+    transform: scale(
+      clamp(0.72, 0.72 + 0.28 * tan(atan2(100vw - 810px, 390px)), 1)
+    );
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   About desktop shortcuts
+
+   Framer draws the About page at two compositions, and the anchors are not
+   convertible into one another: the Phone frame pins every shortcut by a pixel
+   offset inside a 390x613 canvas, while the Desktop and Tablet frames mix pixel
+   offsets with percentages of the desktop.
+
+   Below the tablet breakpoint the phone anchors are scaled by the desktop
+   rather than held at their 390px values, so the composition fills the screen
+   instead of huddling in one corner. The scale is min(width/390, height/613),
+   expressed per value as a min() of lengths so that nothing needs a transform
+   and dragging a shortcut still tracks the pointer exactly.
+
+   Every anchor arrives as a custom property from the component; the sizes are
+   the same for all six and live here. They are written to meet the tablet
+   values exactly at the breakpoint, so only the composition changes there and
+   the shortcuts themselves do not jump.
+   --------------------------------------------------------------------------- */
+
+.about-shortcut {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  right: auto;
+  bottom: auto;
+  transform: none;
+
+  /* The card scales by the same factor as the anchors, so the shortcuts never
+     outgrow the spacing between them. That factor divides the room above the
+     dock, 100svh - 180px, by the 477px the composition reaches inside Framer's
+     phone canvas. The label keeps an 8px floor so it stays legible. */
+  --thumb: min(10.26vw, calc((100svh - 180px) * 0.08386), 80px);
+  --pad: min(1.03vw, calc((100svh - 180px) * 0.00839), 6px);
+  --gap: min(2.05vw, calc((100svh - 180px) * 0.01677), 8px);
+  --label: clamp(8px, min(3.08vw, calc((100svh - 180px) * 0.02516)), 16px);
+}
+
+@media (width >= 810px) {
+  .about-shortcut {
+    left: var(--x2, auto);
+    top: var(--y2, auto);
+    right: var(--r2, auto);
+    bottom: var(--b2, auto);
+    transform: var(--tf2, none);
+
+    --thumb: 80px;
+    --pad: 6px;
+    --gap: 8px;
+    --label: 16px;
+  }
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Unlayered rules beat @layer utilities, so this has to name the real page
+   colour rather than white, or it silently overrides `bg-chestnut-bg`. */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-chestnut-bg);
+  color: var(--color-dark-charcoal);
+  font-family: var(--font-dm-sans);
 }
