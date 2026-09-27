@@ -64,7 +64,7 @@ export function CaseShell({
             Framer's desktop breakpoint it is narrow until it is opened, and
             widening it is what moves the article across. */}
         <div
-          className="flex w-full items-start gap-4 px-6 desktop:justify-center desktop:gap-[50px] tablet:gap-6 tablet:px-[var(--body-pad-x)]"
+          className="flex w-full items-start gap-4 px-6 desktop:justify-center desktop:gap-[50px] tablet:gap-6 tablet:px-[max(24px,var(--body-pad-x))] desktop:px-[var(--body-pad-x)]"
           style={
             {
               paddingTop: bodyPad,
@@ -83,7 +83,7 @@ export function CaseShell({
         </div>
 
         <div
-          className="flex w-full flex-col px-6 tablet:px-[var(--body-pad-x)]"
+          className="flex w-full flex-col px-6 tablet:px-[max(24px,var(--body-pad-x))] desktop:px-[var(--body-pad-x)]"
           style={
             {
               maxWidth: bodyWidth,

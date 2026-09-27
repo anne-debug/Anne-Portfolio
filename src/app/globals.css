@@ -93,7 +93,7 @@
   .ts-section-title {
     font-family: var(--font-antonio);
     font-weight: 400;
-    font-size: clamp(24px, calc(24px + 8 * (100vw - 390px) / 420), 32px);
+    font-size: 32px;
     line-height: 1.3em;
     letter-spacing: 0;
     text-transform: uppercase;
@@ -103,7 +103,7 @@
   .ts-heading-3 {
     font-family: var(--font-instrument);
     font-weight: 400;
-    font-size: clamp(24px, calc(24px + 8 * (100vw - 390px) / 420), 32px);
+    font-size: 32px;
     line-height: 1.3em;
     letter-spacing: -0.01em;
     color: var(--color-grey-200);
@@ -131,7 +131,11 @@
   .ts-heading-5 {
     font-family: var(--font-dm-sans);
     font-weight: 500;
-    font-size: 36px;
+    /* Framer's 36px on desktop. Below 1200 it tracks the section title above
+       it, at roughly two thirds of it, so a heading inside a section never
+       competes with the section. Framer's own sizes are fixed, which put this
+       at 36px against a 32px title at tablet. */
+    font-size: 22px;
     line-height: 1.3em;
     letter-spacing: -0.02em;
     color: var(--color-dark-charcoal);
@@ -140,7 +144,9 @@
   .ts-heading-6 {
     font-family: var(--font-dm-sans);
     font-weight: 500;
-    font-size: 24px;
+    /* Framer's 24px on desktop, tracking the section title below that at
+       roughly half of it, the same way heading 5 does. */
+    font-size: 18px;
     line-height: 1.3em;
     letter-spacing: -0.02em;
     color: var(--color-dark-charcoal);
@@ -282,6 +288,8 @@
     .ts-heading-3 { font-size: clamp(32px, calc(32px + 23 * (100vw - 810px) / 390), 55px); }
     .ts-heading-3b { font-size: clamp(32px, calc(32px + 6 * (100vw - 810px) / 390), 38px); }
     .ts-heading-4 { font-size: clamp(20px, calc(20px + 8 * (100vw - 810px) / 390), 28px); }
+    .ts-heading-5 { font-size: clamp(22px, calc(22px + 14 * (100vw - 810px) / 390), 36px); }
+    .ts-heading-6 { font-size: clamp(18px, calc(18px + 6 * (100vw - 810px) / 390), 24px); }
     .ts-body-large { font-size: 32px; }
     .ts-body { font-size: 16px; line-height: 1.2em; }
     .ts-more-projects { font-size: clamp(44px, calc(44px + 16 * (100vw - 810px) / 390), 60px); }
@@ -300,6 +308,8 @@
     .ts-heading-3 { font-size: 55px; }
     .ts-heading-3b { font-size: 38px; }
     .ts-heading-4 { font-size: 28px; }
+    .ts-heading-5 { font-size: 36px; }
+    .ts-heading-6 { font-size: 24px; }
     .ts-body-large { font-size: 20px; }
     .ts-body { font-size: 16px; line-height: 1.3em; }
     .ts-more-projects { font-size: 60px; }

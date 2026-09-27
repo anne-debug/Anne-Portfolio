@@ -1,0 +1,69 @@
+{
+  "taipei-metro-app": {
+    "src": "/project-previews/taipei-metro-app.3a9f6d4a.webp",
+    "width": 1804,
+    "height": 1282,
+    "capturedAt": {
+      "windowWidth": 930,
+      "scale": 2
+    },
+    "screen": {
+      "src": "/project-previews/taipei-metro-app-screen.9fd259d4.webp",
+      "left": 0.6316,
+      "top": 0.18207,
+      "width": 0.23008,
+      "height": 0.70346,
+      "clipTop": 0.05976,
+      "radius": 0.2143,
+      "fit": "cover",
+      "position": "50% 50%"
+    }
+  },
+  "budgetcart": {
+    "src": "/project-previews/budgetcart.3d353739.webp",
+    "width": 1644,
+    "height": 1172,
+    "capturedAt": {
+      "windowWidth": 850,
+      "scale": 2
+    },
+    "screen": {
+      "src": "/project-previews/budgetcart-screen.f173aa49.webp",
+      "left": 0.68315,
+      "top": 0.16174,
+      "width": 0.16456,
+      "height": 0.5022,
+      "clipTop": 0.05968,
+      "radius": 0.21426,
+      "fit": "cover",
+      "position": "50% 50%"
+    }
+  },
+  "ryze-coffee": {
+    "src": "/project-previews/ryze-coffee.fd52a3de.webp",
+    "width": 2640,
+    "height": 1884,
+    "capturedAt": {
+      "windowWidth": 1440,
+      "scale": 2
+    }
+  },
+  "jubo-healthcare": {
+    "src": "/project-previews/jubo-healthcare.3f36ef11.webp",
+    "width": 2240,
+    "height": 2002,
+    "capturedAt": {
+      "windowWidth": 1440,
+      "scale": 2
+    }
+  },
+  "little-chestnut-thief": {
+    "src": "/project-previews/little-chestnut-thief.b52bb431.webp",
+    "width": 2240,
+    "height": 1882,
+    "capturedAt": {
+      "windowWidth": 1440,
+      "scale": 2
+    }
+  }
+}

@@ -69,7 +69,9 @@ export function CaseHeader({
         <p className="ts-body w-full text-left text-grey-200">{description}</p>
       </div>
 
-      <dl className="flex w-full flex-col gap-2.5 pt-5 tablet:flex-row">
+      {/* Four across once there is room; two by two below that, so the facts
+          read as a block on a phone rather than a column four deep. */}
+      <dl className="grid w-full grid-cols-2 gap-x-[6px] gap-y-5 pt-5 tablet:flex tablet:flex-row tablet:gap-2.5">
         {meta.map((entry) => (
           <div key={entry.label} className="flex flex-1 flex-col">
             <dt className="ts-body text-grey-200">{entry.label} :</dt>

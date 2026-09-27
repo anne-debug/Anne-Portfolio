@@ -923,3 +923,319 @@ Type-check, lint and production build are clean.
 Not ported: `/upcoming_projects` and `/frontend-projects`, excluded by request,
 along with the placeholder Experience note. The custom `/404` has no equivalent;
 Next.js serves its own not-found page.
+
+### My Projects cards between 600 and 1200
+
+Framer's Tablet frame stacks each card with the thumbnail across the full column,
+and left to that, the thumbnails were drawn up to 1000px wide. The boards Framer
+holds are only 749 and 690px wide, and fetching them again from Framer's own CDN
+returns the same files, so there is no sharper source to use. On a retina screen
+they were being stretched to more than twice their resolution.
+
+Stacked, the card is now capped at 520px, which draws the thumbnail at 460px, and
+from 1000px the capped cards sit two to a row so a wide window is not left half
+empty. The desktop row from 1200 is unchanged at 402px.
+
+### Project card previews
+
+The cards on the home page and on My Projects used boards that had been
+screenshotted by hand, and they were soft. They are now screenshots of each case
+study's own hero, taken by `npm run previews` (scripts/capture-previews.mjs)
+against the running app, written to public/project-previews/, and read by both
+pages through src/lib/project-previews.ts, so a project shown in both places
+uses one file.
+
+Each file's name carries eight characters of its own content hash. Regenerating
+a preview therefore changes its URL, and the old file is deleted. Without that,
+the name stayed the same while the picture changed, and browsers went on showing
+the previous one long after it had been replaced.
+
+The script captures each hero by its DOM box at 2x and adds a 60px band of page
+background. The home frames are 1.4:1, and the heroes are not: Taipei and
+BudgetCart are 1.65:1 at desktop. They are responsive, though, so the script
+measures each hero across a range of window widths and captures it at the one
+where its real layout comes out at 1.4:1. That is 930px for Taipei, 1010px for
+BudgetCart and 1440px for Ryze. Jubo's column is capped at 1000px, which holds
+its hero near 1.1:1 at any width, so it is captured at 1440 and anchored to the
+top of its frames, giving up the lower rows of dashboard cards.
+
+Every card frame, on both pages, is the same 1.4:1 shape, and each preview is
+fitted whole inside it and centred. My Projects used to give each row the shape
+of the board it once showed, so four different frames cropped their previews by
+anything from 7% to 21%, each by a different amount and Jubo's anchored to the
+top. One frame and one fit is what makes the previews sit the same way in every
+card and stay that way as the cards resize.
+
+Three of the four pictures are within half a percent of 1.4:1 and fill their
+frames. Jubo's hero is nearly square, so it takes the height and leaves a margin
+down each side; the captures are taken on white and the frame is white, so that
+margin cannot be seen.
+
+For the capture only, anything fixed to the window is hidden: nav pill,
+butterfly cursor, dev badge, page grain and the section rail toggle. The page
+background is forced to white, so the picture reads as a picture rather than
+dissolving into the off-white of the pages the cards sit on.
+
+The cards replay the handset animation, so the interaction is visible without
+opening the case study. The still is taken with each GIF pinned to its own first
+frame, and the animation is laid back over exactly that patch, at coordinates
+the script measures and writes to the manifest. It starts at the Dynamic
+Island's lower edge, leaving the still's status bar and the island itself
+showing; the strip it gives up does not move anyway.
+
+Holding an overlay steady over a picture that is being cropped to fit takes one
+extra box, in PreviewMedia: the picture and the animation share a stage sized
+the way `object-fit: cover` sizes a picture, so everything inside can be placed
+as a percentage of the picture and stays put at every width.
+
+The handset is drawn from the iPhone 17 Pro variant's own measurements: a shell
+of 265.43x549.31 wrapping four nested rings, each with Framer's padding, corner
+radius and fill (0.61 black, 0.61 #999, 4.81 #2c2c2c, 6.02 black). Collapsed
+into the single grey band this drew before, the edge reads soft and heavy;
+Framer's is a crisp black outline with a hairline of grey inside it.
+
+Their padding adds up to 12.05, so the screen sits that far inside the shell. That leaves a screen of 2.176:1, and the two
+recordings that play in it are 2.175:1 and 2.168:1, so each fills its screen
+with nothing trimmed and no gap.
+
+Deriving the shell from 19.5:9 and insetting a bezel, which is what this did
+before, leaves a screen of 2.25:1. The recordings then lost about 3.5% off
+their sides, which took the bookmark icons off the Taipei event cards and the
+right-hand column off BudgetCart's. Fitting them whole instead left a band of
+empty screen under the nav bar. Correcting the proportions removes the need for
+either.
+
+The capture records how the page fits a recording, and the card mirrors it, so
+the animation lands on the still instead of beside it.
+
+In the card the animation is clipped to the screen's own shape, corner radius
+included, and only then is the strip above the Dynamic Island cut away as a
+straight edge. Sitting it in a box that began below the island instead gave that
+box square top corners, which reached past the screen's curve and printed the
+app over the bezel. The radius is written in `cqw` against the stage rather than
+as a percentage, which on a box this tall would have come out as an ellipse.
+
+The animations are re-encoded to the size a card draws them, 300px wide at
+quality 80. The quality cannot go much below that: WebP describes each frame of
+an animation as a change from the one before, and lower settings get that wrong
+on these recordings, leaving blocks of an earlier frame behind so the phone
+fills with pale rectangles. Everything from 80 up is clean. They are marked
+`unoptimized`, because Next's optimizer flattens an animation to a single frame,
+and they load lazily.
+
+The stills are lossless WebP, served at 2x or better at every width checked.
+
+### BudgetCart hero, desktop
+
+Checked against Framer's Desktop frame for /projects/budgetcart (node gtmCwp7GV)
+and corrected to it:
+
+| | was | Framer |
+|---|---|---|
+| Category badge | stretched the column | `fit-content`, 3px/15px padding |
+| Project Meta Grid | two columns | one column, 20px rows, 6px columns |
+| Hero stack gap | 30px | 0; the image column's own 30px left padding is the only space |
+| iPhone Sim Mockup | 230px | 265.43px, the iPhone 17 Pro variant |
+| Image container padding | 30px sides | 50 top, 50 right, 30 bottom, 30 left |
+| "Vector" doodle, 57x57 at top 11 / right 79 | missing | added, drawn with the squiggle asset |
+
+With the gap removed the text column goes from 446px to 476px, which is what
+puts the lede on two lines instead of three.
+
+Stacking order: Framer gives the character a z-index of 1, but its own render
+draws the handset in front of the shopper, so the z-index is dropped here. The
+money bag stays in front of the handset, which is the one piece that overlaps
+it.
+
+Only the desktop composition was corrected. Framer's Tablet frame stacks this
+hero and pads its image column 200px on the left, where this port lays it out
+as a row from 810; that difference predates this change and is left alone.
+
+The capture script prefers a dev server over a production one. `next start`
+serves the pages and public files from whenever it was built, so capturing from
+it silently produces stale previews.
+
+### The case-study table of contents stops at More Projects
+
+From 1200 up the rail used to be fixed to the window, 150px in from its left
+edge, with a 119px spacer holding its place in the row. Fixed means nothing
+bounds it, so it stayed put while the reader scrolled on and ended up over the
+More Projects strip.
+
+It is now the column itself: the spacer holds the list and is `sticky` at the
+same 150px offset. Sticky is bounded by the row it sits in, and that row is a
+sibling of More Projects rather than its parent, so the rail travels with the
+reader through the case study and comes to rest where the row ends. No script,
+no z-index, nothing to flicker.
+
+The column keeps its 119px, so the article has not moved. The list inside is
+still 150px and now sits at the body's own left padding rather than at a fixed
+distance from the window, which means it tracks the content instead of drifting
+away from it on a wide screen: at 1920 it was 210px clear of the column it
+belongs to.
+
+Below 1200 the rail was already a sticky column in the same row, so it was
+already bounded; nothing there changed.
+
+### More Projects card images
+
+The cards show the linked case study's own hero, the same picture and the same
+1.4:1 frame the cards on My Projects use, derived from the card's href rather
+than configured per page. Framer gave each card a picture of its own, but they
+ranged from 0.84:1 to 2.48:1 and several were page screenshots rather than
+heroes: the BudgetCart one had Framer's nav and editor toolbar in it. The four
+that nothing references any more are deleted; the Jubo and Little Chestnut
+banners stay, because those pages still use them.
+
+Little Chestnut Thief gained a preview of its own so every card has one.
+
+The card title is bounded twice. By the card, because a card is 480px on
+desktop, about 345px when two squeeze into a tablet, and up to its 480px cap
+when they stack, so its width does not follow the window: it grows to 480 by
+600px, drops back to 345 at 810 where the row goes two-up, then climbs again. A
+size keyed to the window alone ran from 4.4% of the card to 11.5% of it; keyed
+to the card it holds at 7.5%, which is Framer's 36px on the 480px card it drew.
+
+And by the window, because in the stacked range a full-width card carried a 36px
+title while "More Projects" above it is only 24 to 30px, so the card outshouted
+the section it belongs to. The window ramp holds the title between 0.6 and 0.87
+of the heading at every width, and always above the 14px description. Whichever
+bound is smaller wins.
+
+That does take the rule variant's title down from Heading 3's 55px, which was
+11.5% of its card and the widest of the mismatches. Both variants now top out at
+36px, so the two strips read the same. The description stays at 14px: scaling it
+with the card would have left it at 10px on a phone.
+
+### Filling the width on a phone
+
+The Taipei hero capped its text column with a ramp written for the 810 to 1200
+stretch, where the text has to leave room for the collage beside it. Below 810
+the hero stacks and there is nothing to leave room for, but the ramp bottoms out
+at its 240px floor, so the text sat in a 240px column on screens up to three
+times that wide. The cap now applies only from 810 up.
+
+BudgetCart's competitor grid put four cards two-across on a phone, leaving each
+121px for a logo and a paragraph. They stack until there is room for a readable
+pair at 560.
+
+The 44px the rail reserves beside the article below 1200 stays. That column is
+what the open list widens, and widening it is what moves the article across.
+
+The Taipei hero's two columns meet at the bottom. Aligned to the top, the
+collage's own height decided where it finished, so it ended anywhere from 71px
+above the last row of the meta grid to 56px below it, depending on the width.
+Aligned to the end from 810 up, the collage and the meta finish on the same
+line at every width.
+
+Its meta grid is two across at every width, including phones, where Framer
+stacks it into one column. Four facts in a 2x2 block read better than a list.
+BudgetCart's meta keeps Framer's single column, which is what its own Desktop
+frame draws.
+
+### Checking for overflow on both sides
+
+The overflow sweep compared the document's scroll width against the window,
+which only ever catches content escaping to the right: an element pushed off the
+left edge is clipped without lengthening the page, so it never registered. The
+check now walks every element, intersects its box with each ancestor that hides
+its overflow, and reports anything whose visible part still crosses either edge.
+
+It found one, on BudgetCart. Framer pins the shopper illustration 225px to the
+left of the hero's image column and 335px in from its right, which works while
+that column is the right half of a wide hero. Below 810 the hero stacks, the
+column runs the width of the page, and -225px put the shopper 141px off the side
+of the screen at every width from 390 to 768. The pins now apply from 810 up;
+below that it sits inside the column.
+
+### Project meta on small screens
+
+All five case studies lay their four facts out two by two below 810. The three
+that go through `CaseHeader` stacked them into a column four deep, and BudgetCart
+into Framer's single column, which on a phone is a long run of labels. Each page
+keeps its own arrangement above that: Taipei two across, BudgetCart one column
+from 1200, and the rest four across from 810, as Framer draws them.
+
+Below 810 the BudgetCart hero's handset takes a share of the column rather than
+Framer's fixed 265px. At 265 it filled a phone screen on its own, so the shopper
+had nowhere to stand but behind it and only his trolley showed. The handset now
+takes 56% of the column and sits to the right, the shopper 42% and sits to the
+left, and the two no longer overlap at any width below 810. From 810 up both
+return to Framer's own composition, where they overlap by design.
+
+### Section titles and sub-headings
+
+BudgetCart drew "My role" and "Solutions Overview" at Heading 2 while its other
+nine sections used Heading 3. That is faithful to Framer, which does size those
+two differently, but it read as a mistake on the page, so both come down to
+Heading 3 and every section title on that page now matches. Taipei was already
+uniform at Heading 3. Ryze, Jubo and Little Chestnut Thief are uniform at
+Heading 2 through `CaseSection`; each page is internally consistent, and the
+two families differ because Framer's own pages do.
+
+`.ts-heading-6`, the sub-heading under a section title, was a flat 24px. The
+title above it ramps down to 24px at 390, so on a phone a heavier sans
+sub-heading read larger than the serif title it belongs to. It now ramps from
+18px at 390 to Framer's 24px at 810 and holds there, staying about three
+quarters of the title's size below tablet.
+
+### Type hierarchy below desktop
+
+Framer fixes the sizes of the styles used inside a section, while the section
+title itself ramps down, so below desktop the order inverted: at 810 the title
+was 32px and `.ts-heading-5` 36px, which made the numbered pain points and the
+iteration titles larger than the sections holding them.
+
+The two now hold a constant share of the title rather than ramping on their own:
+
+| | 390 to 810 | 1000 | 1200 |
+| --- | --- | --- | --- |
+| `.ts-heading-3` section title | 32 | 43 | 55 |
+| `.ts-heading-5` heading in a section | 22 | 29 | 36 |
+| `.ts-heading-6` sub-heading | 18 | 21 | 24 |
+| `.ts-body` | 16 | 16 | 16 |
+
+Framer's desktop values are unchanged, and the section title's own floor is
+raised to 32px so the two styles under it have room.
+
+Three places pin their own size and so do not follow this: the cards on the home
+page, on My Projects and in More Projects. My Projects previously used the bare
+style and drew a 36px title on a 282px phone card; it now takes the same 22/36
+pair the home cards use.
+
+The pain point cards carried Framer's 30/40 padding at every width, which made
+each one half a phone tall. They keep it from 810 up and tighten below.
+
+Taipei sets 41px and 45px between "Project context" and "Today's Focus" and
+their content, which Framer measured against a 55px title. Those hold from 810
+up and come down to 24 and 26 below, against the 32px title there.
+
+BudgetCart set a full sentence at section-title size in Design Breakdown ("I
+redesigned the comparison interface..."). It is a sub-heading now.
+
+### Taipei detail work
+
+The Strategy Evolution step number was a 26px disc beside an 18px label; it is
+20px below 1200 and Framer's 26px above. The open accordion's title was a fixed
+24px, larger than the iteration title it sits under, and is now the sub-heading
+style, which ramps.
+
+The Prioritize Strategy axis only ever drew its dashed run and arrowhead from
+810 up, because the two labels cannot sit either side of it on a phone, so below
+that there was no arrow at all. It now turns upright and runs down the side of
+the three initiatives, from the first to the third, with "Less Eng cost" above
+them and the arrowhead pointing at "More Eng cost / Business dependency" below.
+The three items are written once; only the axis and the labels change with the
+breakpoint.
+
+The two Solution Overview demos sit in the handset, like BudgetCart's, with
+their captions centred. Both recordings are 2.165:1 against the screen's
+2.176:1, so nothing is cropped.
+
+The four Design Breakdown diagrams open full screen when clicked, through
+`Zoomable`. They are 2800px wide and their annotations are unreadable in the
+column. From 810 the diagram is fitted to the window; below that, fitting one
+onto a phone gains almost nothing over the column it came from, so it runs at
+full height and pans sideways: 282px in the column becomes 2064px. Escape or a
+click closes it, and the page is held still behind it the same way the
+case-study drawer holds it.

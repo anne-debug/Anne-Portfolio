@@ -32,7 +32,6 @@ const MORE: MoreProjectCard[] = [
     title: "TAIPEI METRO APP REDEISGN ",
     description:
       "Reimagining Metro Points to make rewards visible, understandable, and part of everyday commuting.",
-    image: "/case/d9Agr8f5b1nw4pglAkV8JRPdZgc.jpg",
   },
   {
     href: "/projects/little-chestnut-thief",
@@ -40,7 +39,6 @@ const MORE: MoreProjectCard[] = [
     title: "Little Chestnut THief",
     description:
       "Designed a boutique-style web store for chestnut-based desserts \u2014 a personal passion turned into a brand concept. ",
-    image: "/case/XoA9GzMoPNV9ZWiVKe277xixE.jpg",
   },
 ];
 

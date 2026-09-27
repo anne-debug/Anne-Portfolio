@@ -22,7 +22,6 @@ const MORE: MoreProjectCard[] = [
     title: "JUBO HEALTHCARE PLATFORM",
     description:
       "Built frontend modules for a senior care dashboard, reducing cognitive load and improving data visibility through close collaboration with designers and nurses.",
-    image: "/case/OWmpqKnvk6IiDk3SNIkMzaYwrw.jpg",
   },
   {
     href: "/projects/taipei-metro-app",
@@ -30,7 +29,6 @@ const MORE: MoreProjectCard[] = [
     title: "TAIPEI METRO GO APP REDEISGN ",
     description:
       "Reimagining Metro Points to make rewards visible, understandable, and part of everyday commuting.",
-    image: "/case/d9Agr8f5b1nw4pglAkV8JRPdZgc.jpg",
   },
 ];
 

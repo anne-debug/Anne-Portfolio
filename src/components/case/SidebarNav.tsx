@@ -9,10 +9,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * case studies. One component, two layouts, switching at Framer's own desktop
  * breakpoint of 1200 where its Desktop frame takes over from its Tablet frame.
  *
- * From 1200 up the list is simply open, floating in the left gutter 150px in
- * from the edge of the window. There is room for it there, so nothing is behind
- * a button. A spacer stays in the flow so the article keeps the width and
- * position measured off Framer.
+ * From 1200 up the list is simply open, in a column of its own beside the
+ * article. There is room for it there, so nothing is behind a button. The
+ * column is sticky inside the row, so it follows the reader down the case study
+ * and stops where the row ends, above the More Projects strip.
  *
  * Below 1200 the list opens by pushing rather than covering. It is a column in
  * the flow beside the article, narrow enough for just the button while closed
@@ -231,18 +231,19 @@ export function SidebarNav({
 
   return (
     <>
-      {/* Holds the column open so the article does not shift when the rail
-          leaves the flow at 1200. */}
-      <div className="hidden w-[119px] shrink-0 desktop:block" aria-hidden />
+      {/* 1200 and up: the list, open, in its own column.
 
-      {/* 1200 and up: the list, open, in the gutter */}
-      <nav
-        aria-label="Sections"
-        className="hidden desktop:fixed desktop:top-[150px] desktop:left-[150px] desktop:z-30 desktop:block desktop:w-[150px]"
-      >
-        {allProjects}
-        <div className="mt-4">{list}</div>
-      </nav>
+          The column is sticky rather than fixed to the window, so the row it
+          sits in bounds it: it travels with the reader through the case study
+          and comes to rest where that row ends, which is above the More
+          Projects strip rather than over it. It keeps the 119px the article's
+          position is measured from, and the list inside is free to be wider. */}
+      <div className="hidden w-[119px] shrink-0 desktop:sticky desktop:top-[150px] desktop:block">
+        <nav aria-label="Sections" className="w-[150px]">
+          {allProjects}
+          <div className="mt-4">{list}</div>
+        </nav>
+      </div>
 
       {/* Below 1200: a column in the flow. Widening it is what moves the
           article across; nothing is laid over the page. */}

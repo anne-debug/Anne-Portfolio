@@ -1,11 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { useState } from "react";
 
 import { AppearEffect } from "@/lib/framer-effects";
+import { PreviewMedia } from "@/components/project/PreviewMedia";
+import type { ProjectPreview } from "@/lib/project-previews";
 import { CARD_ASPECT } from "@/lib/thumbnails";
 
 /**
@@ -22,23 +23,18 @@ import { CARD_ASPECT } from "@/lib/thumbnails";
  * holding a fixed height, which is what gives Framer its 456/461/440px cards.
  *
  * Every cover uses the one frame in `CARD_ASPECT`, because cards that sit beside
- * each other have to be the same size and so cannot each take their own
- * artwork's shape. That frame is chosen so `object-cover` fills it without
- * cutting into any of the boards; see the note on `CARD_ASPECT`. Card heights
- * follow their covers rather than being fixed, and the two-up row stretches so
- * both cards end level.
- *
- * The frame itself is white rather than the card colour. The boards are white
- * to their edges, so on the rare width where a picture does not quite fill its
- * frame the leftover reads as more of the picture instead of as card showing
- * through.
+ * each other have to be the same size. The cover is the case study's shared
+ * preview, a screenshot of its own hero captured at that same shape, so
+ * `object-cover` fills the frame without cutting into it. Card heights follow
+ * their covers rather than being fixed, and the two-up row stretches so both
+ * cards end level.
  */
 
 export interface WorkCardProps {
   variant: "large" | "standard";
   name: string;
   summary: string;
-  image: string;
+  preview: ProjectPreview;
   category: string;
   href: string;
 }
@@ -69,7 +65,7 @@ export function WorkCard({
   variant,
   name,
   summary,
-  image,
+  preview,
   category,
   href,
 }: WorkCardProps) {
@@ -108,11 +104,8 @@ export function WorkCard({
     </div>
   );
 
-  // The case-study artwork is close to square and these boxes are wide, so the
-  // cover is cropped top and bottom. Framer's own render sits between a crop
-  // and a stretch; cropping is used here because stretching exposes the white
-  // padding baked into the source images.
-  // One frame for every card, so a pair sitting side by side matches.
+  // One frame for every card, so a pair sitting side by side matches. The
+  // previews are captured at that same shape, so they fill it without a crop.
   const aspectRatio = CARD_ASPECT;
 
   // Phone stacks both shapes, so one cover across the card width serves both.
@@ -121,7 +114,7 @@ export function WorkCard({
       className="relative w-full overflow-hidden rounded-lg bg-white tablet:hidden"
       style={{ aspectRatio }}
     >
-      <Image src={image} alt={name} fill sizes="278px" className="object-cover object-left" />
+      <PreviewMedia preview={preview} alt={name} sizes="278px" />
     </div>
   );
 
@@ -130,20 +123,14 @@ export function WorkCard({
       className="relative hidden flex-1 overflow-hidden rounded-lg bg-white tablet:block"
       style={{ aspectRatio }}
     >
-      <Image src={image} alt="" fill sizes="55vw" className="object-cover object-left" />
+      <PreviewMedia preview={preview} alt="" sizes="55vw" />
     </div>
   ) : (
     <div
       className="relative hidden w-full overflow-hidden rounded-lg bg-white tablet:block"
       style={{ aspectRatio }}
     >
-      <Image
-        src={image}
-        alt=""
-        fill
-        sizes="(width < 1200px) 45vw, 464px"
-        className="object-cover object-left"
-      />
+      <PreviewMedia preview={preview} alt="" sizes="(width < 1200px) 45vw, 464px" />
     </div>
   );
 

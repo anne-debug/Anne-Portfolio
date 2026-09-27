@@ -7,15 +7,45 @@ import Image from "next/image";
  * variant with side buttons showing.
  *
  * The component's own artwork is not readable through the agent API, so the
- * handset is drawn here in CSS at the same proportions: a rounded titanium
- * shell, a thin bezel, the Dynamic Island, and the side buttons. The screen
- * keeps the 19.5:9 ratio the real device uses.
+ * handset is drawn here in CSS, from the variant's own measurements: a shell of
+ * 265.43x549.31 wrapping four nested rings, then the screen. Each ring's
+ * padding, corner radius and fill below is Framer's, written as a share of the
+ * shell's width so the handset holds its proportions at any size.
  *
- * `fluid` swaps the fixed width for the container's own. Everything that used
- * to be derived from a pixel width is then written in `cqw`, one percent of
- * that container, so the handset scales with whatever box it is dropped into
- * and keeps its proportions exactly.
+ * | ring         | padding | radius | fill    |
+ * | ------------ | ------- | ------ | ------- |
+ * | Outer Stroke | 0.61    | 63.76  | #000    |
+ * | Inner Stroke | 0.61    | 63.15  | #999    |
+ * | Bezel        | 4.81    | 62.55  | #2c2c2c |
+ * | Screen       | 6.02    | 57.74  | #000    |
+ *
+ * The rings are worth keeping separate. Collapsed into one grey band, which is
+ * what this drew before, the edge reads soft and heavy; Framer's is a crisp
+ * black outline with a hairline of grey inside it catching the light.
+ *
+ * The 12.05 of padding they add up to also decides the shape of the screen, and
+ * that matters more than it looks. It leaves 2.176:1, and the recordings that
+ * play in it are 2.175:1 and 2.168:1, so each one fills the screen with nothing
+ * trimmed and no gap. Deriving the shell from 19.5:9 and insetting a single
+ * bezel leaves 2.25:1 instead, and the recordings then lose their edges.
+ *
+ * `fluid` swaps the fixed width for the container's own. Every share is then
+ * written in `cqw`, one percent of that container, rather than in pixels.
  */
+
+/** Framer's iPhone 17 Pro variant, as shares of the shell's width. */
+const W = 265.43;
+const SHELL_HEIGHT = 549.31 / W;
+/** Each ring: how much it insets what it holds, its corner radius, its fill. */
+const RINGS = [
+  { pad: 0.61 / W, radius: 63.76 / W, fill: "#000000" },
+  { pad: 0.61 / W, radius: 63.15 / W, fill: "#999999" },
+  { pad: 4.81 / W, radius: 62.55 / W, fill: "#2c2c2c" },
+  { pad: 6.02 / W, radius: 57.74 / W, fill: "#000000" },
+] as const;
+/** The picture's own corner, inside the last ring's padding. */
+const SCREEN_RADIUS = (57.74 - 6.02) / W;
+
 export function PhoneMockup({
   screen,
   width = 265,
@@ -31,20 +61,69 @@ export function PhoneMockup({
   /** Fill the container's width instead of taking a fixed one. */
   fluid?: boolean;
 }) {
-  const height = Math.round((width * 19.5) / 9);
-  const bezel = fluid ? "3.5cqw" : Math.max(6, Math.round(width * 0.035));
-  const radius = fluid ? "16cqw" : Math.round(width * 0.16);
-  const island = fluid
-    ? { top: "5.6cqw", width: "30cqw", height: "8.5cqw" }
-    : { top: (bezel as number) * 1.6, width: width * 0.3, height: width * 0.085 };
-  const screenRadius = fluid ? "12.4cqw" : (radius as number) - (bezel as number) * 0.6;
+  const height = Math.round(width * SHELL_HEIGHT);
+  /** A share of the shell's width, in whichever unit this instance is drawn in. */
+  const unit = (share: number) =>
+    fluid ? `${(share * 100).toFixed(2)}cqw` : `${share * width}px`;
+
+  const island = {
+    top: unit(0.056),
+    width: unit(0.3),
+    height: unit(0.085),
+  };
+
+  // Built from the inside out, so each ring wraps the one before it.
+  let stack = (
+    <div
+      className="relative size-full overflow-hidden bg-white"
+      style={{ borderRadius: unit(SCREEN_RADIUS) }}
+    >
+      <Image
+        src={screen}
+        alt={alt}
+        fill
+        sizes={fluid ? "(width < 810px) 60vw, 280px" : `${width}px`}
+        className="object-cover"
+        unoptimized={unoptimized}
+      />
+    </div>
+  );
+
+  for (let i = RINGS.length - 1; i >= 0; i--) {
+    const ring = RINGS[i];
+    stack = (
+      <div
+        className="relative size-full"
+        style={{
+          background: ring.fill,
+          borderRadius: unit(ring.radius),
+          padding: unit(ring.pad),
+          // The outermost ring carries the handset's shadow.
+          boxShadow: i === 0 ? "0 18px 40px rgba(0, 0, 0, 0.18)" : undefined,
+        }}
+      >
+        {stack}
+        {/* The island sits over the screen, inside the last ring. */}
+        {i === RINGS.length - 1 ? (
+          <span
+            className="absolute left-1/2 -translate-x-1/2 rounded-full bg-black"
+            style={island}
+          />
+        ) : null}
+      </div>
+    );
+  }
 
   return (
     <div
       className="relative shrink-0"
       style={
         fluid
-          ? { width: "100%", aspectRatio: "9 / 19.5", containerType: "inline-size" }
+          ? {
+              width: "100%",
+              aspectRatio: `1 / ${SHELL_HEIGHT}`,
+              containerType: "inline-size",
+            }
           : { width, height }
       }
       aria-hidden={alt ? undefined : true}
@@ -67,31 +146,7 @@ export function PhoneMockup({
         style={{ top: height * 0.28, width: 3, height: height * 0.09 }}
       />
 
-      {/* Shell */}
-      <div
-        className="relative size-full overflow-hidden bg-[#3f3f44] shadow-[0_18px_40px_rgba(0,0,0,0.18)]"
-        style={{ borderRadius: radius }}
-      >
-        <div
-          className="absolute overflow-hidden bg-white"
-          style={{ inset: bezel, borderRadius: screenRadius }}
-        >
-          <Image
-            src={screen}
-            alt={alt}
-            fill
-            sizes={fluid ? "(width < 810px) 60vw, 280px" : `${width}px`}
-            className="object-cover"
-            unoptimized={unoptimized}
-          />
-        </div>
-
-        {/* Dynamic Island */}
-        <span
-          className="absolute left-1/2 -translate-x-1/2 rounded-full bg-black"
-          style={island}
-        />
-      </div>
+      {stack}
     </div>
   );
 }

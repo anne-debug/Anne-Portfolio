@@ -5,6 +5,8 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { useState } from "react";
 
+import { projectPreview } from "@/lib/project-previews";
+
 import { WorkCard, type WorkCardProps } from "./WorkCard";
 
 /**
@@ -22,7 +24,7 @@ const WORK: WorkCardProps[] = [
     name: "Taipei Metro Point Redesign",
     summary:
       "Reimagining Metro Points to make rewards visible, understandable, and part of everyday commuting",
-    image: "/images/3ERWzAf6UfkLtaIEjZLUSpUyAU.jpg",
+    preview: projectPreview("taipei-metro-app"),
     category: "UI/UX Design",
     href: "/projects/taipei-metro-app",
   },
@@ -31,7 +33,7 @@ const WORK: WorkCardProps[] = [
     name: "BudgetCart",
     summary:
       "An online grocery app that eliminates checkout anxiety for budget-constrained shoppers",
-    image: "/images/lKiiHwCIn6KBdznWwKf5t8dwA.jpg",
+    preview: projectPreview("budgetcart"),
     category: "UI/UX Design",
     href: "/projects/budgetcart",
   },
@@ -40,7 +42,7 @@ const WORK: WorkCardProps[] = [
     name: "Ryze Coffee Redesign",
     summary:
       "Redesigning with user trust and autonomy for long-term retention",
-    image: "/images/oinVOiv5zYxKrorv88du9ze5iwQ.png",
+    preview: projectPreview("ryze-coffee"),
     category: "UI/UX Design",
     href: "/projects/ryze-coffee",
   },

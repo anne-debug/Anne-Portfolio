@@ -37,7 +37,7 @@ export function Accordion({
         <span
           className={`transition-colors ${
             open
-              ? "ts-heading-5 text-[24px]"
+              ? "ts-heading-6"
               : "ts-body-medium-bold text-[14px] group-hover:text-white"
           }`}
         >

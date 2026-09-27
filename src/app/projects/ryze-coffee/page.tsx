@@ -31,7 +31,6 @@ const MORE: MoreProjectCard[] = [
     title: "Jubo Heallthcare Platform",
     description:
       "Built frontend modules for a senior care dashboard, reducing cognitive load and improving data visibility through close collaboration with designers and nurses.",
-    image: "/case/OWmpqKnvk6IiDk3SNIkMzaYwrw.jpg",
   },
   {
     href: "/projects/little-chestnut-thief",
@@ -39,7 +38,6 @@ const MORE: MoreProjectCard[] = [
     title: "Little Chestnut THief",
     description:
       "Designed a boutique-style web store for chestnut-based desserts — a personal passion turned into a brand concept. ",
-    image: "/case/XoA9GzMoPNV9ZWiVKe277xixE.jpg",
   },
 ];
 

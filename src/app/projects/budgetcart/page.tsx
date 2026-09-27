@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import { Paragraphs } from "@/components/case/CaseParts";
-import { Reveal, SkipButton, StarPointList } from "@/components/case/CaseExtras";
+import {
+  Reveal,
+  SkipButton,
+  StarPointList,
+} from "@/components/case/CaseExtras";
 import { CaseShell } from "@/components/case/CaseShell";
 import type { MoreProjectCard } from "@/components/case/MoreProjects";
 import { PhoneMockup } from "@/components/case/PhoneMockup";
@@ -22,7 +26,6 @@ const MORE: MoreProjectCard[] = [
     title: "Jubo Healthcare Platform",
     description:
       "Built frontend modules for a senior care dashboard, reducing cognitive load and improving data visibility through close collaboration with designers and nurses.",
-    image: "/case/OWmpqKnvk6IiDk3SNIkMzaYwrw.jpg",
   },
   {
     href: "/projects/taipei-metro-app",
@@ -30,7 +33,6 @@ const MORE: MoreProjectCard[] = [
     title: "Taipei Metro Point Redesign",
     description:
       "Reimagining Metro Points to make rewards visible, understandable, and part of everyday commuting.",
-    image: "/case/lznihxkZuNaXO8GSAiHakwwQU.jpg",
   },
 ];
 
@@ -70,7 +72,9 @@ const SOLUTION_POINTS = [
   },
   {
     title: "Build a Budget Awareness System",
-    items: ["→ Surface real-time budget signals to help users stay within limits."],
+    items: [
+      "→ Surface real-time budget signals to help users stay within limits.",
+    ],
   },
   {
     title: "Introduce Persistent SNAP Signals",
@@ -165,11 +169,15 @@ const COMPARISON_POINTS = [
   },
   {
     step: "Best Match Indicator",
-    lines: ["The system highlights the best value option to reduce cognitive load"],
+    lines: [
+      "The system highlights the best value option to reduce cognitive load",
+    ],
   },
   {
     step: "Trade-off Transparency",
-    lines: ["Delivery fees, pickup time, and discount breakdown are surfaced inline"],
+    lines: [
+      "Delivery fees, pickup time, and discount breakdown are surfaced inline",
+    ],
   },
 ];
 
@@ -264,23 +272,44 @@ export default function BudgetCartPage() {
       {/* ---- Hero ---------------------------------------------------- */}
       <section
         id="project-context"
-        className="flex w-full flex-col items-start gap-[30px] tablet:flex-row"
+        /* Framer's Desktop "Hero" is a horizontal stack with no gap: the two
+           columns meet, and the image column's own 30px left padding is the
+           only space between them. Below 1200 the 30px stays. */
+        className="flex w-full flex-col items-start gap-[30px] tablet:flex-row desktop:gap-0"
       >
         <div className="flex flex-1 flex-col gap-[144px]">
           <div className="flex w-full flex-col gap-5">
-            <span className="ts-button rounded-[30px] bg-dark-charcoal px-3 py-1 text-off-white">
+            <span className="ts-button self-start rounded-[30px] bg-dark-charcoal px-[15px] py-[3px] text-off-white">
               UI / UX Design
             </span>
             <div className="flex w-full flex-col gap-[5px]">
               <h1 className="ts-heading-2 text-grey-200">BudgetCart</h1>
-              <p className="ts-body-large">
+              {/* `.ts-body-large` steps to 32px at the tablet breakpoint, which
+                  is larger than the 20px Framer sets here on desktop. It ramps
+                  up to that 20px instead. */}
+              <p
+                className="ts-body-large"
+                style={{
+                  fontSize:
+                    "clamp(16px, calc(16px + 4 * (100vw - 390px) / 810), 20px)",
+                }}
+              >
                 An online grocery app that eliminates checkout anxiety for
                 budget-constrained shoppers
               </p>
             </div>
           </div>
 
-          <dl className="grid w-full grid-cols-2 gap-x-[6px] gap-y-5">
+          {/* Framer's "Project Meta Grid" is one column on its Desktop frame.
+              Below that the four facts read as a 2x2 block, as they do on the
+              other case studies. */}
+          {/* Two across, and one column from 1200 where Framer's Desktop frame
+              draws it that way. Four across does not fit: this hero's text
+              column is half the row, so each fact would get 66px at 858 and
+              104px even at 1199, wrapping the values onto three and four
+              lines. The other case studies can manage four because their
+              headers run the full width. */}
+          <dl className="grid w-full grid-cols-2 gap-x-[6px] gap-y-5 desktop:grid-cols-1">
             {[
               ["Client", "Course Work Project"],
               ["Role", "Product designer"],
@@ -295,27 +324,71 @@ export default function BudgetCartPage() {
           </dl>
         </div>
 
-        <div className="relative flex w-full items-end justify-center px-[30px] pt-[50px] pb-[30px] tablet:w-1/2">
-          <Image
-            src="/case/CzIpIqrBNYg6Mptyt3oTzVDzm8c.png"
-            alt=""
-            width={350}
-            height={350}
-            className="absolute bottom-0 left-0 size-[350px] object-contain"
-          />
-          <PhoneMockup
-            screen="/case/gYGzaYBJBLaboENZJAHFQLRqlPo.gif"
-            width={230}
-            alt="The BudgetCart shopping flow"
-            unoptimized
-          />
-          <Image
-            src="/case/5resnnnMK0AZd5cIOtw7aPC0eng.png"
-            alt=""
-            width={400}
-            height={715}
-            className="absolute right-0 bottom-0 w-2/5 object-contain"
-          />
+        {/*
+          Framer's "Hero Image Container".
+
+          The shopper, the handset, the doodle and the money bag are one
+          composition, not four elements that each answer to the viewport. Every
+          one of them is placed as a percentage of the canvas below, so the whole
+          group scales together and keeps Framer's spacing, overlap and hierarchy
+          at any size.
+
+          The canvas is this column extended 225px to the left, which is where
+          Framer pins the shopper. From 1200 it keeps that width and overhangs the
+          text column, exactly as Framer draws it. Below 1200 it is the column's
+          own width, so the same composition simply arrives smaller and nothing
+          leaves the screen.
+        */}
+        <div className="relative w-full tablet:w-[56%] desktop:w-1/2">
+          {/* 225px of the canvas hangs off the left, which is 47.32% of this
+              column's width; a negative margin is what moves it there, since
+              `ml-auto` collapses to zero once a box is wider than its parent. */}
+          <div className="relative aspect-[700.5/628.4] w-full desktop:ml-[-47.32%] desktop:w-[147.32%]">
+            {/* "character". Behind the handset: Framer gives it a z-index of 1,
+                but its own render draws the handset in front, and the shopper's
+                arm reading over the screen is wrong. */}
+            <Image
+              src="/case/CzIpIqrBNYg6Mptyt3oTzVDzm8c.png"
+              alt=""
+              width={350}
+              height={350}
+              className="absolute h-auto object-contain"
+              style={{ left: "0%", top: "35.55%", width: "49.96%" }}
+            />
+
+            {/* Framer's iPhone 17 Pro variant, 265px of a 700.5px canvas. */}
+            <div
+              className="absolute"
+              style={{ left: "47.30%", top: "7.96%", width: "37.83%" }}
+            >
+              <PhoneMockup
+                screen="/case/gYGzaYBJBLaboENZJAHFQLRqlPo.gif"
+                alt="The BudgetCart shopping flow"
+                unoptimized
+                fluid
+              />
+            </div>
+
+            {/* Framer's "Vector" doodle */}
+            <Image
+              src="/vectors/squiggle.png"
+              alt=""
+              width={57}
+              height={57}
+              className="absolute h-auto object-contain"
+              style={{ left: "80.59%", top: "1.75%", width: "8.14%" }}
+            />
+
+            {/* "money", in front of the handset */}
+            <Image
+              src="/case/5resnnnMK0AZd5cIOtw7aPC0eng.png"
+              alt=""
+              width={400}
+              height={715}
+              className="absolute z-[1] h-auto object-contain"
+              style={{ left: "72.85%", top: "79.14%", width: "27.15%" }}
+            />
+          </div>
         </div>
       </section>
 
@@ -325,7 +398,9 @@ export default function BudgetCartPage() {
       <section id="problem" className="flex w-full flex-col gap-10">
         <div className="flex w-full flex-col gap-2.5">
           <h2 className="ts-heading-3">Problem</h2>
-          <h3 className="ts-heading-6">Shopping requires too much mental math</h3>
+          <h3 className="ts-heading-6">
+            Shopping requires too much mental math
+          </h3>
         </div>
         <div className="flex w-full flex-col gap-10">
           <div className="flex w-full flex-col gap-2.5">
@@ -336,7 +411,7 @@ export default function BudgetCartPage() {
               </strong>
             </p>
             <p className="ts-body">
-              We often  jumped between apps to compare prices, track budgets, and
+              We often jumped between apps to compare prices, track budgets, and
               calculate totals.{" "}
               <strong className="font-semibold">
                 Yet None of these systems worked together.{" "}
@@ -344,7 +419,8 @@ export default function BudgetCartPage() {
             </p>
             <p className="ts-body">But this wasn’t just our experience.</p>
             <p className="ts-body">
-              For budget-constrained shoppers, particularly those relying on SNAP/WIC,{" "}
+              For budget-constrained shoppers, particularly those relying on
+              SNAP/WIC,{" "}
               <strong className="font-semibold">
                 grocery shopping means managing multiple constraints at once.
               </strong>
@@ -373,7 +449,9 @@ export default function BudgetCartPage() {
         </div>
 
         <div className="flex w-full flex-col gap-2.5">
-          <p className="ts-body">The problem statement that guided this project was:</p>
+          <p className="ts-body">
+            The problem statement that guided this project was:
+          </p>
           <div
             className="flex h-[229px] w-full items-center justify-center rounded-[20px] px-10"
             style={{
@@ -393,7 +471,7 @@ export default function BudgetCartPage() {
       {/* ---- My role ------------------------------------------------- */}
       <section id="my-role" className="flex w-full flex-col gap-10">
         <div className="flex w-full flex-col gap-2.5">
-          <h2 className="ts-heading-2 text-grey-200">My role</h2>
+          <h2 className="ts-heading-3">My role</h2>
           <p className="ts-body">
             In this project, I led the end-to-end design of{" "}
             <strong className="font-semibold">core shopping experience</strong>.
@@ -403,7 +481,10 @@ export default function BudgetCartPage() {
             points={[
               { title: "Led user research and problem framing" },
               { title: "Designed the end-to-end shopping experience" },
-              { title: "Integrated budgeting and SNAP visibility into core flows" },
+              {
+                title:
+                  "Integrated budgeting and SNAP visibility into core flows",
+              },
               { title: "Iterated through prototyping and testing" },
             ]}
           />
@@ -412,7 +493,7 @@ export default function BudgetCartPage() {
 
       {/* ---- Solutions overview -------------------------------------- */}
       <section id="solutions-overview" className="flex w-full flex-col gap-2.5">
-        <h2 className="ts-heading-2 text-grey-200">Solutions Overview</h2>
+        <h2 className="ts-heading-3">Solutions Overview</h2>
         <div className="flex w-full flex-col gap-5">
           <h3 className="ts-heading-6">
             Make Cost Visible Early in the Shopping Journey
@@ -421,27 +502,29 @@ export default function BudgetCartPage() {
             <div className="flex flex-1 flex-col gap-[29px] py-5">
               <StarPointList points={SOLUTION_POINTS} bold />
             </div>
+            {/* Both screens are 2.167:1, against the handset's 2.176:1 screen,
+                so each fills its frame with nothing cropped. */}
             <div className="flex flex-1 gap-2.5">
               <figure className="flex flex-1 flex-col gap-2.5">
-                <Image
-                  src="/case/gYGzaYBJBLaboENZJAHFQLRqlPo.gif"
+                <PhoneMockup
+                  screen="/case/gYGzaYBJBLaboENZJAHFQLRqlPo.gif"
                   alt="The redesigned shopping flow"
-                  width={600}
-                  height={1200}
-                  className="h-auto w-full rounded-[25px]"
                   unoptimized
+                  fluid
                 />
-                <figcaption className="ts-body italic">Shopping Flow</figcaption>
+                <figcaption className="ts-body text-center italic">
+                  Shopping Flow
+                </figcaption>
               </figure>
               <figure className="flex flex-1 flex-col gap-2.5">
-                <Image
-                  src="/case/fUdyc9IdXAA6b6f4B1kuPIoWD8.png"
+                <PhoneMockup
+                  screen="/case/fUdyc9IdXAA6b6f4B1kuPIoWD8.png"
                   alt="Selecting a store"
-                  width={600}
-                  height={1200}
-                  className="h-auto w-full rounded-[25px]"
+                  fluid
                 />
-                <figcaption className="ts-body italic">Select Store</figcaption>
+                <figcaption className="ts-body text-center italic">
+                  Select Store
+                </figcaption>
               </figure>
             </div>
           </div>
@@ -450,7 +533,10 @@ export default function BudgetCartPage() {
       </section>
 
       {/* ---- Research ------------------------------------------------- */}
-      <section id="research-process" className="flex w-full flex-col gap-[90px]">
+      <section
+        id="research-process"
+        className="flex w-full flex-col gap-[90px]"
+      >
         <div className="flex w-full flex-col gap-2.5">
           <h2 className="ts-heading-3">Key Research Insight</h2>
           <div className="flex w-full flex-col gap-5">
@@ -469,8 +555,8 @@ export default function BudgetCartPage() {
               <div className="flex flex-1 flex-col gap-3">
                 <p className="ts-body">
                   “I need to know I won’t{" "}
-                  <strong className="font-semibold">go over my budget</strong> before I
-                  pay“
+                  <strong className="font-semibold">go over my budget</strong>{" "}
+                  before I pay“
                 </p>
                 <p className="ts-body">
                   “Comparing stores is exhausting. I just want to know the{" "}
@@ -479,8 +565,8 @@ export default function BudgetCartPage() {
                 </p>
                 <p className="ts-body">
                   “I want to see how much{" "}
-                  <strong className="font-semibold">SNAP/WIC</strong> I’m spending
-                  before checkout”
+                  <strong className="font-semibold">SNAP/WIC</strong> I’m
+                  spending before checkout”
                 </p>
               </div>
             </div>
@@ -490,9 +576,12 @@ export default function BudgetCartPage() {
         <div className="flex w-full flex-col gap-2.5">
           <h2 className="ts-heading-3">Target User</h2>
           <p className="ts-body">
-            <strong className="font-semibold">Budget-constrained shoppers </strong>or{" "}
-            <strong className="font-semibold">snap users</strong> who actively compare
-            prices and track total spending to stay within a limited budget
+            <strong className="font-semibold">
+              Budget-constrained shoppers{" "}
+            </strong>
+            or <strong className="font-semibold">snap users</strong> who
+            actively compare prices and track total spending to stay within a
+            limited budget
           </p>
         </div>
 
@@ -500,13 +589,19 @@ export default function BudgetCartPage() {
           <h2 className="ts-heading-3">Competitive Analysis</h2>
           <div className="flex w-full flex-col gap-9">
             <h3 className="ts-heading-6">
-              No existing tool integrates pricing, budgeting, and eligibility into one
-              unified decision flow
+              No existing tool integrates pricing, budgeting, and eligibility
+              into one unified decision flow
             </h3>
             <div className="flex w-full flex-col gap-[66px]">
-              <div className="grid w-full grid-cols-2 items-start gap-10 tablet:grid-cols-4">
+              {/* Four across from 810. Two of them on a phone left each
+                  competitor 121px for a logo and a paragraph, so they stack
+                  until there is room for a readable pair. */}
+              <div className="grid w-full grid-cols-1 items-start gap-10 min-[560px]:grid-cols-2 tablet:grid-cols-4">
                 {COMPETITORS.map((c) => (
-                  <div key={c.name} className="flex min-w-0 flex-col gap-[30px]">
+                  <div
+                    key={c.name}
+                    className="flex min-w-0 flex-col gap-[30px]"
+                  >
                     <Image
                       src={c.image}
                       alt={c.name}
@@ -532,7 +627,8 @@ export default function BudgetCartPage() {
                 ))}
               </div>
               <h3 className="ts-heading-6 italic">
-                The burden of budgeting and eligibility decisions still falls on users
+                The burden of budgeting and eligibility decisions still falls on
+                users
               </h3>
             </div>
           </div>
@@ -542,15 +638,18 @@ export default function BudgetCartPage() {
           <div className="flex w-full flex-col gap-5">
             <h2 className="ts-heading-3">Design Opportunity</h2>
             <h3 className="ts-heading-6">
-              Address both user constraints and market gaps by redesigning grocery
-              shopping as an integrated decision system
+              Address both user constraints and market gaps by redesigning
+              grocery shopping as an integrated decision system
             </h3>
           </div>
           <div className="flex w-full flex-col gap-[9px] tablet:flex-row">
             {OPPORTUNITIES.map((o) => (
               <div
                 key={o.number}
-                className="flex flex-1 flex-col gap-[25px] rounded-[20px] border border-grey-100 px-[30px] py-10"
+                /* Framer's 30/40 padding and 25px gap from 810 up; tighter below, where
+                  the card is the width of the screen and that much air made each
+                  one half a phone tall. */
+                className="flex flex-1 flex-col gap-3 rounded-[20px] border border-grey-100 px-5 py-6 tablet:gap-[25px] tablet:px-[30px] tablet:py-10"
               >
                 <p className="ts-heading-5 font-bold">{o.number}</p>
                 <div className="flex flex-col gap-2.5">
@@ -582,14 +681,14 @@ export default function BudgetCartPage() {
                     rebuilding cart to compare stores
                   </p>
                   <p className="ts-body italic">
-                    In current shopping flows, users must commit to a store first,
-                    build a cart, manually compare across stores, and repeatedly
-                    rebuild the cart.
+                    In current shopping flows, users must commit to a store
+                    first, build a cart, manually compare across stores, and
+                    repeatedly rebuild the cart.
                   </p>
                   <p className="ts-body italic">
-                    I redesigned the flow so users build the cart once, compare total
-                    costs across stores in one view, and choose a store only after
-                    seeing the complete cost breakdown.
+                    I redesigned the flow so users build the cart once, compare
+                    total costs across stores in one view, and choose a store
+                    only after seeing the complete cost breakdown.
                   </p>
                 </div>
               </div>
@@ -631,9 +730,13 @@ export default function BudgetCartPage() {
                     <h4 className="ts-heading-5">Experience Walkthrough</h4>
                     <div className="flex flex-wrap items-center gap-[28px]">
                       <span className="ts-body-large">Build cart</span>
-                      <span aria-hidden className="text-light-grey">→</span>
+                      <span aria-hidden className="text-light-grey">
+                        →
+                      </span>
                       <span className="ts-body-large">Compare Price</span>
-                      <span aria-hidden className="text-light-grey">→</span>
+                      <span aria-hidden className="text-light-grey">
+                        →
+                      </span>
                       <span className="ts-body-large">Commit</span>
                     </div>
                   </div>
@@ -643,18 +746,21 @@ export default function BudgetCartPage() {
             </div>
 
             <p className="ts-body">
-              Reordering the decision flow eliminated cart rebuilding, but this shift
-              wasn’t only about changing steps. It required rethinking how cost
-              information is structured and surfaced
+              Reordering the decision flow eliminated cart rebuilding, but this
+              shift wasn’t only about changing steps. It required rethinking how
+              cost information is structured and surfaced
             </p>
 
             <div className="flex w-full flex-col gap-20">
               <div className="flex w-full flex-col gap-5">
-                <h4 className="ts-heading-6">2. Redesign store comparison interface</h4>
-                <h3 className="ts-heading-3 italic">
-                  I redesigned the comparison interface so the system automatically
-                  applies the same cart across stores and surfaces total cost and
-                  trade-offs at a glance, reducing mental math and decision fatigue.
+                <h4 className="ts-heading-6">
+                  2. Redesign store comparison interface
+                </h4>
+                <h3 className="ts-heading-6 italic">
+                  I redesigned the comparison interface so the system
+                  automatically applies the same cart across stores and surfaces
+                  total cost and trade-offs at a glance, reducing mental math
+                  and decision fatigue.
                 </h3>
               </div>
               <div className="flex w-full flex-col-reverse items-center gap-[60px] pb-[50px] tablet:flex-row tablet:pr-[100px] tablet:pl-[70px]">
@@ -677,15 +783,17 @@ export default function BudgetCartPage() {
           {/* Solution 2 */}
           <div className="flex w-full flex-col gap-10 pb-[50px]">
             <div className="flex w-full flex-col gap-5">
-              <h3 className="ts-heading-5">2. Create Budget Awareness System</h3>
+              <h3 className="ts-heading-5">
+                2. Create Budget Awareness System
+              </h3>
               <p className="ts-body font-semibold">
                 Impact: Users gain continuous visibility into spending — before,
                 during, and after purchase
               </p>
               <p className="ts-body">
-                I designed a budget awareness system that provides real-time financial
-                visibility across the entire shopping journey from building cart to
-                checkout
+                I designed a budget awareness system that provides real-time
+                financial visibility across the entire shopping journey from
+                building cart to checkout
               </p>
             </div>
 
@@ -704,12 +812,13 @@ export default function BudgetCartPage() {
                 decisions
               </p>
               <p className="ts-body">
-                SNAP users often struggle to understand how their benefits apply across
-                different stores and items.
+                SNAP users often struggle to understand how their benefits apply
+                across different stores and items.
               </p>
               <p className="ts-body">
-                I introduced clear SNAP signals at every key decision point, helping
-                users maximize benefits and avoid unexpected out-of-pocket costs.
+                I introduced clear SNAP signals at every key decision point,
+                helping users maximize benefits and avoid unexpected
+                out-of-pocket costs.
               </p>
             </div>
             <Reveal className="w-full">
@@ -730,11 +839,13 @@ export default function BudgetCartPage() {
       <section id="design-iteration" className="flex w-full flex-col gap-2.5">
         <h2 className="ts-heading-3">Design Iteration</h2>
         <div className="flex w-full flex-col gap-5">
-          <h3 className="ts-heading-6">Iterating Toward Clearer Store Comparison</h3>
+          <h3 className="ts-heading-6">
+            Iterating Toward Clearer Store Comparison
+          </h3>
           <p className="ts-body">
             Through iterative design and usability testing, I refined how store
-            comparison information is structured so users can make faster, lower-effort
-            decisions.
+            comparison information is structured so users can make faster,
+            lower-effort decisions.
           </p>
           <Reveal className="w-full">
             <Image
@@ -753,7 +864,9 @@ export default function BudgetCartPage() {
       <section className="flex w-full flex-col gap-2.5">
         <h2 className="ts-heading-3">Next Steps</h2>
         <div className="flex w-full flex-col gap-2.5 pt-5">
-          <h3 className="ts-heading-6">Explore an AI-powered shopping assistant</h3>
+          <h3 className="ts-heading-6">
+            Explore an AI-powered shopping assistant
+          </h3>
           <Paragraphs
             items={[
               "Users could upload a grocery list and the system would automatically generate a cart optimized for their budget.",
@@ -762,7 +875,9 @@ export default function BudgetCartPage() {
           />
         </div>
         <div className="flex w-full flex-col gap-2.5">
-          <h3 className="ts-heading-6">Conduct deeper testing with SNAP users</h3>
+          <h3 className="ts-heading-6">
+            Conduct deeper testing with SNAP users
+          </h3>
           <Paragraphs
             items={[
               "Due to limited access to SNAP participants, many early design decisions were informed by one interview and secondary research.",

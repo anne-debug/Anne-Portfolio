@@ -13,6 +13,7 @@ import {
 import { CaseShell } from "@/components/case/CaseShell";
 import type { MoreProjectCard } from "@/components/case/MoreProjects";
 import { PhoneMockup } from "@/components/case/PhoneMockup";
+import { Zoomable } from "@/components/case/Zoomable";
 import { SidebarNav, type SidebarEntry } from "@/components/case/SidebarNav";
 
 export const metadata: Metadata = {
@@ -28,7 +29,6 @@ const MORE: MoreProjectCard[] = [
     title: "BudgetCart",
     description:
       "An online grocery app that eliminates checkout anxiety for budget-constrained shoppers",
-    image: "/case/EaJ5BwrR5P7iXxlMGzByEQAdww.jpg",
   },
   {
     href: "/projects/jubo-healthcare",
@@ -36,7 +36,6 @@ const MORE: MoreProjectCard[] = [
     title: "Jubo Healthcare Platform",
     description:
       "Built frontend modules for a senior care dashboard, reducing cognitive load and improving data visibility through close collaboration with designers and nurses",
-    image: "/case/flZHTfvqeSNCRO7szGGaselhdhA.jpg",
   },
 ];
 
@@ -53,7 +52,9 @@ const SECTIONS: SidebarEntry[] = [
 const SOLUTION_POINTS = [
   {
     title: "Give Metro Points a Clear Home",
-    items: ["→ Consolidate all point-related information into a single, dedicated entry."],
+    items: [
+      "→ Consolidate all point-related information into a single, dedicated entry.",
+    ],
   },
   {
     title: "Make Rewards Visible and Actionable",
@@ -138,7 +139,8 @@ const ITERATIONS = [
       <>
         <p className="ts-body font-semibold">Initial approach</p>
         <p className="ts-body">
-          The first iteration focused on improving discoverability and UI clarity:
+          The first iteration focused on improving discoverability and UI
+          clarity:
         </p>
         <BulletList
           items={[
@@ -148,12 +150,16 @@ const ITERATIONS = [
           ]}
         />
         <p className="ts-body font-semibold">Outcome</p>
-        <p className="ts-body">Visibility improved, but engagement remained low.</p>
-        <p className="ts-body font-semibold">Key learning </p>
-        <p className="ts-body">Simply making rewards visible did not change behavior.</p>
         <p className="ts-body">
-          Users could <em className="italic">find</em> Metro Points, but still didn’t
-          feel compelled to engage.
+          Visibility improved, but engagement remained low.
+        </p>
+        <p className="ts-body font-semibold">Key learning </p>
+        <p className="ts-body">
+          Simply making rewards visible did not change behavior.
+        </p>
+        <p className="ts-body">
+          Users could <em className="italic">find</em> Metro Points, but still
+          didn’t feel compelled to engage.
         </p>
       </>
     ),
@@ -178,8 +184,11 @@ const ITERATIONS = [
           <strong className="font-semibold">
             existing mileage-based fare rebate mechanism
           </strong>{" "}
-          already built into the system, one that closely matched riders’ mental model
-          of value: <strong className="font-semibold">saving money through mileage.</strong>
+          already built into the system, one that closely matched riders’ mental
+          model of value:{" "}
+          <strong className="font-semibold">
+            saving money through mileage.
+          </strong>
         </p>
         <p className="ts-body">This reframed the challenge from:</p>
         <p className="ts-body">“Can users find Metro Points?” </p>
@@ -207,8 +216,8 @@ const ITERATIONS = [
       <>
         <p className="ts-body font-semibold">Design question</p>
         <p className="ts-body">
-          How might Metro Points feel present during routine commuting, even without
-          active participation in events?
+          How might Metro Points feel present during routine commuting, even
+          without active participation in events?
         </p>
         <p className="ts-body font-semibold">What we changed</p>
         <BulletList
@@ -225,7 +234,9 @@ const ITERATIONS = [
         </p>
         <p className="ts-body">
           From rewards as “something extra” →{" "}
-          <strong className="font-semibold">rewards as part of the commute</strong>
+          <strong className="font-semibold">
+            rewards as part of the commute
+          </strong>
         </p>
         <Image
           src="/case/oUBlOSx88XZWYIKfSJrzZbV0E.png"
@@ -246,8 +257,8 @@ const ITERATIONS = [
     body: (
       <>
         <p className="ts-body">
-          While daily exposure increased awareness, we observed that awareness alone
-          still didn’t lead to action.
+          While daily exposure increased awareness, we observed that awareness
+          alone still didn’t lead to action.
         </p>
         <p className="ts-body font-semibold">New insight</p>
         <BulletList
@@ -277,8 +288,9 @@ const ITERATIONS = [
         </p>
         <p className="ts-body font-semibold">Outcome</p>
         <p className="ts-body">
-          Metro Points shifted from a passive system to one that supports effortless
-          participation through calculated value and timely recommendations.
+          Metro Points shifted from a passive system to one that supports
+          effortless participation through calculated value and timely
+          recommendations.
         </p>
         <Image
           src="/case/Yq6Pbh5kfTFnt4CgDN7K8JhcYLI.png"
@@ -306,9 +318,9 @@ const ITERATIONS = [
         />
         <p className="ts-body font-semibold">Result</p>
         <p className="ts-body">
-          Metro Points transformed from an event-only reward into a system that makes
-          value visible every day—while preserving markets and events as the most
-          meaningful and economically aligned paths to earning.
+          Metro Points transformed from an event-only reward into a system that
+          makes value visible every day—while preserving markets and events as
+          the most meaningful and economically aligned paths to earning.
         </p>
         <p className="ts-body">
           The goal wasn’t to force engagement, but to make participation feel
@@ -331,9 +343,9 @@ const ITERATIONS = [
         />
         <p className="ts-body font-semibold">Result</p>
         <p className="ts-body">
-          Metro Points transformed from an event-only reward into a system that makes
-          value visible every day while preserving markets and events as the most
-          meaningful and economically aligned paths to earning.
+          Metro Points transformed from an event-only reward into a system that
+          makes value visible every day while preserving markets and events as
+          the most meaningful and economically aligned paths to earning.
         </p>
       </>
     ),
@@ -355,19 +367,31 @@ export default function TaipeiMetroPage() {
       moreBottom={120}
     >
       {/* ---- Hero ---------------------------------------------------- */}
-      <section className="flex w-full flex-col items-start gap-[30px] tablet:flex-row tablet:gap-[10px]">
+      {/* Side by side, the two columns meet at the bottom: the collage ends
+          level with the last row of the meta grid. Aligned to the top instead,
+          the collage's own height decided where it finished, which put it
+          anywhere from 71px above that line to 56px below it. */}
+      <section className="flex w-full flex-col items-start gap-[30px] tablet:flex-row tablet:items-end tablet:gap-[10px]">
         {/* Framer's text column measures 424px against a 550px stage, which is
             wider than the two together fit; capping the text and letting the
             stage take the rest keeps Framer's line breaks. */}
         <div
-          className="flex min-w-0 flex-1 flex-col gap-[120px]"
+          className="flex min-w-0 flex-1 flex-col gap-[120px] tablet:max-w-[var(--hero-text-w)]"
           /* Framer gives the text 424px against a 550px stage on desktop but
              only about 195px on tablet, where the stage keeps its size. The cap
              ramps between the two so the split moves smoothly rather than
-             snapping at the breakpoint. */
-          style={{
-            maxWidth: "clamp(240px, calc(240px + 184 * (100vw - 810px) / 390), 424px)",
-          }}
+             snapping at the breakpoint.
+
+             It only applies from 810 up. Below that the hero stacks, so there is
+             no stage beside the text to leave room for, and the ramp bottoms out
+             at its 240px floor: the text sat in a 240px column on a screen three
+             times that wide. */
+          style={
+            {
+              "--hero-text-w":
+                "clamp(240px, calc(240px + 184 * (100vw - 810px) / 390), 424px)",
+            } as React.CSSProperties
+          }
         >
           <div className="flex w-full flex-col gap-5">
             <span className="ts-button self-start rounded-[30px] bg-dark-charcoal px-3 py-1 text-off-white">
@@ -387,14 +411,15 @@ export default function TaipeiMetroPage() {
                     "clamp(14px, calc(14px + 6 * (100vw - 810px) / 390), 20px)",
                 }}
               >
-                Reimagining Metro Points to make rewards visible, understandable, and
-                part of everyday commuting
+                Reimagining Metro Points to make rewards visible,
+                understandable, and part of everyday commuting
               </p>
             </div>
           </div>
 
-          {/* Framer stacks these into one column on its Phone frame. */}
-          <dl className="grid w-full grid-cols-1 gap-x-[6px] gap-y-5 tablet:grid-cols-2">
+          {/* Two across at every width, so the four facts read as a block
+              rather than a long list on a phone. */}
+          <dl className="grid w-full grid-cols-2 gap-x-[6px] gap-y-5">
             {[
               ["Client", "Taipei Metro Company"],
               ["Role", "UI/UX designer"],
@@ -421,7 +446,12 @@ export default function TaipeiMetroPage() {
               aria-hidden
               viewBox="0 0 265 262"
               className="absolute"
-              style={{ left: "51.82%", top: "0%", width: "48.18%", height: "44.11%" }}
+              style={{
+                left: "51.82%",
+                top: "0%",
+                width: "48.18%",
+                height: "44.11%",
+              }}
               fill="#44AE3A"
             >
               <polygon points="5,8 125,8 125,128" />
@@ -434,7 +464,12 @@ export default function TaipeiMetroPage() {
             <span
               aria-hidden
               className="absolute rounded-full bg-[#017BAE]"
-              style={{ left: "29.09%", top: "58.42%", width: "40%", height: "37.04%" }}
+              style={{
+                left: "29.09%",
+                top: "58.42%",
+                width: "40%",
+                height: "37.04%",
+              }}
             />
 
             <Image
@@ -444,7 +479,12 @@ export default function TaipeiMetroPage() {
               height={600}
               sizes="140px"
               className="absolute object-contain"
-              style={{ left: "9.27%", top: "23.4%", width: "23.82%", height: "15.32%" }}
+              style={{
+                left: "9.27%",
+                top: "23.4%",
+                width: "23.82%",
+                height: "15.32%",
+              }}
             />
 
             <Image
@@ -454,7 +494,12 @@ export default function TaipeiMetroPage() {
               height={600}
               sizes="180px"
               className="absolute object-contain"
-              style={{ left: "2.18%", top: "69.36%", width: "30.91%", height: "25.76%" }}
+              style={{
+                left: "2.18%",
+                top: "69.36%",
+                width: "30.91%",
+                height: "25.76%",
+              }}
             />
 
             <div
@@ -476,14 +521,18 @@ export default function TaipeiMetroPage() {
 
       {/* ---- Project context ----------------------------------------- */}
       <section id="project-context" className="flex w-full flex-col gap-[90px]">
-        <div className="flex w-full flex-col gap-[41px]">
+        <div className="flex w-full flex-col gap-6 tablet:gap-[41px]">
           <h2 className="ts-heading-3">Project context</h2>
           <div className="flex w-full flex-col gap-2.5">
             <p className="ts-body">
               Unlike most U.S. metro systems, Taipei Metro stations function as
-              <strong className="font-semibold"> both transit spaces</strong> and{" "}
-              <strong className="font-semibold">everyday shopping hubs</strong>. Many
-              stations integrate convenience stores and local retailers,
+              <strong className="font-semibold">
+                {" "}
+                both transit spaces
+              </strong>{" "}
+              and{" "}
+              <strong className="font-semibold">everyday shopping hubs</strong>.
+              Many stations integrate convenience stores and local retailers,
               <strong className="font-semibold">
                 {" "}
                 making daily commuting a key driver of local commerce
@@ -491,22 +540,27 @@ export default function TaipeiMetroPage() {
               .
             </p>
             <p className="ts-body">
-              Over the past decade, operating costs continued to rise while metro fares
-              remained unchanged. As a result,{" "}
+              Over the past decade, operating costs continued to rise while
+              metro fares remained unchanged. As a result,{" "}
               <strong className="font-semibold">
                 Taipei Metro faces growing financial pressure
               </strong>{" "}
               and increasingly relies on non-fare revenue from{" "}
-              <strong className="font-semibold">station-area businesses.</strong>
+              <strong className="font-semibold">
+                station-area businesses.
+              </strong>
             </p>
             <p className="ts-body">
               This is why Metro Points was introduced to{" "}
               <strong className="font-semibold">
-                turn daily commuting into a reward-based system that supports riders,
-                local businesses, and the metro’s financial sustainability.
+                turn daily commuting into a reward-based system that supports
+                riders, local businesses, and the metro’s financial
+                sustainability.
               </strong>
             </p>
-            <p className="ts-body">The Taipei Metro Go app serves two core functions:</p>
+            <p className="ts-body">
+              The Taipei Metro Go app serves two core functions:
+            </p>
           </div>
 
           <div className="flex w-full flex-col items-start gap-10 tablet:flex-row">
@@ -514,20 +568,35 @@ export default function TaipeiMetroPage() {
               <div className="flex w-full flex-col gap-2.5">
                 <h3 className="ts-heading-6 flex items-center gap-2.5">
                   {/* Framer sets a subway glyph beside this heading */}
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden
+                  >
                     <path d="M12 2c-4 0-7 .6-7 4v9a3.5 3.5 0 0 0 3.5 3.5L7 20v.5h10V20l-1.5-1.5A3.5 3.5 0 0 0 19 15V6c0-3.4-3-4-7-4Zm-5 5h4v3.5H7V7Zm6 0h4v3.5h-4V7Zm-4.5 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm7 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z" />
                   </svg>
                   Metro Navigation
                 </h3>
                 <BulletList
                   marker="check"
-                  items={["Real time train arrival times", "Metro route planning"]}
+                  items={[
+                    "Real time train arrival times",
+                    "Metro route planning",
+                  ]}
                 />
               </div>
               <div className="flex w-full flex-col gap-2.5">
                 <h3 className="ts-heading-6 flex items-center gap-2.5">
                   {/* and a shopping-bag glyph beside this one */}
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    aria-hidden
+                  >
                     <path d="M8 7V6a4 4 0 1 1 8 0v1h2.2a1.4 1.4 0 0 1 1.4 1.3l.9 10.3A2.4 2.4 0 0 1 18.1 21H5.9a2.4 2.4 0 0 1-2.4-2.4l.9-10.3A1.4 1.4 0 0 1 5.8 7H8Zm2 0h4V6a2 2 0 1 0-4 0v1Z" />
                   </svg>
                   Metro Point (Shopping)
@@ -570,7 +639,8 @@ export default function TaipeiMetroPage() {
               style={{
                 fontFamily: "var(--font-dm-sans)",
                 lineHeight: "1.5em",
-                fontSize: "clamp(16px, calc(16px + 4 * (100vw - 810px) / 390), 20px)",
+                fontSize:
+                  "clamp(16px, calc(16px + 4 * (100vw - 810px) / 390), 20px)",
               }}
             >
               However, Data Showed That Nearly{" "}
@@ -591,8 +661,8 @@ export default function TaipeiMetroPage() {
                   />
                 </svg>
               </span>{" "}
-              Of App Users Never Engage With Metro Point, This Is A Significant Revenue
-              Gap For The Metro Company
+              Of App Users Never Engage With Metro Point, This Is A Significant
+              Revenue Gap For The Metro Company
             </p>
 
             <div className="flex w-full items-start justify-center gap-2.5 tablet:justify-start tablet:pl-[50%]">
@@ -621,24 +691,28 @@ export default function TaipeiMetroPage() {
           </div>
         </div>
 
-        <div className="flex w-full flex-col gap-[45px]">
+        <div className="flex w-full flex-col gap-[26px] tablet:gap-[45px]">
           <h2 className="ts-heading-3">Today&apos;s Focus</h2>
           <div className="flex w-full flex-col gap-2.5">
             <h3 className="ts-heading-6">
               Redesigning the “Collect/Redeem Points” experience
             </h3>
             <p className="ts-body">
-              While navigation fulfills a core functional need, Metro Points plays a
-              critical role in{" "}
+              While navigation fulfills a core functional need, Metro Points
+              plays a critical role in{" "}
               <strong className="font-semibold">
                 long-term engagement and financial sustainability.{" "}
               </strong>
               Hence,this project focuses on{" "}
-              <strong className="font-semibold">improving Metro Points adoption.</strong>
+              <strong className="font-semibold">
+                improving Metro Points adoption.
+              </strong>
             </p>
             <p className="ts-body">
               I focused on{" "}
-              <strong className="font-semibold">redesigning the Collect Points page</strong>
+              <strong className="font-semibold">
+                redesigning the Collect Points page
+              </strong>
               , where riders are expected to understand:
             </p>
             <BulletList
@@ -668,8 +742,8 @@ export default function TaipeiMetroPage() {
           <div className="flex w-full flex-col gap-2.5">
             <h2 className="ts-heading-3">Problem</h2>
             <h3 className="ts-heading-6">
-              Metro Points had business potential but failed to become part of daily
-              commuting
+              Metro Points had business potential but failed to become part of
+              daily commuting
             </h3>
           </div>
           <div className="flex w-full flex-col gap-10">
@@ -681,7 +755,9 @@ export default function TaipeiMetroPage() {
             />
             <div className="flex w-full flex-col gap-[42px]">
               <div className="flex w-full flex-col gap-2.5">
-                <h4 className="ts-heading-6">Problem 1 — Value was buried too deep</h4>
+                <h4 className="ts-heading-6">
+                  Problem 1 — Value was buried too deep
+                </h4>
                 <p className="ts-body">
                   Users needed multiple steps just to evaluate earning value.
                 </p>
@@ -694,16 +770,17 @@ export default function TaipeiMetroPage() {
                   Problem 2 — Rewards felt disconnected from commuting behavior
                 </h4>
                 <p className="ts-body">
-                  Most riders expected to earn points simply by riding the metro.
+                  Most riders expected to earn points simply by riding the
+                  metro.
                 </p>
                 <p className="ts-body">
-                  Instead, points can only earn through participating in specific
-                  partner events at designated stations.
+                  Instead, points can only earn through participating in
+                  specific partner events at designated stations.
                 </p>
                 <p className="ts-body">
-                  Since these activities were often outside users’ regular routes and
-                  unrelated to riding itself, the system felt disconnected from everyday
-                  travel.
+                  Since these activities were often outside users’ regular
+                  routes and unrelated to riding itself, the system felt
+                  disconnected from everyday travel.
                 </p>
               </div>
               <Reveal className="w-full">
@@ -721,19 +798,35 @@ export default function TaipeiMetroPage() {
         </div>
 
         <div className="flex w-full flex-col gap-2.5">
-          <p className="ts-body">The problem statement that guided this project was:</p>
+          <p className="ts-body">
+            The problem statement that guided this project was:
+          </p>
+          {/* Flanked by sparkles, the way the closing line of Impact is: one
+              star to the left of the question, a pair to the right. The card
+              holds Framer's 229px once there is room and grows to its content
+              below, where the question runs to five or six lines. */}
           <div
-            className="flex h-[229px] w-full items-center justify-center rounded-[20px] px-10"
+            className="flex w-full items-center justify-center gap-4 rounded-[20px] px-6 py-10 tablet:h-[229px] tablet:gap-6 tablet:px-10 tablet:py-0"
             style={{
               background:
                 "linear-gradient(117deg, rgba(240,253,244,1) 0%, rgba(238,245,254,1) 50%, rgba(255,255,255,1) 100%)",
             }}
           >
+            <span aria-hidden className="shrink-0 self-start text-dark-charcoal">
+              <StarGlyph size={20} />
+            </span>
             <p className="ts-heading-6 max-w-[900px] text-center">
-              How might we make Metro Points immediately understandable and actionable,
-              so riders can decide whether to engage without searching, guessing, or
-              extra effort?
+              How might we make Metro Points immediately understandable and
+              actionable, so riders can decide whether to engage without
+              searching, guessing, or extra effort?
             </p>
+            <span
+              aria-hidden
+              className="flex shrink-0 flex-col items-start gap-1 self-end text-dark-charcoal"
+            >
+              <StarGlyph size={18} />
+              <StarGlyph size={12} />
+            </span>
           </div>
         </div>
       </section>
@@ -744,7 +837,10 @@ export default function TaipeiMetroPage() {
           <h2 className="ts-heading-3">My Role</h2>
           <p className="ts-body">
             In this hackathon project, I led the redesign of{" "}
-            <strong className="font-semibold">Metro Points reward system</strong>.{" "}
+            <strong className="font-semibold">
+              Metro Points reward system
+            </strong>
+            .{" "}
           </p>
           <p className="ts-body">Key responsibilities:</p>
           <StarPointList
@@ -770,26 +866,26 @@ export default function TaipeiMetroPage() {
             </div>
             <div className="flex flex-1 gap-2.5">
               <figure className="flex flex-1 flex-col gap-2.5">
-                <Image
-                  src="/case/PE7XGk4EfULbKROvmWyDDbbBaPw.gif"
+                <PhoneMockup
+                  screen="/case/PE7XGk4EfULbKROvmWyDDbbBaPw.gif"
                   alt="Earning Metro Points"
-                  width={600}
-                  height={1200}
-                  className="h-auto w-[95%] rounded-[36px]"
                   unoptimized
+                  fluid
                 />
-                <figcaption className="ts-body italic">Point Earning</figcaption>
+                <figcaption className="ts-body text-center italic">
+                  Point Earning
+                </figcaption>
               </figure>
               <figure className="flex flex-1 flex-col gap-2.5">
-                <Image
-                  src="/case/vJgCBvr84OylJWunPSJYgGUhUk.gif"
+                <PhoneMockup
+                  screen="/case/vJgCBvr84OylJWunPSJYgGUhUk.gif"
                   alt="Redeeming Metro Points"
-                  width={600}
-                  height={1200}
-                  className="h-auto w-[95%] rounded-[36px]"
                   unoptimized
+                  fluid
                 />
-                <figcaption className="ts-body italic">Point Redepmtion</figcaption>
+                <figcaption className="ts-body text-center italic">
+                  Point Redepmtion
+                </figcaption>
               </figure>
             </div>
           </div>
@@ -800,7 +896,9 @@ export default function TaipeiMetroPage() {
       {/* ---- Research ------------------------------------------------ */}
       <section id="user-research" className="flex w-full flex-col gap-[100px]">
         <div className="flex w-full flex-col gap-2.5">
-          <h2 className="ts-heading-3">User Recruitment &amp; Survey Strategy</h2>
+          <h2 className="ts-heading-3">
+            User Recruitment &amp; Survey Strategy
+          </h2>
           <Paragraphs
             items={[
               "To ensure we gathered diverse and representative insights, we first defined three user groups based on their level of engagement with the app and the Metro Points feature, specifically by (1) frequency of app usage and (2) interaction with Metro Points.",
@@ -824,11 +922,12 @@ export default function TaipeiMetroPage() {
           <div className="flex w-full flex-col gap-5">
             <div className="flex flex-col gap-1">
               <h3 className="ts-heading-6">
-                Riders didn’t perceive Metro Points as part of their daily commute
+                Riders didn’t perceive Metro Points as part of their daily
+                commute
               </h3>
               <h3 className="ts-heading-6">
-                The system required extra effort, and rewards felt disconnected from
-                everyday travel behavior
+                The system required extra effort, and rewards felt disconnected
+                from everyday travel behavior
               </h3>
             </div>
             {/* Framer scatters the three quotes at different indents rather
@@ -845,17 +944,24 @@ export default function TaipeiMetroPage() {
               <div className="flex w-full flex-col gap-9 tablet:pl-[6%]">
                 <p className="ts-body tablet:max-w-[52%]">
                   &ldquo;I don&rsquo;t really understand what Go! Map is for.{" "}
-                  <strong className="font-semibold">It looks like the metro route page</strong>
+                  <strong className="font-semibold">
+                    It looks like the metro route page
+                  </strong>
                   , so I don&rsquo;t know how to use it.&rdquo;
                 </p>
                 <p className="ts-body tablet:ml-[38%] tablet:max-w-[31%]">
                   &ldquo;I don&rsquo;t really understand{" "}
-                  <strong className="font-semibold">how to collect or use Metro Points</strong>
+                  <strong className="font-semibold">
+                    how to collect or use Metro Points
+                  </strong>
                   .&rdquo;
                 </p>
                 <p className="ts-body tablet:ml-[20%] tablet:max-w-[52%]">
-                  &ldquo;I would use Metro Points more if the rewards were actually{" "}
-                  <strong className="font-semibold">relevant to my daily commute</strong>
+                  &ldquo;I would use Metro Points more if the rewards were
+                  actually{" "}
+                  <strong className="font-semibold">
+                    relevant to my daily commute
+                  </strong>
                   .&rdquo;
                 </p>
               </div>
@@ -866,7 +972,7 @@ export default function TaipeiMetroPage() {
                 width={160}
                 height={175}
                 sizes="160px"
-                className="mt-6 h-[175px] w-[160px] object-contain tablet:absolute tablet:right-[6%] tablet:-bottom-2 tablet:mt-0"
+                className="mt-6 ml-auto h-[175px] w-[160px] object-contain tablet:absolute tablet:right-[6%] tablet:-bottom-2 tablet:mt-0 tablet:ml-0"
               />
             </div>
           </div>
@@ -878,7 +984,10 @@ export default function TaipeiMetroPage() {
             {PAIN_POINTS.map((p) => (
               <div
                 key={p.number}
-                className="flex flex-1 flex-col gap-[25px] rounded-[20px] border border-grey-100 px-[30px] py-10"
+                /* Framer's 30/40 padding and 25px gap from 810 up; tighter below, where
+                  the card is the width of the screen and that much air made each
+                  one half a phone tall. */
+                className="flex flex-1 flex-col gap-3 rounded-[20px] border border-grey-100 px-5 py-6 tablet:gap-[25px] tablet:px-[30px] tablet:py-10"
               >
                 <p className="ts-heading-5 font-bold">{p.number}</p>
                 <p className="ts-body font-semibold">{p.title}</p>
@@ -898,10 +1007,12 @@ export default function TaipeiMetroPage() {
           <div className="flex w-full flex-col items-center gap-8 pt-2 tablet:flex-row">
             <ol className="flex flex-1 flex-col gap-4">
               <li className="flex flex-col gap-1">
-                <h3 className="ts-heading-6">1. Low-to-mid engagement riders</h3>
+                <h3 className="ts-heading-6">
+                  1. Low-to-mid engagement riders
+                </h3>
                 <p className="ts-body">
-                  → Make Metro Points visible, understandable, and effortless to start
-                  using.
+                  → Make Metro Points visible, understandable, and effortless to
+                  start using.
                 </p>
               </li>
               <li className="flex flex-col gap-1">
@@ -909,7 +1020,8 @@ export default function TaipeiMetroPage() {
                   2. High-frequency riders &amp; existing point users
                 </h3>
                 <p className="ts-body">
-                  → Reduce friction by surfacing relevant rewards at the right moment.
+                  → Reduce friction by surfacing relevant rewards at the right
+                  moment.
                 </p>
               </li>
             </ol>
@@ -971,20 +1083,23 @@ export default function TaipeiMetroPage() {
           <div className="flex w-full flex-col">
             <h2 className="ts-heading-3">Design Strategy</h2>
             <p className="ts-body">
-              Instead of optimizing isolated features, I redesigned the reward system
-              around how riders experience value during their daily commute.
+              Instead of optimizing isolated features, I redesigned the reward
+              system around how riders experience value during their daily
+              commute.
             </p>
           </div>
           <div className="grid w-full gap-x-5 gap-y-[45px] tablet:grid-cols-2">
             {STRATEGY.map((s) => (
               <div key={s.number} className="flex flex-col gap-2.5">
-                <p className="ts-body-large font-semibold text-orange">{s.number}</p>
+                <p className="ts-body-large font-semibold text-orange">
+                  {s.number}
+                </p>
                 <p className="ts-body font-semibold">{s.title}</p>
                 <p className="ts-body text-light-grey">{s.body}</p>
               </div>
             ))}
           </div>
-</div>
+        </div>
 
         <div className="flex w-full flex-col gap-10">
           <div className="flex w-full flex-col gap-5">
@@ -1011,7 +1126,7 @@ export default function TaipeiMetroPage() {
                     />
                   ) : null}
                   <div className="relative flex w-full shrink-0 items-start gap-3 tablet:w-[250px]">
-                    <span className="flex size-[26px] shrink-0 items-center justify-center rounded-full bg-dark-charcoal text-[13px] font-semibold text-off-white">
+                    <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-dark-charcoal text-[11px] font-semibold text-off-white desktop:size-[26px] desktop:text-[13px]">
                       {i + 1}
                     </span>
                     <h3 className="ts-heading-6 pt-[1px]">{it.label}</h3>
@@ -1030,30 +1145,36 @@ export default function TaipeiMetroPage() {
       </section>
 
       {/* ---- Design breakdown ---------------------------------------- */}
-      <section id="design-breakdown" className="flex w-full flex-col gap-[60px]">
+      <section
+        id="design-breakdown"
+        className="flex w-full flex-col gap-[60px]"
+      >
         <div className="flex w-full flex-col gap-[30px]">
           <div className="flex w-full flex-col gap-2.5">
             <h2 className="ts-heading-3">Design Breakdown</h2>
             <h3 className="ts-heading-6">
               Making Metro Points Visible, Clear and Actionable
             </h3>
-            <h4 className="ts-heading-5 pt-4">1. Give Metro Points a Clear Home</h4>
+            <h4 className="ts-heading-6 pt-4">
+              1. Give Metro Points a Clear Home
+            </h4>
             <p className="ts-body font-semibold">
               Impact: Users have a clear entry point for Metro Points, reducing
               confusion and improving discoverability.
             </p>
             <p className="ts-body">
               Before the redesign, riders had to rely on{" "}
-              <strong className="font-semibold">Go! Map</strong> to discover where they
-              could earn or redeem Metro Points.
+              <strong className="font-semibold">Go! Map</strong> to discover
+              where they could earn or redeem Metro Points.
             </p>
             <p className="ts-body">
               Because earning activities and{" "}
               <strong className="font-semibold">
-                rewards were tied to specific stations, users were forced to scan the map
+                rewards were tied to specific stations, users were forced to
+                scan the map
               </strong>{" "}
-              to figure out which stations offered campaigns, where rewards could be
-              redeemed, and how points could be earned,{" "}
+              to figure out which stations offered campaigns, where rewards
+              could be redeemed, and how points could be earned,{" "}
               <strong className="font-semibold">
                 adding cognitive load and making points feel hard to access.
               </strong>
@@ -1061,49 +1182,57 @@ export default function TaipeiMetroPage() {
             <p className="ts-body">
               I removed Metro Points from the cluttered Go! Map experience and{" "}
               <strong className="font-semibold">
-                consolidate all point-related information into a single, dedicated entry.
+                consolidate all point-related information into a single,
+                dedicated entry.
               </strong>
             </p>
           </div>
           <Reveal className="w-full">
-            <Image
+            <Zoomable
               src="/case/sBEweLasNhWBXDBcOUGtbYZFNHg.png"
               alt="The consolidated Metro Points entry"
               width={2800}
               height={1200}
-              sizes="1120px"
-              className="h-auto w-full"
-            />
+            >
+              <Image
+                src="/case/sBEweLasNhWBXDBcOUGtbYZFNHg.png"
+                alt="The consolidated Metro Points entry"
+                width={2800}
+                height={1200}
+                sizes="1120px"
+                className="h-auto w-full"
+              />
+            </Zoomable>
           </Reveal>
         </div>
 
         <div className="flex w-full flex-col gap-[59px]">
           <div className="flex w-full flex-col gap-[30px]">
             <div className="flex w-full flex-col gap-2.5">
-              <h4 className="ts-heading-5">
+              <h4 className="ts-heading-6">
                 2. Redefining Metro Points as a Meaningful Reward System
               </h4>
               <p className="ts-body font-semibold">
-                Impact: Users see the value of everyday commuting, while point-based
-                rewards drive foot traffic to station-area stores and non-fare revenue
-                for Taipei Metro.
+                Impact: Users see the value of everyday commuting, while
+                point-based rewards drive foot traffic to station-area stores
+                and non-fare revenue for Taipei Metro.
               </p>
               <p className="ts-body">
                 During research, I discovered that Taipei Metro was already{" "}
                 <strong className="font-semibold">
-                  incentivizing frequent riders through distance-based fare discounts
-                  and cashback.{" "}
+                  incentivizing frequent riders through distance-based fare
+                  discounts and cashback.{" "}
                 </strong>
                 However, these benefits were{" "}
-                <strong className="font-semibold">buried</strong> in the Metro Card
-                information page, and most riders, including myself, barely noticed
-                them.
+                <strong className="font-semibold">buried</strong> in the Metro
+                Card information page, and most riders, including myself, barely
+                noticed them.
               </p>
               <p className="ts-body">
                 At the same time,{" "}
                 <strong className="font-semibold">
-                  Metro Points struggled to function as a meaningful reward system on
-                  its own
+                  Metro Points struggled to function as a meaningful reward
+                  system on its own
                 </strong>
                 :
               </p>
@@ -1115,19 +1244,27 @@ export default function TaipeiMetroPage() {
                 ]}
               />
               <p className="ts-body">
-                As a result, neither system helped riders clearly recognize or engage
-                with the value of everyday commuting.
+                As a result, neither system helped riders clearly recognize or
+                engage with the value of everyday commuting.
               </p>
               <p className="ts-body font-semibold">our Insight:</p>
               <p className="ts-body">
                 Through research, I identified a gap between{" "}
-                <strong className="font-semibold">hidden fare incentives</strong> and an{" "}
-                <strong className="font-semibold">unclear reward system.</strong> This
-                insight led our team to reframe{" "}
+                <strong className="font-semibold">
+                  hidden fare incentives
+                </strong>{" "}
+                and an{" "}
+                <strong className="font-semibold">
+                  unclear reward system.
+                </strong>{" "}
+                This insight led our team to reframe{" "}
                 <strong className="font-semibold">
                   Metro Points as a single, visible mechanism
                 </strong>{" "}
-                that <strong className="font-semibold">surfaces existing value </strong>
+                that{" "}
+                <strong className="font-semibold">
+                  surfaces existing value{" "}
+                </strong>
                 and{" "}
                 <strong className="font-semibold">
                   gives rewards a clearer, more meaningful role.
@@ -1136,28 +1273,38 @@ export default function TaipeiMetroPage() {
               <p className="ts-body font-semibold">What I changed:</p>
               <ul className="flex w-full list-disc flex-col gap-2 pl-5">
                 <li className="ts-body">
-                  Redefined Metro Points as the primary, visible reward mechanism
-                  <br />→ Converted distance-based fare discounts into visible Metro
-                  Points, making everyday savings clear and recognizable.
+                  Redefined Metro Points as the primary, visible reward
+                  mechanism
+                  <br />→ Converted distance-based fare discounts into visible
+                  Metro Points, making everyday savings clear and recognizable.
                 </li>
                 <li className="ts-body">
                   Unified all earning logic into one system
                   <br />→{" "}
-                  <strong className="font-semibold">Travel distance and campaigns</strong>{" "}
-                  now contribute to a single point balance, creating a clearer link
-                  between riding the metro and earning rewards.
+                  <strong className="font-semibold">
+                    Travel distance and campaigns
+                  </strong>{" "}
+                  now contribute to a single point balance, creating a clearer
+                  link between riding the metro and earning rewards.
                 </li>
               </ul>
             </div>
             <Reveal className="w-full">
-              <Image
+              <Zoomable
                 src="/case/y2WHxFY8x6y1DfdzC3rFDqsTI.png"
                 alt="Metro Points redefined around travel distance"
                 width={2800}
                 height={1200}
-                sizes="1120px"
-                className="h-auto w-full rounded-[20px]"
-              />
+              >
+                <Image
+                  src="/case/y2WHxFY8x6y1DfdzC3rFDqsTI.png"
+                  alt="Metro Points redefined around travel distance"
+                  width={2800}
+                  height={1200}
+                  sizes="1120px"
+                  className="h-auto w-full rounded-[20px]"
+                />
+              </Zoomable>
             </Reveal>
           </div>
         </div>
@@ -1165,16 +1312,20 @@ export default function TaipeiMetroPage() {
         <div className="flex w-full flex-col gap-[55px]">
           <div className="flex w-full flex-col gap-9">
             <div className="flex w-full flex-col gap-2.5">
-              <h4 className="ts-heading-5">3. Make Rewards Relevant and Actionable</h4>
+              <h4 className="ts-heading-6">
+                3. Make Rewards Relevant and Actionable
+              </h4>
               <p className="ts-body font-semibold">
-                Impact: Users can immediately see what they can earn and redeem, and
-                decide whether to engage without extra effort.
+                Impact: Users can immediately see what they can earn and redeem,
+                and decide whether to engage without extra effort.
               </p>
               <p className="ts-body">
-                I redesigned the reward experience to answer one clear question upfront:
+                I redesigned the reward experience to answer one clear question
+                upfront:
               </p>
               <p className="ts-body">
-                &quot;How do I earn points—and what can I use them for right now?&quot;{" "}
+                &quot;How do I earn points—and what can I use them for right
+                now?&quot;{" "}
               </p>
               <p className="ts-body font-semibold">What I changed:</p>
               <BulletList
@@ -1186,14 +1337,21 @@ export default function TaipeiMetroPage() {
               />
             </div>
             <Reveal className="w-full">
-              <Image
+              <Zoomable
                 src="/case/T52XV12BcXFyv9VUac5hG6uEE9g.png"
                 alt="The redesigned rewards experience"
                 width={2800}
                 height={1200}
-                sizes="1120px"
-                className="h-auto w-full rounded-[20px]"
-              />
+              >
+                <Image
+                  src="/case/T52XV12BcXFyv9VUac5hG6uEE9g.png"
+                  alt="The redesigned rewards experience"
+                  width={2800}
+                  height={1200}
+                  sizes="1120px"
+                  className="h-auto w-full rounded-[20px]"
+                />
+              </Zoomable>
             </Reveal>
           </div>
 
@@ -1203,7 +1361,8 @@ export default function TaipeiMetroPage() {
               page and Framer does not repeat it here. */}
           <div className="flex w-full flex-col gap-5">
             <h4 className="ts-heading-4 italic">
-              To support this, we introduced Little Jie, a smart reward assistant
+              To support this, we introduced Little Jie, a smart reward
+              assistant
             </h4>
             <div className="flex w-full flex-col gap-2.5">
               <p className="ts-body font-semibold">What Little Jie Does:</p>
@@ -1216,20 +1375,27 @@ export default function TaipeiMetroPage() {
               />
             </div>
             <h5 className="ts-heading-6 pt-4">
-              “There’s a 20% discount at the bakery near Exit 2 — redeem it with 30
-              points!”
+              “There’s a 20% discount at the bakery near Exit 2 — redeem it with
+              30 points!”
             </h5>
             {/* The artwork is a transparent PNG and sits straight on the page:
                 no panel behind it. */}
             <Reveal className="w-full pt-2">
-              <Image
+              <Zoomable
                 src="/case/uG6UgyeylPUQYscl6pJUW8XM.png"
                 alt="Little Jie surfacing a nearby reward beside the point rewards tab"
                 width={2800}
                 height={1600}
-                sizes="(width < 810px) 92vw, 950px"
-                className="h-auto w-full"
-              />
+              >
+                <Image
+                  src="/case/uG6UgyeylPUQYscl6pJUW8XM.png"
+                  alt="Little Jie surfacing a nearby reward beside the point rewards tab"
+                  width={2800}
+                  height={1600}
+                  sizes="(width < 810px) 92vw, 950px"
+                  className="h-auto w-full"
+                />
+              </Zoomable>
             </Reveal>
           </div>
         </div>
@@ -1244,8 +1410,8 @@ export default function TaipeiMetroPage() {
               Balancing user impact, engineering cost, and business dependency
             </h3>
             <p className="ts-body">
-              Since this project addressed a real-world financial challenge, time and
-              feasibility were critical.
+              Since this project addressed a real-world financial challenge,
+              time and feasibility were critical.
             </p>
             <p className="ts-body">
               I prioritized initiatives based on impact, cost, and stakeholder
@@ -1255,16 +1421,17 @@ export default function TaipeiMetroPage() {
         </div>
 
         <div className="flex w-full flex-col gap-12 pt-[60px]">
-          {/* The axis reads as a line between two labels on wider screens and
-              stacks below tablet, where the two labels cannot sit side by side. */}
-          <div className="flex w-full flex-col items-start gap-2 tablet:flex-row tablet:items-center tablet:gap-5">
-            <span className="ts-body shrink-0 font-semibold">Less Eng cost</span>
-            {/* A dashed run ending in an arrowhead, as Framer draws it. The
-                dashes are a repeating gradient so their length and spacing are
-                set rather than left to the browser's dashed border. */}
+          {/* From 810 the axis reads across, above the three initiatives: a
+              dashed run ending in an arrowhead, as Framer draws it. The dashes
+              are a repeating gradient so their length and spacing are set
+              rather than left to the browser's dashed border. */}
+          <div className="hidden w-full items-center gap-5 tablet:flex">
+            <span className="ts-body shrink-0 font-semibold">
+              Less Eng cost
+            </span>
             <span
               aria-hidden
-              className="hidden flex-1 items-center text-deep-blue tablet:flex"
+              className="flex flex-1 items-center text-deep-blue"
             >
               <span
                 className="h-[3px] flex-1"
@@ -1289,22 +1456,66 @@ export default function TaipeiMetroPage() {
               Business dependency
             </span>
           </div>
-          <div className="grid w-full gap-10 tablet:grid-cols-3">
-            {PRIORITIES.map((p, i) => (
-              <div key={p.title} className="flex flex-col gap-2.5">
-                <p className="ts-body flex gap-2 font-semibold">
-                  <span className="shrink-0">{i + 1}.</span>
-                  <span>{p.title}</span>
-                </p>
-                <ul className="flex list-disc flex-col gap-1 pl-5">
-                  {p.items.map((item) => (
-                    <li key={item} className="ts-body-small-light">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+
+          {/* Below 810 the two labels cannot sit either side of it, so the axis
+              turns upright and runs down the side of the initiatives, from the
+              first to the third, with a label at each end. */}
+          <div className="flex w-full flex-col gap-3 tablet:block">
+            <span className="ts-body font-semibold tablet:hidden">
+              Less Eng cost
+            </span>
+
+            <div className="flex w-full gap-4 tablet:block">
+              <span
+                aria-hidden
+                className="flex shrink-0 flex-col items-center text-deep-blue tablet:hidden"
+              >
+                <span
+                  className="w-[3px] flex-1"
+                  style={{
+                    backgroundImage:
+                      "repeating-linear-gradient(to bottom, currentColor 0 14px, transparent 14px 24px)",
+                  }}
+                />
+                <svg width="18" height="15" viewBox="0 0 18 15" fill="none">
+                  <path
+                    d="m2 3 7 8 7-8"
+                    stroke="currentColor"
+                    strokeWidth="2.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+
+              {/* Upright, the list starts level with the axis and each title
+                  sits straight on its bullets. A little air above the first one
+                  and under each title gives them room; across, Framer's own
+                  spacing stands. */}
+              <div className="grid w-full min-w-0 gap-10 pt-2 tablet:grid-cols-3 tablet:pt-0">
+                {PRIORITIES.map((p, i) => (
+                  <div key={p.title} className="flex flex-col gap-4 tablet:gap-2.5">
+                    <p className="ts-body flex gap-2 font-semibold">
+                      <span className="shrink-0">{i + 1}.</span>
+                      <span>{p.title}</span>
+                    </p>
+                    <ul className="flex list-disc flex-col gap-1 pl-5">
+                      {p.items.map((item) => (
+                        <li key={item} className="ts-body-small-light">
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            <span className="ts-body font-semibold tablet:hidden">
+              More Eng cost/
+              <br />
+              Business dependency
+            </span>
           </div>
         </div>
       </section>
@@ -1314,8 +1525,8 @@ export default function TaipeiMetroPage() {
         <div className="flex w-full flex-col gap-2.5">
           <h2 className="ts-heading-3">Impact</h2>
           <p className="ts-body">
-            A sustainable, win–win–win ecosystem where better rider experiences drive
-            engagement, partner value, and long-term growth.
+            A sustainable, win–win–win ecosystem where better rider experiences
+            drive engagement, partner value, and long-term growth.
           </p>
         </div>
         {/* Framer flanks the closing line with sparkles and colours its second
@@ -1326,7 +1537,8 @@ export default function TaipeiMetroPage() {
           </span>
           <div className="flex flex-col gap-1">
             <h3 className="ts-heading-6">
-              By removing friction, restructuring the IA, and reframing the mechanism,
+              By removing friction, restructuring the IA, and reframing the
+              mechanism,
             </h3>
             <h3 className="ts-heading-6">
               <span className="text-deep-blue">Metro Points</span>{" "}
@@ -1350,24 +1562,29 @@ export default function TaipeiMetroPage() {
         <div className="flex w-full flex-col gap-2.5">
           <h2 className="ts-heading-3">My Learning</h2>
           <div className="flex w-full flex-col items-start gap-10 tablet:flex-row">
-            <div className="flex flex-1 flex-col gap-[89px]">
+            {/* Framer's 89px between the two learnings is measured for the
+                desktop column; stacked on a phone it reads as a hole. */}
+            <div className="flex flex-1 flex-col gap-10 tablet:gap-[89px]">
               <div className="flex w-full flex-col gap-2.5 pt-5">
                 <h3 className="ts-heading-6">
                   Design must align with existing behavior
                 </h3>
                 <p className="ts-body">
-                  Commuting was already part of riders’ daily routines. By integrating
-                  rewards into that natural behavior instead of requiring extra effort,
-                  engagement became more intuitive and sustainable.
+                  Commuting was already part of riders’ daily routines. By
+                  integrating rewards into that natural behavior instead of
+                  requiring extra effort, engagement became more intuitive and
+                  sustainable.
                 </p>
               </div>
               <div className="flex w-full flex-col gap-2.5">
                 <h3 className="ts-heading-6">
-                  Design decisions must account for business goals and feasibility
+                  Design decisions must account for business goals and
+                  feasibility
                 </h3>
                 <p className="ts-body">
-                  Strong user-centered ideas only create impact when they align with
-                  organizational priorities and can realistically be implemented
+                  Strong user-centered ideas only create impact when they align
+                  with organizational priorities and can realistically be
+                  implemented
                 </p>
               </div>
             </div>
@@ -1376,7 +1593,9 @@ export default function TaipeiMetroPage() {
               alt=""
               width={187}
               height={294}
-              className="h-[294px] w-[187px] shrink-0 object-contain"
+              /* Stacked, she keeps the right-hand side she has when the two sit
+                 side by side, rather than dropping to the left margin. */
+              className="h-[294px] w-[187px] shrink-0 self-end object-contain tablet:self-auto"
             />
           </div>
         </div>
