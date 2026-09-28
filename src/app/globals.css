@@ -408,3 +408,13 @@ body {
   color: var(--color-dark-charcoal);
   font-family: var(--font-dm-sans);
 }
+
+/*
+ * A section jumped to from the table of contents, or from "Skip to redesign
+ * details", has to clear the page's own floating nav rather than sliding under
+ * it. The smooth-scroll library offsets its own jumps, but the browser handles
+ * a plain `#id` landing, and this is what it reads.
+ */
+[id] {
+  scroll-margin-top: 110px;
+}

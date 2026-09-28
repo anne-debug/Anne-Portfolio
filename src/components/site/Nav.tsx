@@ -6,9 +6,11 @@ import {
   AnimatePresence,
   motion,
   useMotionValueEvent,
+  useReducedMotion,
   useScroll,
 } from "motion/react";
-import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 import { NavLink } from "./NavLink";
 import { SecondaryButton } from "./SecondaryButton";
@@ -18,6 +20,20 @@ const LINKS = [
   { href: "/about", label: "About" },
   { href: "/my-projects", label: "Projects" },
 ];
+
+/**
+ * On a case study the pill gets out of the way while the reader is reading and
+ * comes back when they ask for it.
+ *
+ * What it watches is intent, not direction: a deliberate flick, up or down,
+ * brings it in; the drift of reading does not. Velocity is measured over a
+ * short window rather than per event, so a trackpad's many tiny deltas cannot
+ * add up to a reveal, and once shown it stays for a moment before sliding out
+ * so it never flickers.
+ */
+const REVEAL_VELOCITY = 1.1; /* px per ms, about a flick */
+const VELOCITY_WINDOW = 120; /* ms */
+const HIDE_DELAY = 1600; /* ms of calm before it leaves again */
 
 /** Framer's "spring-physics 500 60 1 0s". */
 const NAV_SPRING = {
@@ -54,15 +70,69 @@ export function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { scrollY } = useScroll();
 
+  // Case studies are long reads; the rest of the site is not, so the pill only
+  // hides itself there.
+  const onCaseStudy = (usePathname() ?? "").startsWith("/projects/");
+  const [shown, setShown] = useState(true);
+  const samples = useRef<{ t: number; y: number }[]>([]);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reduceMotion = useReducedMotion();
+  /** Everywhere but a case study the pill simply stays. */
+  const visible = !onCaseStudy || shown;
+  /** Transform only, so nothing around it moves when it comes and goes. */
+  const slide = {
+    y: visible ? 0 : -120,
+    opacity: visible ? 1 : 0,
+  };
+  const slideTransition = reduceMotion
+    ? { duration: 0 }
+    : ({ duration: 0.26, ease: [0.22, 1, 0.36, 1] } as const);
+
   useMotionValueEvent(scrollY, "change", (current) => {
     const previous = scrollY.getPrevious() ?? 0;
     if (current < 80) {
       setOpen(true);
+    } else if (current > previous + 2) {
+      setOpen(false);
+    } else if (current < previous - 2) {
+      setOpen(true);
+    }
+
+    if (!onCaseStudy) return;
+
+    // Near the top it is simply there, the way it is everywhere else.
+    if (current < 80) {
+      setShown(true);
       return;
     }
-    if (current > previous + 2) setOpen(false);
-    else if (current < previous - 2) setOpen(true);
+
+    const now = performance.now();
+    const trail = samples.current;
+    trail.push({ t: now, y: current });
+    while (trail.length > 1 && now - trail[0].t > VELOCITY_WINDOW) trail.shift();
+
+    const first = trail[0];
+    const elapsed = now - first.t;
+    const speed = elapsed > 0 ? Math.abs(current - first.y) / elapsed : 0;
+
+    // `setShown` with the same value is a no-op in React, so this does not
+    // re-render on every frame of a scroll.
+    if (speed >= REVEAL_VELOCITY) {
+      setShown(true);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+      hideTimer.current = setTimeout(() => setShown(false), HIDE_DELAY);
+    }
   });
+
+  // On a case study it slides away once the reader settles, and the timer is
+  // the only thing that sets the state here, so nothing re-renders on mount.
+  useEffect(() => {
+    if (!onCaseStudy) return;
+    hideTimer.current = setTimeout(() => setShown(false), HIDE_DELAY);
+    return () => {
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    };
+  }, [onCaseStudy]);
 
   // Close the phone menu on Escape, and whenever the viewport grows past tablet.
   useEffect(() => {
@@ -85,13 +155,14 @@ export function Nav() {
       <motion.nav
         aria-label="Main"
         className="fixed top-5 left-1/2 z-10 hidden items-center overflow-hidden rounded-[28px] border border-nav-border bg-nav-bg py-2 desktop:flex"
-        style={{ x: "-50%", backdropFilter: "blur(5px)" }}
         animate={{
           gap: open ? 40 : 0,
           paddingLeft: 10,
           paddingRight: open ? 10 : 20,
+          ...slide,
         }}
-        transition={NAV_SPRING}
+        transition={{ ...NAV_SPRING, y: slideTransition, opacity: slideTransition }}
+        style={{ x: "-50%", backdropFilter: "blur(5px)", pointerEvents: visible ? "auto" : "none" }}
       >
         <div className="flex items-center gap-2.5">
           <Image
@@ -130,9 +201,13 @@ export function Nav() {
       </motion.nav>
 
       {/* ---- Phone pill ---------------------------------------------- */}
-      <nav
+      <motion.nav
         aria-label="Main"
-        className="fixed top-5 left-1/2 z-10 flex w-[calc(100vw-32px)] max-w-[360px] -translate-x-1/2 flex-col desktop:hidden"
+        className="fixed top-5 left-1/2 z-10 flex w-[calc(100vw-32px)] max-w-[360px] flex-col desktop:hidden"
+        initial={false}
+        animate={slide}
+        transition={slideTransition}
+        style={{ x: "-50%", pointerEvents: visible ? "auto" : "none" }}
       >
         <div
           className="flex items-center gap-2.5 rounded-[28px] border border-nav-border bg-nav-bg py-2 pr-2 pl-2.5"
@@ -196,7 +271,7 @@ export function Nav() {
             </motion.div>
           ) : null}
         </AnimatePresence>
-      </nav>
+      </motion.nav>
     </>
   );
 }

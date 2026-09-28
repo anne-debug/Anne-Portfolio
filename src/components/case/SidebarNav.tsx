@@ -1,8 +1,14 @@
 "use client";
 
-import Link from "next/link";
-import { motion } from "motion/react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
+import { createPortal } from "react-dom";
 
 /**
  * Framer component "FloatingSidebarMenu": the table of contents for the longer
@@ -14,12 +20,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
  * column is sticky inside the row, so it follows the reader down the case study
  * and stops where the row ends, above the More Projects strip.
  *
- * Below 1200 the list opens by pushing rather than covering. It is a column in
- * the flow beside the article, narrow enough for just the button while closed
- * and the full list while open, so opening it moves the article right and
- * closing it lets the article back. The article is never covered, never dimmed
- * and never locked: the reader can keep scrolling and clicking the case study
- * with the list open, which is how Framer behaves.
+ * Below 1200 there is no gutter for it, so it floats: a small button pinned to
+ * the left of the screen, and a panel that opens under it sharing the same left
+ * anchor, so the two read as one control. Both are laid over the page, which
+ * means opening the list leaves the article exactly where it is: no reflow, no
+ * shift, no change to the column's width. The page is never dimmed or locked;
+ * the reader can keep scrolling with the list open, and a tap on the button, on
+ * the page, or on an entry puts it away.
  *
  * The entry for the section on screen is highlighted in orange.
  */
@@ -27,19 +34,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 export interface SidebarEntry {
   id: string;
   label: string;
-  /** Framer nests a second level under some entries. */
-  children?: string[];
 }
-
-/**
- * Width of the open column below 1200. Framer's own rail is 150px wide, and
- * measuring its tablet render against the site's nav pill puts the push at
- * about that same 150px, so the one value carries across the breakpoints. The
- * phone has no room for 150, so it tapers to 120 and holds there.
- */
-const OPEN_W = "clamp(120px, 14vw + 65px, 150px)";
-/** Closed, the column is just wide enough for the button and its gap. */
-const SHUT_W = "44px";
 
 /** Framer's own feel for this: short, and eased out. */
 const SLIDE = { duration: 0.24, ease: [0.22, 1, 0.36, 1] } as const;
@@ -49,15 +44,13 @@ const ANCHOR_OFFSET = 110;
 /** A little past the transition, so the last reflow is caught too. */
 const SETTLE_MS = 340;
 
-export function SidebarNav({
-  entries,
-  projectsHref = "/my-projects",
-}: {
-  entries: SidebarEntry[];
-  /** Where "All Projects" goes. A real link, so an external arrival still lands
-   *  inside the portfolio rather than wherever the browser came from. */
-  projectsHref?: string;
-}) {
+export function SidebarNav({ entries }: { entries: SidebarEntry[] }) {
+  /** The portal needs a document, so it waits for hydration. */
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
   const [active, setActive] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const article = useRef<HTMLElement | null>(null);
@@ -183,31 +176,14 @@ export function SidebarNav({
     window.history.pushState(null, "", `#${id}`);
   }, []);
 
-  const allProjects = (
-    <Link
-      href={projectsHref}
-      className="ts-body-small flex items-center gap-2 whitespace-nowrap text-dark-charcoal transition-colors hover:text-orange"
-    >
-      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
-        <path
-          d="M13 8H3m0 0 4.5-4.5M3 8l4.5 4.5"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-      All Projects
-    </Link>
-  );
-
-  const sectionLink = (entry: SidebarEntry) => (
+  const sectionLink = (entry: SidebarEntry, floating = false) => (
     <a
       href={`#${entry.id}`}
       onClick={(e) => {
         e.preventDefault();
-        // Framer leaves the list open on a pick, so the reader can keep using
-        // it to move around the page.
+        // The desktop rail stays open, as Framer leaves it. The floating panel
+        // closes, so the reader gets the page back.
+        if (floating) toggle(false);
         goToSection(entry.id);
       }}
       aria-current={active === entry.id ? "true" : undefined}
@@ -221,10 +197,10 @@ export function SidebarNav({
     </a>
   );
 
-  const list = (
+  const list = (floating = false) => (
     <ul className="flex flex-col gap-2.5">
       {entries.map((entry) => (
-        <li key={entry.id}>{sectionLink(entry)}</li>
+        <li key={entry.id}>{sectionLink(entry, floating)}</li>
       ))}
     </ul>
   );
@@ -240,81 +216,66 @@ export function SidebarNav({
           position is measured from, and the list inside is free to be wider. */}
       <div className="hidden w-[119px] shrink-0 desktop:sticky desktop:top-[150px] desktop:block">
         <nav aria-label="Sections" className="w-[150px]">
-          {allProjects}
-          <div className="mt-4">{list}</div>
+          {list()}
         </nav>
       </div>
 
-      {/* Below 1200: a column in the flow. Widening it is what moves the
-          article across; nothing is laid over the page. */}
-      <motion.div
-        animate={{ width: open ? OPEN_W : SHUT_W }}
-        initial={false}
-        transition={SLIDE}
-        style={{ width: SHUT_W }}
-        className="sticky top-24 z-20 shrink-0 self-start overflow-hidden desktop:hidden"
-      >
-        {/* Both states are laid over each other and cross-faded, so the
-            column's contents never reflow while it is moving. The list is the
-            one in the flow, because it is the taller of the two and the column
-            has to be tall enough not to clip it. */}
-        <div className="relative">
-          <motion.button
-            type="button"
-            onClick={() => toggle(true)}
-            animate={{ opacity: open ? 0 : 1 }}
-            initial={false}
-            transition={SLIDE}
-            aria-expanded={open}
-            aria-controls="case-sections"
-            aria-label="Open section menu"
-            tabIndex={open ? -1 : 0}
-            className="absolute top-0 left-0 flex size-9 items-center justify-center text-orange"
-            style={{ pointerEvents: open ? "none" : "auto" }}
-          >
-            <svg width="22" height="22" viewBox="0 0 20 20" fill="none" aria-hidden>
-              <path
-                d="M3 5.5h14M3 10h14M3 14.5h14"
-                stroke="currentColor"
-                strokeWidth="1.9"
-                strokeLinecap="round"
-              />
-            </svg>
-          </motion.button>
+      {/* Below 1200 the rail floats over the page instead of holding a
+          column in it: the button and the panel share one left anchor, so the
+          two read as a single control pinned to the side of the screen, and
+          opening it neither widens the article nor moves it. Portalled to the
+          body, because the article sits in a stacking context of its own and
+          the site's own nav pill is outside it. */}
+      {mounted
+        ? createPortal(
+            <div className="desktop:hidden">
+              <button
+                type="button"
+                onClick={() => toggle(!open)}
+                aria-expanded={open}
+                aria-controls="case-sections"
+                aria-label={open ? "Close section menu" : "Open section menu"}
+                className="fixed top-[88px] left-4 z-[60] flex size-10 items-center justify-center rounded-full border border-orange/60 bg-chestnut-bg text-orange shadow-[0_2px_10px_rgba(0,0,0,0.06)] tablet:left-6"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                  <path
+                    d="M4 6h12M4 10h12M4 14h12"
+                    stroke="currentColor"
+                    strokeWidth="1.9"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
 
-          <motion.nav
-            id="case-sections"
-            aria-label="Sections"
-            aria-hidden={!open}
-            animate={{ x: open ? 0 : "-100%", opacity: open ? 1 : 0 }}
-            initial={false}
-            transition={SLIDE}
-            style={{ width: OPEN_W, pointerEvents: open ? "auto" : "none" }}
-            className="relative"
-          >
-            <div className="mb-3">{allProjects}</div>
-            {list}
-            {/* Framer puts the close on the first entry's line, at the far
-                edge of the column, rather than over the article. */}
-            <button
-              type="button"
-              onClick={() => toggle(false)}
-              aria-label="Close section menu"
-              tabIndex={open ? 0 : -1}
-              className="absolute top-[34px] right-0 flex size-7 items-center justify-center text-orange"
-            >
-              <svg width="17" height="17" viewBox="0 0 18 18" fill="none" aria-hidden>
-                <path
-                  d="m4 4 10 10M14 4 4 14"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
-          </motion.nav>
-        </div>
-      </motion.div>
+              <AnimatePresence>
+                {open ? (
+                  <>
+                    {/* A tap anywhere else puts it away. It carries no tint of
+                        its own: the panel is the only thing that should read as
+                        laid over the page. */}
+                    <div
+                      className="fixed inset-0 z-[55]"
+                      onClick={() => toggle(false)}
+                      aria-hidden
+                    />
+                    <motion.nav
+                      id="case-sections"
+                      aria-label="Sections"
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={SLIDE}
+                      className="fixed top-[136px] left-4 z-[58] w-[190px] rounded-2xl border border-grey-100 bg-white px-4 py-3 shadow-[0_10px_30px_rgba(0,0,0,0.10)] tablet:left-6 tablet:w-[210px]"
+                    >
+                      {list(true)}
+                    </motion.nav>
+                  </>
+                ) : null}
+              </AnimatePresence>
+            </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 }

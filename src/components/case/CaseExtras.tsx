@@ -278,7 +278,9 @@ export function SkipButton({
         href={href}
         className="flex items-center gap-3.5 rounded-full bg-orange px-10 py-2 text-off-white transition hover:brightness-105"
       >
-        <span className="ts-heading-4 text-off-white">{label}</span>
+        {/* One step below the section titles it sits under: a label, not a
+            heading. */}
+        <span className="ts-heading-6 text-off-white">{label}</span>
       </Link>
     </div>
   );

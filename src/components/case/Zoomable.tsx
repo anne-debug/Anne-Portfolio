@@ -71,6 +71,24 @@ export function Zoomable({
 
   const close = useCallback(() => setOpen(false), []);
 
+  /**
+   * Opening a diagram wider than the screen used to leave it against its left
+   * edge, which reads as stuck. It starts centred instead, so the pan runs both
+   * ways from where the eye lands.
+   */
+  const panRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return;
+    const centre = () => {
+      node.scrollLeft = (node.scrollWidth - node.clientWidth) / 2;
+      node.scrollTop = (node.scrollHeight - node.clientHeight) / 2;
+    };
+    centre();
+    // Again once the picture has laid out, since its width decides the range.
+    const img = node.querySelector("img");
+    if (img && !img.complete) img.addEventListener("load", centre, { once: true });
+    else requestAnimationFrame(centre);
+  }, []);
+
   return (
     <>
       <button
@@ -116,21 +134,35 @@ export function Zoomable({
 
                   {/* Two modes, because one set of `auto` sizes cannot serve
                       both. From 810 the diagram is fitted to the window. Below
-                      that, fitting a 2800x1200 diagram onto a phone gains
-                      almost nothing over the column it came from, so it runs at
-                      full height and pans sideways, which is what makes the
-                      annotations readable. */}
+                      that, fitting a 2800px diagram onto a phone gains nothing
+                      over the column it came from, so it runs at full height
+                      and is panned, which is the point of opening it. */}
                   <div
-                    className="h-full w-full overflow-auto tablet:hidden"
+                    ref={panRef}
+                    className="h-full w-full touch-pan-x touch-pan-y overflow-auto overscroll-contain tablet:hidden"
                     onClick={(e) => e.stopPropagation()}
                   >
+                    {/* Full height, but never past the file's own pixels. A
+                        flow diagram 2800 wide and 320 tall would otherwise be
+                        blown to seven thousand pixels to reach the height of a
+                        phone, which is two and a half times its own resolution
+                        and reads softer than the copy in the column. Capped, a
+                        short wide picture opens at its natural size and a tall
+                        one still fills the screen. */}
                     <Image
                       src={src}
                       alt={alt}
                       width={width}
                       height={height}
-                      sizes="100vw"
-                      className="mx-auto h-full w-auto max-w-none"
+                      /* The drawn width here is the picture's own, not the
+                         window's. Asking for `100vw` had the browser keep the
+                         390px-wide variant it had already fetched for the
+                         column and stretch that across 2800px, so opening a
+                         diagram produced a blurrier picture than the one it
+                         came from. */
+                      sizes={`${width}px`}
+                      className="h-full w-auto max-w-none"
+                      style={{ maxWidth: width, maxHeight: height }}
                     />
                   </div>
 

@@ -1,40 +1,40 @@
 {
   "taipei-metro-app": {
-    "src": "/project-previews/taipei-metro-app.3a9f6d4a.webp",
-    "width": 1804,
-    "height": 1282,
+    "src": "/project-previews/taipei-metro-app.0960765a.webp",
+    "width": 2000,
+    "height": 1428,
     "capturedAt": {
-      "windowWidth": 930,
+      "windowWidth": 960,
       "scale": 2
     },
     "screen": {
       "src": "/project-previews/taipei-metro-app-screen.9fd259d4.webp",
-      "left": 0.6316,
-      "top": 0.18207,
-      "width": 0.23008,
-      "height": 0.70346,
-      "clipTop": 0.05976,
-      "radius": 0.2143,
+      "left": 0.61572,
+      "top": 0.16238,
+      "width": 0.24013,
+      "height": 0.73175,
+      "clipTop": 0.05978,
+      "radius": 0.21428,
       "fit": "cover",
       "position": "50% 50%"
     }
   },
   "budgetcart": {
-    "src": "/project-previews/budgetcart.3d353739.webp",
-    "width": 1644,
-    "height": 1172,
+    "src": "/project-previews/budgetcart.d979014e.webp",
+    "width": 1880,
+    "height": 1338,
     "capturedAt": {
-      "windowWidth": 850,
+      "windowWidth": 900,
       "scale": 2
     },
     "screen": {
       "src": "/project-previews/budgetcart-screen.f173aa49.webp",
-      "left": 0.68315,
-      "top": 0.16174,
-      "width": 0.16456,
-      "height": 0.5022,
-      "clipTop": 0.05968,
-      "radius": 0.21426,
+      "left": 0.60853,
+      "top": 0.18044,
+      "width": 0.22109,
+      "height": 0.67581,
+      "clipTop": 0.05974,
+      "radius": 0.21427,
       "fit": "cover",
       "position": "50% 50%"
     }

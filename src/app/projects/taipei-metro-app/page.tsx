@@ -11,6 +11,7 @@ import {
   StarPointList,
 } from "@/components/case/CaseExtras";
 import { CaseShell } from "@/components/case/CaseShell";
+import { ProblemStatement } from "@/components/case/ProblemStatement";
 import type { MoreProjectCard } from "@/components/case/MoreProjects";
 import { PhoneMockup } from "@/components/case/PhoneMockup";
 import { Zoomable } from "@/components/case/Zoomable";
@@ -39,12 +40,20 @@ const MORE: MoreProjectCard[] = [
   },
 ];
 
+/**
+ * This page's own sections; see CASE_STUDY_NAV_RULES.md.
+ *
+ * Project Context stays: this hero carries a heading of that name, which
+ * BudgetCart's does not. The research entry points at the first section of that
+ * phase, "User Recruitment & Survey Strategy"; Pain points, Target User, Reward
+ * System Comparison and Design Strategy follow it and are not listed
+ * separately. Framer's rail lists the six flat, with no sub-entries.
+ */
 const SECTIONS: SidebarEntry[] = [
   { id: "project-context", label: "Project Context" },
   { id: "problem", label: "Problem" },
   { id: "my-role", label: "My Role" },
   { id: "solution-overview", label: "Solution Overview" },
-  // Framer's rail lists the six sections flat, with no sub-entries.
   { id: "user-research", label: "User Research" },
   { id: "design-breakdown", label: "Design Breakdown" },
 ];
@@ -196,14 +205,21 @@ const ITERATIONS = [
         <p className="ts-body">
           “How might Metro Points become part of riders’ everyday experience?”
         </p>
-        <Image
+        <Zoomable
           src="/case/fzF5n4Ff6g9fa90YW4Q4fBSm3Co.png"
           alt="The existing mileage-based fare rebate"
           width={1800}
           height={1200}
-          sizes="900px"
-          className="mt-2 h-auto w-full rounded-[20px]"
-        />
+        >
+          <Image
+            src="/case/fzF5n4Ff6g9fa90YW4Q4fBSm3Co.png"
+            alt="The existing mileage-based fare rebate"
+            width={1800}
+            height={1200}
+            sizes="900px"
+            className="mt-2 h-auto w-full rounded-[20px]"
+          />
+        </Zoomable>
       </>
     ),
   },
@@ -238,14 +254,21 @@ const ITERATIONS = [
             rewards as part of the commute
           </strong>
         </p>
-        <Image
+        <Zoomable
           src="/case/oUBlOSx88XZWYIKfSJrzZbV0E.png"
           alt="Metro Points reframed around daily commuting"
           width={1800}
           height={1200}
-          sizes="900px"
-          className="mt-2 h-auto w-full rounded-[20px]"
-        />
+        >
+          <Image
+            src="/case/oUBlOSx88XZWYIKfSJrzZbV0E.png"
+            alt="Metro Points reframed around daily commuting"
+            width={1800}
+            height={1200}
+            sizes="900px"
+            className="mt-2 h-auto w-full rounded-[20px]"
+          />
+        </Zoomable>
       </>
     ),
   },
@@ -292,14 +315,21 @@ const ITERATIONS = [
           effortless participation through calculated value and timely
           recommendations.
         </p>
-        <Image
+        <Zoomable
           src="/case/Yq6Pbh5kfTFnt4CgDN7K8JhcYLI.png"
           alt="Explorations of how proximity and value were communicated"
           width={1800}
           height={1200}
-          sizes="900px"
-          className="mt-2 h-auto w-[93%] rounded-[20px]"
-        />
+        >
+          <Image
+            src="/case/Yq6Pbh5kfTFnt4CgDN7K8JhcYLI.png"
+            alt="Explorations of how proximity and value were communicated"
+            width={1800}
+            height={1200}
+            sizes="900px"
+            className="mt-2 h-auto w-[93%] rounded-[20px]"
+          />
+        </Zoomable>
       </>
     ),
   },
@@ -563,8 +593,19 @@ export default function TaipeiMetroPage() {
             </p>
           </div>
 
-          <div className="flex w-full flex-col items-start gap-10 tablet:flex-row">
-            <div className="flex flex-1 flex-col gap-[90px] pt-[50px]">
+          {/* Stacked, each screen follows the block it belongs to; across, the
+              two blocks hold the left column and the screens stand together in
+              the right, which is Framer's arrangement. One grid does both, so
+              the screens are written once. */}
+          <div className="grid w-full grid-cols-1 items-start gap-6 tablet:grid-cols-[2fr_1fr_1fr] tablet:gap-x-5 tablet:pt-[50px]">
+            {/* The two blocks are one group from 810, centred against the
+                screens beside them. Framer's 90px between them was measured to
+                fill the height of those screens, which read as two unrelated
+                blocks pinned to the top and the bottom; they sit 40px apart now
+                and the group finds the middle. `contents` leaves the phone
+                layout alone: below 810 both blocks are still grid items in
+                their own right, interleaved with the screens. */}
+            <div className="contents tablet:col-start-1 tablet:row-start-1 tablet:flex tablet:flex-col tablet:gap-10 tablet:self-center">
               <div className="flex w-full flex-col gap-2.5">
                 <h3 className="ts-heading-6 flex items-center gap-2.5">
                   {/* Framer sets a subway glyph beside this heading */}
@@ -610,24 +651,38 @@ export default function TaipeiMetroPage() {
                 />
               </div>
             </div>
-            <div className="flex flex-1 gap-5">
+
+            <Zoomable
+              src="/case/REE0JaUnJICsEfqE2M8qDkaS63U.png"
+              alt="The Go! Map screen in the Taipei Metro Go app"
+              width={600}
+              height={1200}
+            >
               <Image
                 src="/case/REE0JaUnJICsEfqE2M8qDkaS63U.png"
                 alt="The Go! Map screen in the Taipei Metro Go app"
                 width={600}
                 height={1200}
-                sizes="280px"
-                className="h-auto w-1/2"
+                sizes="(width < 810px) 72vw, 280px"
+                className="mx-auto h-auto w-[72%] tablet:w-full"
               />
+            </Zoomable>
+
+            <Zoomable
+              src="/case/OC6dBjwB3jILlhROATsLkmgxJp8.png"
+              alt="The Metro Points screen in the Taipei Metro Go app"
+              width={600}
+              height={1200}
+            >
               <Image
                 src="/case/OC6dBjwB3jILlhROATsLkmgxJp8.png"
                 alt="The Metro Points screen in the Taipei Metro Go app"
                 width={600}
                 height={1200}
-                sizes="280px"
-                className="h-auto w-1/2"
+                sizes="(width < 810px) 72vw, 280px"
+                className="mx-auto h-auto w-[72%] tablet:w-full"
               />
-            </div>
+            </Zoomable>
           </div>
 
           {/* Framer runs this line across the full column with the figure set
@@ -724,14 +779,21 @@ export default function TaipeiMetroPage() {
             />
           </div>
           <Reveal className="w-full">
-            <Image
+            <Zoomable
               src="/case/rVYcn7al7gIYMqYcqgmTpTnNKHw.png"
               alt="Overview of the Metro Points redesign"
               width={2400}
               height={1400}
-              sizes="1120px"
-              className="h-auto w-full"
-            />
+            >
+              <Image
+                src="/case/rVYcn7al7gIYMqYcqgmTpTnNKHw.png"
+                alt="Overview of the Metro Points redesign"
+                width={2400}
+                height={1400}
+                sizes="1120px"
+                className="h-auto w-full"
+              />
+            </Zoomable>
           </Reveal>
         </div>
       </section>
@@ -784,14 +846,21 @@ export default function TaipeiMetroPage() {
                 </p>
               </div>
               <Reveal className="w-full">
-                <Image
+                <Zoomable
                   src="/case/CedlfXpFrJY8EXvd7JkVSFFIUo.png"
                   alt="The existing Metro Points earning flow"
                   width={2400}
                   height={1400}
-                  sizes="1120px"
-                  className="h-auto w-full rounded-[20px]"
-                />
+                >
+                  <Image
+                    src="/case/CedlfXpFrJY8EXvd7JkVSFFIUo.png"
+                    alt="The existing Metro Points earning flow"
+                    width={2400}
+                    height={1400}
+                    sizes="1120px"
+                    className="h-auto w-full rounded-[20px]"
+                  />
+                </Zoomable>
               </Reveal>
             </div>
           </div>
@@ -801,33 +870,11 @@ export default function TaipeiMetroPage() {
           <p className="ts-body">
             The problem statement that guided this project was:
           </p>
-          {/* Flanked by sparkles, the way the closing line of Impact is: one
-              star to the left of the question, a pair to the right. The card
-              holds Framer's 229px once there is room and grows to its content
-              below, where the question runs to five or six lines. */}
-          <div
-            className="flex w-full items-center justify-center gap-4 rounded-[20px] px-6 py-10 tablet:h-[229px] tablet:gap-6 tablet:px-10 tablet:py-0"
-            style={{
-              background:
-                "linear-gradient(117deg, rgba(240,253,244,1) 0%, rgba(238,245,254,1) 50%, rgba(255,255,255,1) 100%)",
-            }}
-          >
-            <span aria-hidden className="shrink-0 self-start text-dark-charcoal">
-              <StarGlyph size={20} />
-            </span>
-            <p className="ts-heading-6 max-w-[900px] text-center">
-              How might we make Metro Points immediately understandable and
-              actionable, so riders can decide whether to engage without
-              searching, guessing, or extra effort?
-            </p>
-            <span
-              aria-hidden
-              className="flex shrink-0 flex-col items-start gap-1 self-end text-dark-charcoal"
-            >
-              <StarGlyph size={18} />
-              <StarGlyph size={12} />
-            </span>
-          </div>
+          <ProblemStatement stars>
+            How might we make Metro Points immediately understandable and
+            actionable, so riders can decide whether to engage without
+            searching, guessing, or extra effort?
+          </ProblemStatement>
         </div>
       </section>
 
@@ -860,12 +907,18 @@ export default function TaipeiMetroPage() {
           <h3 className="ts-heading-6">
             Making Metro Points Visible, Clear and Actionable
           </h3>
-          <div className="flex w-full flex-col gap-5 tablet:flex-row">
+          {/* The four points are one group and the two demos with their
+              captions are another; from 810 the two groups are centred on each
+              other rather than both hung from the top, so neither the type nor
+              the screens read as starting high. */}
+          <div className="flex w-full flex-col gap-5 tablet:flex-row tablet:items-center">
             <div className="flex flex-1 flex-col gap-[29px] py-5">
               <StarPointList points={SOLUTION_POINTS} bold />
             </div>
-            <div className="flex flex-1 gap-2.5">
-              <figure className="flex flex-1 flex-col gap-2.5">
+            {/* One demo per row on a phone, each taking most of the column, so
+                the screens are worth looking at; side by side from 810. */}
+            <div className="flex flex-1 flex-col items-center gap-8 tablet:flex-row tablet:items-stretch tablet:gap-2.5">
+              <figure className="flex w-[72%] flex-col gap-2.5 tablet:w-auto tablet:flex-1">
                 <PhoneMockup
                   screen="/case/PE7XGk4EfULbKROvmWyDDbbBaPw.gif"
                   alt="Earning Metro Points"
@@ -876,7 +929,7 @@ export default function TaipeiMetroPage() {
                   Point Earning
                 </figcaption>
               </figure>
-              <figure className="flex flex-1 flex-col gap-2.5">
+              <figure className="flex w-[72%] flex-col gap-2.5 tablet:w-auto tablet:flex-1">
                 <PhoneMockup
                   screen="/case/vJgCBvr84OylJWunPSJYgGUhUk.gif"
                   alt="Redeeming Metro Points"
@@ -906,14 +959,21 @@ export default function TaipeiMetroPage() {
             ]}
           />
           <Reveal className="w-full">
-            <Image
+            <Zoomable
               src="/case/wDPo1NTuWfkIl1pEa8YhSFa3ehQ.png"
               alt="The three user groups defined for recruitment"
               width={2400}
               height={1200}
-              sizes="1120px"
-              className="h-auto w-full"
-            />
+            >
+              <Image
+                src="/case/wDPo1NTuWfkIl1pEa8YhSFa3ehQ.png"
+                alt="The three user groups defined for recruitment"
+                width={2400}
+                height={1200}
+                sizes="1120px"
+                className="h-auto w-full"
+              />
+            </Zoomable>
           </Reveal>
         </div>
 
@@ -972,7 +1032,7 @@ export default function TaipeiMetroPage() {
                 width={160}
                 height={175}
                 sizes="160px"
-                className="mt-6 ml-auto h-[175px] w-[160px] object-contain tablet:absolute tablet:right-[6%] tablet:-bottom-2 tablet:mt-0 tablet:ml-0"
+                className="mt-6 ml-auto h-[131px] w-[120px] object-contain tablet:absolute tablet:right-[6%] tablet:-bottom-2 tablet:mt-0 tablet:ml-0 tablet:h-[175px] tablet:w-[160px]"
               />
             </div>
           </div>
@@ -1026,14 +1086,21 @@ export default function TaipeiMetroPage() {
               </li>
             </ol>
             <Reveal className="w-full tablet:w-[52%]">
-              <Image
+              <Zoomable
                 src="/case/pNyfX9DrGQ19Zt7RnUUADVb24.png"
                 alt="The two rider segments, with high-frequency point users nested inside the low-to-mid engagement group"
                 width={2800}
                 height={1852}
-                sizes="(width < 810px) 92vw, 500px"
-                className="h-auto w-full"
-              />
+              >
+                <Image
+                  src="/case/pNyfX9DrGQ19Zt7RnUUADVb24.png"
+                  alt="The two rider segments, with high-frequency point users nested inside the low-to-mid engagement group"
+                  width={2800}
+                  height={1852}
+                  sizes="(width < 810px) 92vw, 500px"
+                  className="h-auto w-full"
+                />
+              </Zoomable>
             </Reveal>
           </div>
         </div>
@@ -1045,14 +1112,21 @@ export default function TaipeiMetroPage() {
           </h3>
           <div className="flex w-full flex-col items-start gap-8 pt-2 tablet:flex-row">
             <Reveal className="w-full tablet:w-[46%]">
-              <Image
+              <Zoomable
                 src="/case/D5kodJ1CD0Cjg7IhFE0pqpadrRI.png"
                 alt="A matrix plotting each reward system by daily presence against ease of redemption"
                 width={2400}
                 height={1400}
-                sizes="(width < 810px) 92vw, 440px"
-                className="h-auto w-full"
-              />
+              >
+                <Image
+                  src="/case/D5kodJ1CD0Cjg7IhFE0pqpadrRI.png"
+                  alt="A matrix plotting each reward system by daily presence against ease of redemption"
+                  width={2400}
+                  height={1400}
+                  sizes="(width < 810px) 92vw, 440px"
+                  className="h-auto w-full"
+                />
+              </Zoomable>
             </Reveal>
             <div className="flex flex-1 flex-col gap-[45px]">
               <p className="ts-body">
@@ -1494,7 +1568,10 @@ export default function TaipeiMetroPage() {
                   spacing stands. */}
               <div className="grid w-full min-w-0 gap-10 pt-2 tablet:grid-cols-3 tablet:pt-0">
                 {PRIORITIES.map((p, i) => (
-                  <div key={p.title} className="flex flex-col gap-4 tablet:gap-2.5">
+                  <div
+                    key={p.title}
+                    className="flex flex-col gap-4 tablet:gap-2.5"
+                  >
                     <p className="ts-body flex gap-2 font-semibold">
                       <span className="shrink-0">{i + 1}.</span>
                       <span>{p.title}</span>
@@ -1547,9 +1624,13 @@ export default function TaipeiMetroPage() {
               </span>
             </h3>
           </div>
+          {/* The pair on the right was drawn only from 810 up, which left the
+              line with a star at one end and nothing at the other on a phone.
+              It shows at every width now, sitting at the foot of the text
+              below tablet where the line wraps. */}
           <span
             aria-hidden
-            className="mt-[-6px] hidden shrink-0 flex-col items-start gap-1 text-dark-charcoal tablet:flex"
+            className="mt-[-6px] flex shrink-0 flex-col items-start gap-1 self-end text-dark-charcoal tablet:self-auto"
           >
             <StarGlyph size={18} />
             <StarGlyph size={12} />
@@ -1595,7 +1676,7 @@ export default function TaipeiMetroPage() {
               height={294}
               /* Stacked, she keeps the right-hand side she has when the two sit
                  side by side, rather than dropping to the left margin. */
-              className="h-[294px] w-[187px] shrink-0 self-end object-contain tablet:self-auto"
+              className="h-[220px] w-[140px] shrink-0 self-end object-contain tablet:h-[294px] tablet:w-[187px] tablet:self-auto"
             />
           </div>
         </div>

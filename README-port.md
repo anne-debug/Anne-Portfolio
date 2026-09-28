@@ -1239,3 +1239,416 @@ onto a phone gains almost nothing over the column it came from, so it runs at
 full height and pans sideways: 282px in the column becomes 2064px. Escape or a
 click closes it, and the page is held still behind it the same way the
 case-study drawer holds it.
+
+## Taipei Metro responsive pass
+
+Ten pieces of work, taken at 390 but written so every one of them ramps rather
+than switching at a phone width.
+
+### The visuals were small for the width they had
+
+The demo screens and the Solution Overview recordings ran at the width a
+three-column desktop grid gave them, carried down unchanged. At 390 the article
+column is 342px and the screens were 141px, so half the width was margin. Metro
+Navigation and Metro Point are now one grid that is a single column below 810
+and `2fr 1fr 1fr` above it, with each screen placed directly after the text it
+illustrates rather than both dropping to the bottom. The screens take 72% of the
+column below 810 (246px) and their own track above it. The two Solution Overview
+figures do the same: a column below 810, a row above, each recording at 72%
+(224px). Nothing is cropped or stretched anywhere — every one of them is width
+led with `h-auto`.
+
+The gap between the two demo blocks was 90px at every width, which is a screen
+of scrolling on a phone; that figure is now the tablet-and-up row gap, and below
+810 the two blocks sit in the normal 24px column rhythm.
+
+The brain and the My Learning girl went the other way: both were drawn at their
+desktop size on a 342px column and crowded the text beside them. They are
+120x131 and 140x220 below 810, against 160x175 and 187x294 above, at their own
+aspect ratios and still right-aligned.
+
+### Enlarging an image on a phone
+
+Eleven images on the page open full screen now rather than four: every diagram,
+flow and screen that carries detail. The wide ones are 2800px, and the point of
+opening one on a phone is to read it, so it is not fitted to the viewport — it
+runs at full height and pans in both directions. What it used to do was start
+against its left edge, which reads as stuck, so the pan container now centres
+itself on open, and again once the picture has laid out, since its width is what
+decides the range. `touch-pan-x touch-pan-y` keeps the gesture native and
+`overscroll-contain` stops the page behind it taking over. Escape, the close
+button and a tap outside the picture all dismiss it.
+
+### The skip link
+
+"Skip to redesign details" landed with the Design Breakdown title under the top
+navigation. Rather than pad the target, every element with an `id` now carries
+`scroll-margin-top: 110px`, one rule in `globals.css`, which fixes the sidebar's
+links and the in-page skip link together and applies to the other case studies
+for free.
+
+### The sidebar becomes a floating control
+
+Below 1200 the section list no longer occupies a column. It is a portalled
+hamburger at a fixed `top-[88px] left-4` (`left-6` from 810), with a light
+orange outline on the page background, and the panel opens directly under it
+against the same left anchor, over the page, on white with a hairline border and
+a shadow. Nothing in the article moves when it opens: the column measures 342px
+at 390 and 730px at 810 whether it is open or shut, and the article's own box
+does not shift by a pixel. The hamburger stays visible and toggles, so there is
+no separate close control; a tap outside, through a transparent full-page
+catcher, or on any link closes it too. Active-section highlighting is the same
+code the desktop rail uses. "All Projects" is dropped here — it is a site-level
+link and the top navigation already carries it. From 1200 the sticky rail is
+unchanged.
+
+### The top navigation reads intent, not direction
+
+The "Open to opportunities" pill on the case studies is hidden while you read
+and appears when you move deliberately, in either direction — not the usual
+down-hides / up-shows. `useScroll` feeds a trailing 120ms sample window, and a
+velocity over 1.1px/ms in either direction shows the pill and restarts a 1.6s
+timer that hides it again. Slow scrolling never crosses the threshold, so there
+is no flicker at the boundary, and small movements are ignored outright. It
+animates on `translateY` with `opacity`, so it never takes part in layout, and
+`useReducedMotion` turns the movement into a fade. React state is touched only
+when the pill actually changes, not per scroll event. Both the desktop and phone
+pills share it, and it lives in `Nav` rather than in any page.
+
+### Checked
+
+375, 390, 430, 768, 810, 1024 and 1440 on the home page, My Projects, Taipei and
+BudgetCart: no horizontal overflow at any of them, no page errors, and no
+visible image whose rendered box is off its natural aspect ratio by more than
+2%. The floating navigation was measured open and shut at seven widths for
+column width and article position. `npm run previews` was re-run afterwards,
+because the captures are taken at 960 and 810, below the breakpoint whose layout
+changed.
+
+## BudgetCart responsive pass
+
+The same treatment the Taipei page had, applied to BudgetCart, with the Taipei
+page as the reference wherever the two draw the same thing.
+
+### One demo per row
+
+Solution Overview carried two handsets side by side at every width, 141px each
+on a phone. It is now the Taipei block to the class: a column below 810 with
+each recording at 72% of it and its caption underneath, a row from 810.
+
+### The brain
+
+It sat in a column beside the three quotes, at its desktop size, on a 342px
+screen. From 810 that is still Framer's layout; below it the illustration drops
+under the quotes and to the right at 120x131, which is the size and the
+alignment the Taipei page gives the same file. `order` moves it rather than a
+second copy of the markup.
+
+### Four competitors of equal weight
+
+Framer drew the four logos at four different widths, between 138 and 165, and
+left the name and the description ranged left under a logo that was not centred
+on them. They now share one square, 76px on a phone ramping to 120, with the
+logo, the name and the description centred on one axis.
+
+Equal measured size is not equal perceived size: Flashfood and Walmart are solid
+tiles that reach their own edges, Instacart's carrot covers 61% of the width of
+its file and BudgetCart's trolley nearly all of it. Each logo carries a `scale`,
+the share of the square it may fill — 0.76 for the two tiles, 1 for Instacart,
+0.82 for the trolley — which lands all four marks within a few pixels of each
+other. Corner radii became percentages so they hold as the square shrinks.
+
+### Body Large at tablet
+
+Framer's Body Large is 20px on its Desktop frame and 32px on its tablet one, and
+everything in the design breakdown inherits it: the captions over the flow
+diagrams, the journey, and the numbered step headings. At 32px the step headings
+outweighed the section titles above them and "Build Cart -> Compare Price ->
+Commit" ran to three rows.
+
+Three ramps replace it, each keeping Framer's desktop size exactly and coming
+down below 1200 rather than stepping up: 16-20 for the diagram captions, 18-20
+for the step headings, and 14-20 with a 10-28 gap for the journey, which now
+holds one row from 375 up. Nothing above 1200 moved.
+
+### The walkthroughs
+
+Both are one component now, on a grid, because the three parts are arranged
+differently in each range and nesting them in boxes would have meant writing the
+markup twice.
+
+- Phone: one column in reading order — title, journey, demo, then the steps, so
+  the recording arrives before the description of it. It used to come first,
+  above its own title.
+- Tablet: the title and journey take their own full-width row and the demo and
+  the steps share the row beneath. The demo takes 38% of it, 277px at 810 and
+  340 at 1024 against Framer's fixed 240.
+- Desktop: Framer's layout, untouched. A 240px handset beside a column holding
+  the title, the journey and the steps, on the side Framer puts it on; the two
+  walkthroughs alternate, and `side` is the only thing that differs between
+  them.
+
+The demo is capped at 340 below 1200. 72% of a 768px screen is a 518px handset
+over a thousand pixels tall, and 38% of a 1199px window is 426 against 240 on
+desktop, so the step across the breakpoint would have been larger than the
+handset.
+
+The 86px between a walkthrough title and its content is Framer's, measured
+against a two-column desktop row. On a phone it is a blank screen, so it holds
+from 1200 and is 32px below that.
+
+### Reading the pictures
+
+Six images open full screen: the two research artifacts, both flow diagrams, the
+SNAP journey and the design iterations. The diagrams are the reason — they are
+2800px wide and under 9:1, so in the column they come to 39px tall on a phone.
+
+Two faults in the lightbox came out of this, and both are fixed in the shared
+component, so the Taipei page gets them too.
+
+It asked for `100vw`, so the browser kept the 390px-wide variant it had already
+fetched for the column and stretched it over 2800px: opening a diagram gave a
+blurrier picture than the one it came from. It asks for the picture's own width
+now.
+
+And `h-full` on a 2800x320 diagram drew it seven thousand pixels wide to reach
+the height of a phone, two and a half times its own resolution. It is capped at
+the file's own pixels, so a short wide picture opens at its natural size and a
+tall one still fills the screen.
+
+Framer's 60/30 inset on the SNAP and iteration pictures took 120px of a 342px
+column, a third of the width. It holds from 1200, halves through the tablet
+range and comes off below it.
+
+### Next Steps, More Projects
+
+Next Steps is a numbered list rather than two headed paragraphs. The wording is
+unchanged.
+
+More Projects was the Chonburi rule strip while Taipei closes with the compact
+one. BudgetCart passes `moreVariant="compact"` now, so both pages run the same
+component with the same measurements: heading, section width, card size, media
+treatment, title ramp, badge and gaps measure identically at 390, 810, 1024 and
+1440. The cards are Taipei Metro and Ryze Coffee, in that order.
+
+### Checked
+
+375, 390, 430, 600, 768, 809, 810, 1024, 1199, 1200, 1280 and 1440, across all
+nine pages: nothing crosses either viewport edge once each box is intersected
+with every ancestor that clips it, no page errors, and no visible picture off
+its natural aspect ratio. On BudgetCart specifically: the journey holds one row
+at every width from 375, the handset measures 240 on desktop exactly as before,
+each competitor's logo, name and description share one centre to within a pixel,
+and every lightbox opens at the file's own resolution, starts centred and closes
+on Escape.
+
+### BudgetCart at tablet
+
+One measurement explains every complaint about this range. Below 1200 the
+section rail stops taking a column, so the article is *wider* on a tablet than
+on desktop — 1119px at 1199 against 951. Anything sized as a share of it came
+out larger on the smaller screen, which is the opposite of scaling down.
+
+The hero is held at 951 and centred from 810, so the two columns keep Framer's
+ratio. The artwork's 225px overhang into the text column, which is how Framer
+pins the shopper, now runs from 810 as well: it was desktop-only, so the whole
+group was 56% of the article on a tablet against 73.7% on desktop, and read as a
+small object in the corner. The meta grid follows Framer's single column from
+810 too — 2x2 runs the full width of the text column and put the trolley through
+"Product designer" — and stays 2x2 on a phone. The column stretches to the
+artwork's height with the project information at its foot, so the two sides
+finish level, the way the Taipei hero does; only the information moves, and the
+title and description stay clear of the shopper.
+
+Both handset sizes are now capped at what they measure on desktop, since a
+tablet is narrower and nothing in it should come out bigger: 228px for the two
+Solution Overview demos, which were reaching 270, and 240px for the walkthrough
+demo, which was reaching 426. The walkthrough demo also stopped filling its
+column — it takes about two thirds of a 38% column and is centred in the rest,
+which is the quarter of the article it occupies on desktop, and the row reads as
+two balanced columns again. Both ramp with the window below the cap: 173 to 228
+and 189 to 240 across 810 to 1199.
+
+The 228 cap also covers the 700-809 band, where a 72% column was drawing a 518px
+handset on a 768px screen.
+
+Measured at 810, 900, 1024, 1100 and 1199 against 1200 and 1440: the hero
+composition is 73.7% of the article up to 1024 and its desktop size above that,
+the two columns finish level at every width, and no demo exceeds its desktop
+size. 1200 and 1440 are unchanged to the pixel.
+
+Two follow-ups. The Solution Overview pair goes side by side from 700 rather
+than Framer's 810: a 768px iPad is the commonest tablet there is and it fell
+below that breakpoint, so the two demos stacked on exactly the device the row is
+meant for. Below 700 they still stack, one per row, as they do on a phone.
+
+And the hero's two columns now finish level from 810 all the way up rather than
+only below 1200. Framer leaves the artwork hanging 65px below the project
+information on its own Desktop frame; both columns stretch to the taller of the
+two now, the text dropping its information to the foot of a short column and the
+artwork sitting at the foot of its own when the text is the longer one, which it
+is below about 950px. Measured at every width from 810 to 1440, the information
+finishes within 9px of the artwork.
+
+The two design-breakdown demos carried a 340px ceiling below 810 while the
+tablet range held them to 240. Between 600 and 809 that drew a 340x704 handset,
+a third to a half of the article and a screen and a half tall. Framer's 240 is
+the ceiling at every width under 1200 now, so neither demo is ever larger than
+it is on desktop.
+
+From 810 the Solution Overview's two columns are centred on each other rather
+than stretched, so the four points sit level with the middle of the handsets
+instead of starting at their top edge. The 29px between the points is untouched:
+the group moves, not its spacing.
+
+The brain moved to the right of the quotes from 810, which is the same side it
+takes on a phone, so the `order` is now set once rather than swapped at the
+breakpoint.
+
+Both design-breakdown walkthroughs centre their steps on the handset from 810
+up. On desktop the handset used to span the title row as well as the steps row
+and centre over both, which left the description about 90px below the middle of
+the recording it describes; it shares the steps' row now, as it does on a
+tablet, and the two are centred on each other. The title and journey still sit
+where Framer puts them, at the top of the text column.
+
+### The budget awareness tabs
+
+Framer's "Tab Component" is rebuilt from its own render for tablet and desktop.
+The three tabs sit over a rounded card in the page's warm grey, and the open tab
+is the pale one: it carries the card's colour up into the switcher while the two
+waiting tabs are the filled ones. The four steps are numbered straight through
+the three tabs, so "During Shopping" carries 2 and 3.
+
+A tab with one step is a handset against a note; a tab with two puts a handset
+at each edge and both notes down the middle, each pointing back at its own
+screen. The pointer is a green dot on the part of the screen the note describes
+with a line running out to it.
+
+Nothing is measured at runtime. Each step carries three numbers — how wide its
+handset is drawn as a share of the card, the artwork's own height over its
+width, and how far down the handset the marker sits — and the note is placed at
+the depth those three give, so the line always arrives at its first line of
+type. The card is a container and every width and type size inside it is a share
+of that container, so the composition scales with the column rather than
+stepping at a breakpoint.
+
+Two things keep it steady. The row inside is as tall as the tallest handset in
+any tab, not just the open one, so the card holds one height and the page does
+not jump under the cross-fade. And the card is capped at the 951px the article
+comes to on desktop, with its padding in container units rather than
+percentages: a percentage would be read against the article outside the card,
+which is wider than the card once that cap bites, and the composition would have
+come out a different shape either side of 1200. It measures 0.78 of its own
+width at every width from 810 to 1440, against Framer's 0.81.
+
+Mobile is untouched: the switcher stays hidden and the three panels stay stacked
+as 350px cards. Only the numbering changed there, from 1/1,2/1 to 1/2,3/4.
+
+The open tab is the filled one, against two pale ones. Framer's own render has
+that the other way round, with the open tab carrying the card's colour up into
+the switcher; the filled one reads more clearly as the selection. Sizes,
+spacing and the order of the row are the same either way — only the two colours
+swap.
+
+The markers are drawn in the row rather than inside the handset, because both
+ends of one belong to something else: the dot sits on the handset's outer edge
+and the line stops 5px short of the note's own box. Drawn over the screen, which
+is what they did first, the dot landed on whatever was under it — a price, a
+label, the "See More" control — and the line crossed the interface on its way
+out. On the edge it covers only the bezel. Measured at 810, 900, 1024, 1100,
+1199, 1200 and 1440, across all three tabs: every dot is 14px over an 8px core,
+every line is 2px, every gap to the note is 5px, and no dot reaches into a
+screen at all. The lengths differ, 22px to 179px, because the notes sit at fixed
+places and the handsets are not the same width, which is true of Framer's render
+too. The middle column came down from 32% to 27% to make room for them: at 32%
+the right-hand marker was 12px long on a desktop and 7px at 810.
+
+Two refinements followed from measuring Framer's own render rather than eyeing
+it. The note is centred on its marker, not hung from it: on both single tabs the
+dot falls within a pixel of the note block's vertical centre, and hanging the
+block from its title instead left the whole group sitting low against the
+handset. And the dot's centre sits 3px inside the handset's outer edge rather
+than against it, so about 10px of it laps onto the bezel and it reads as
+attached to the screen instead of floating beside it. The lap is the frame only
+— no dot touches anything drawn inside a screen.
+
+Measured across all three tabs at 810, 900, 1024, 1100, 1199, 1200 and 1440:
+every dot 14px, every line 2px, every lap 10px, every gap to the note 5px, every
+note centred on its marker to the pixel, and the two notes on the double tab 36
+to 62px apart.
+
+On the double tab the two notes became one group, centred on the row rather than
+each hung off its own marker, so the middle column sits level with the handsets
+either side of it. Their own spacing is unchanged at 54px.
+
+That pulls each note away from the marker that points at it, so the marker is an
+elbow rather than a straight run: it leaves the dot, steps across to the note's
+height half way over, and comes in level with it. Where the two ends are already
+level, which is every tab with one handset, the upright is zero high and what is
+drawn is the straight line it was before.
+
+Where a note lands has to be measured, since it depends on how far its own text
+wraps, and that changes with the width. The panel writes it onto the row as a
+custom property for the markers to read, rather than holding it in state, so a
+resize moves the markers without anything re-rendering. Until it is written the
+marker falls back to its dot's own height.
+
+Measured at 810, 900, 1024, 1100, 1199, 1200 and 1440: the group's centre is on
+the handsets' centre to the pixel at every one, the two notes stay 54px apart,
+and both lines still stop 5px short of their text.
+
+### Side navigation
+
+`CASE_STUDY_NAV_RULES.md` holds the rules for these: one shared component, a
+per-project list of sections, the research phase collapsed into a single entry
+pointing at the first of its sections, and no entry for a section a page does
+not have.
+
+BudgetCart lost its Project Context entry. Its hero is the title, the subtitle
+and the project meta, with no heading of that name — Taipei's hero does carry
+one, which is why that page keeps the entry. The `#project-context` id stays on
+BudgetCart's hero for deep links; an id does not earn a place in the rail.
+
+`SidebarEntry.children` is gone. It was declared for Framer's second level,
+never rendered, and BudgetCart was still passing four research subsections
+through it — exactly the list the rules say must not become navigation.
+
+Ryze, Jubo and Little Chestnut Thief render no rail at all and were left alone
+rather than given an invented one.
+
+### The How-might-we card
+
+`ProblemStatement` is one component for every project now, replacing a copy on
+Taipei and another on BudgetCart. The card is sized by what is in it — statement
+plus padding, nothing else. Framer draws it at a fixed 229px, which is right for
+a three-line statement and wrong for any other: BudgetCart held that height at
+every width and Taipei held it from 810 up. The padding is Framer's 229 less the
+three lines it was drawn around, 40 on a phone, 54 from 810 and 66 from 1200, so
+a three-line statement still comes out at 226 and the others follow their own
+text. At 1100 Taipei's card is 166 tall and BudgetCart's 196, from the same
+component.
+
+The stars belong to the statement, not to the card. The fixed height was what
+pushed them apart: the row was 229px tall whatever the text did, so `self-start`
+and `self-end` sent them to the card's corners. With the card sized to its
+content the row is the paragraph's own height, and they sit 16 to 24px off the
+block of type, moving with it when it rewraps.
+
+### Two groups that were being spread
+
+Taipei's Project Context set 90px between Metro Navigation and Metro Point,
+measured to fill the height of the screens beside them, which left the two
+reading as unrelated blocks pinned to the top and the bottom of the image. They
+are one group now, 40px apart, centred against the screens. `contents` below 810
+keeps the phone layout exactly as it was: each block is still a grid item in its
+own right, interleaved with the screen it belongs to.
+
+Taipei's Solution Overview centres its four points against the two demos and
+their captions, which is what BudgetCart's already did. Both are measured as
+whole groups — the captions are part of the visual, not something the alignment
+ignores.
+
+Measured at 390, 768, 810, 900, 1024, 1100, 1199, 1200, 1280 and 1440: no card
+carries a pixel of slack beyond content and padding, no star overlaps its text,
+and from 810 up both groups sit on their visual's centre exactly.

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Fragment } from "react";
 
 import { Paragraphs } from "@/components/case/CaseParts";
 import {
@@ -8,10 +9,12 @@ import {
   StarPointList,
 } from "@/components/case/CaseExtras";
 import { CaseShell } from "@/components/case/CaseShell";
+import { ProblemStatement } from "@/components/case/ProblemStatement";
 import type { MoreProjectCard } from "@/components/case/MoreProjects";
 import { PhoneMockup } from "@/components/case/PhoneMockup";
 import { SidebarNav, type SidebarEntry } from "@/components/case/SidebarNav";
 import { Tabs, type TabPanel } from "@/components/case/Tabs";
+import { Zoomable } from "@/components/case/Zoomable";
 
 export const metadata: Metadata = {
   title: "BudgetCart — Anne Lin",
@@ -21,18 +24,18 @@ export const metadata: Metadata = {
 
 const MORE: MoreProjectCard[] = [
   {
-    href: "/projects/jubo-healthcare",
-    category: "Web Development",
-    title: "Jubo Healthcare Platform",
-    description:
-      "Built frontend modules for a senior care dashboard, reducing cognitive load and improving data visibility through close collaboration with designers and nurses.",
-  },
-  {
     href: "/projects/taipei-metro-app",
     category: "UI/UX Design",
     title: "Taipei Metro Point Redesign",
     description:
       "Reimagining Metro Points to make rewards visible, understandable, and part of everyday commuting.",
+  },
+  {
+    href: "/projects/ryze-coffee",
+    category: "UI/UX Design",
+    title: "Ryze Coffee Redesign",
+    description:
+      "Redesigning with user trust and autonomy for long-term retention",
   },
 ];
 
@@ -41,21 +44,22 @@ const MORE: MoreProjectCard[] = [
  * is a copy-paste slip in the source file. The anchors are corrected here so
  * the rail scrolls this page; see README-port.md.
  */
+/**
+ * This page's own sections; see CASE_STUDY_NAV_RULES.md.
+ *
+ * No Project Context entry: unlike Taipei, this hero is the title, the subtitle
+ * and the project meta, with no section of that name. Its `#project-context` id
+ * stays on the hero for deep links, which does not earn it a place here.
+ *
+ * The whole research phase is one entry pointing at the first of its sections,
+ * "Key Research Insight". Target User, Competitive Analysis and Design
+ * Opportunity follow it inside the same block and are not listed separately.
+ */
 const SECTIONS: SidebarEntry[] = [
-  { id: "project-context", label: "Project Context" },
   { id: "problem", label: "Problem" },
   { id: "my-role", label: "My Role" },
   { id: "solutions-overview", label: "Solution Overview" },
-  {
-    id: "research-process",
-    label: "User Research",
-    children: [
-      "Survey Strategy",
-      "Research Insight",
-      "Competitive Analysis",
-      "Strategy Evolution",
-    ],
-  },
+  { id: "research-process", label: "User Research" },
   { id: "design-breakdown", label: "Design Breakdown" },
 ];
 
@@ -84,38 +88,70 @@ const SOLUTION_POINTS = [
   },
 ];
 
+/**
+ * The four competitors, each drawn in a box of the same size.
+ *
+ * Framer gave every logo its own width, between 138 and 165, which is what made
+ * one competitor look more important than another. They share one box now, and
+ * what differs is `scale`: how much of that box each mark is allowed to fill, so
+ * that the marks come out the same optical size rather than the same measured
+ * size.
+ *
+ * The two app icons are solid squares that reach their own edges, so they read
+ * heavier than a mark on transparency and are held back to about three quarters
+ * of the box. Instacart's carrot covers 61% of the width of its file and Framer
+ * compensated by drawing it largest of the four; it takes the whole box instead.
+ * BudgetCart's trolley is nearly as wide as its file, so it sits between them.
+ *
+ * `radius` is a share of the box rather than a pixel count, so the icons keep
+ * their corner as the box shrinks. It is Framer's radius over Framer's width.
+ *
+ * The box itself is 76px on a phone, where the four of them stack down the
+ * screen, ramping to Framer's own scale by the width at which the row goes four
+ * across.
+ */
+const LOGO_BOX = "clamp(76px, calc(76px + 44 * (100vw - 390px) / 420), 120px)";
+
 const COMPETITORS = [
   {
     name: "Flashfood",
     image: "/case/JLSjeOpaIz8hucZjlpSsPW5zdU8.png",
     lead: "discounts",
     tail: ", not total decision planning",
-    size: 138,
-    radius: 30,
+    width: 512,
+    height: 512,
+    scale: 0.76,
+    radius: "22%",
   },
   {
     name: "Instacart",
     image: "/case/WATEHN6UH1iE6C7sR1IsSQ1zhI.png",
     lead: "convenience",
     tail: ", not cross-store comparison",
-    size: 165,
-    radius: 61,
+    width: 512,
+    height: 425,
+    scale: 1,
+    radius: "0",
   },
   {
     name: "Walmart",
     image: "/case/h8UQWRJeDYrQzu8lczYQWOwEWM.png",
     lead: "pricing",
     tail: ", not integrated budgeting & eligibility",
-    size: 150,
-    radius: 30,
+    width: 512,
+    height: 512,
+    scale: 0.76,
+    radius: "20%",
   },
   {
     name: "Budgetcart",
     image: "/case/kWbiUi9znPLcP4vY36ZEfzv9130.svg",
     lead: "unified financial decision-making",
     tail: "",
-    size: 150,
-    radius: 0,
+    width: 200,
+    height: 214,
+    scale: 0.82,
+    radius: "0",
   },
 ];
 
@@ -181,9 +217,31 @@ const COMPARISON_POINTS = [
   },
 ];
 
+const NEXT_STEPS = [
+  {
+    title: "Explore an AI-powered shopping assistant",
+    lines: [
+      "Users could upload a grocery list and the system would automatically generate a cart optimized for their budget.",
+      "This assistant could help users quickly identify the most affordable store and maximize SNAP usage without manually comparing prices.",
+    ],
+  },
+  {
+    title: "Conduct deeper testing with SNAP users",
+    lines: [
+      "Due to limited access to SNAP participants, many early design decisions were informed by one interview and secondary research.",
+      "With more time, I would recruit more SNAP users to better understand their real budgeting behaviors and evaluate whether the solution truly reduces decision anxiety during real shopping scenarios.",
+    ],
+  },
+];
+
 /**
  * Framer's "Tab Component" panels. Mobile renders all three stacked with their
- * headings, desktop keeps the switcher; both read from this one list.
+ * headings, tablet and desktop keep the switcher; both read from this one list.
+ *
+ * The four steps are numbered straight through the three tabs, so "During
+ * Shopping" carries 2 and 3. `side` puts a handset against one edge of the card
+ * when a tab holds two of them, and `anchor` is how far down that handset the
+ * green marker sits, so it lands on the part of the screen its note is about.
  */
 const BUDGET_TABS: TabPanel[] = [
   {
@@ -194,7 +252,9 @@ const BUDGET_TABS: TabPanel[] = [
         alt: "The BudgetCart home screen showing the remaining monthly budget",
         step: "Ongoing Budget Overview",
         body: "Users can see their remaining monthly budget directly on the home screen, giving them a clear sense of how much they can afford before they start shopping",
-        width: 265,
+        share: 0.35,
+        ratio: 1.392,
+        anchor: 0.6,
       },
     ],
   },
@@ -202,18 +262,25 @@ const BUDGET_TABS: TabPanel[] = [
     title: "During Shopping",
     steps: [
       {
+        screen: "/case/nwhJqK0cldWae95yyP0po1KsDcg.png",
+        alt: "A replacement alert warning about a higher total",
+        step: "Replacement Alert",
+        body: "If a replacement increases the total cost, users are notified before confirming the change",
+        side: "right",
+        share: 0.26,
+        ratio: 2.052,
+        anchor: 0.48,
+      },
+      {
         screen: "/case/YRfP1yf50cvwDEijBfGpKvkOVY.gif",
         frame: "/case/KeM51xdSgQpZYT8AmhdjfWCtANE.png",
         alt: "A floating cart estimator updating in real time",
         step: "Live Cart estimator",
         body: "As users add items, a floating cart estimator updates in real time, keeping users aware of how much they\u2019ve already added to the cart",
         unoptimized: true,
-      },
-      {
-        screen: "/case/nwhJqK0cldWae95yyP0po1KsDcg.png",
-        alt: "A replacement alert warning about a higher total",
-        step: "Replacement Alert",
-        body: "If a replacement increases the total cost, users are notified before confirming the change",
+        side: "left",
+        share: 0.24,
+        anchor: 0.86,
       },
     ],
   },
@@ -227,11 +294,43 @@ const BUDGET_TABS: TabPanel[] = [
         step: "Budget Tracking Calendar",
         body: "The Budget Calendar helps users review daily spending and access receipts, reinforcing long-term budgeting behavior",
         unoptimized: true,
-        width: 215,
+        share: 0.27,
+        anchor: 0.53,
       },
     ],
   },
 ];
+
+/**
+ * Framer's Body Large is 20px on its Desktop frame and 32px on its tablet one,
+ * which is the size every label in the design breakdown inherits between 810 and
+ * 1199. At 32px a three-word label wraps twice on a tablet and the step
+ * headings outweigh the section titles above them.
+ *
+ * These two ramps keep Framer's desktop sizes exactly and come down below 1200
+ * instead of stepping up. `LABEL` is for the plain captions over the two flow
+ * diagrams; `STEP_TITLE` is a little larger because it has to stay a heading
+ * against 16px body copy.
+ */
+const LABEL = {
+  fontSize: "clamp(16px, calc(16px + 4 * (100vw - 390px) / 810), 20px)",
+};
+const STEP_TITLE = {
+  fontSize: "clamp(18px, calc(18px + 2 * (100vw - 390px) / 810), 20px)",
+};
+
+/**
+ * "Build cart → Compare Price → Commit".
+ *
+ * Framer sets this at Body Large with a 28px gap, which on a phone is three
+ * large rows. It reads as one row wherever the width allows: the type and the
+ * gap both ramp, and at the narrowest phone the whole journey comes to about
+ * 280px of a 327px column. Desktop keeps Framer's 20px and 28px.
+ */
+const JOURNEY = {
+  fontSize: "clamp(14px, calc(14px + 6 * (100vw - 390px) / 810), 20px)",
+  gap: "clamp(10px, calc(10px + 18 * (100vw - 390px) / 810), 28px)",
+};
 
 function NumberedSteps({
   items,
@@ -242,7 +341,7 @@ function NumberedSteps({
     <ol className="flex w-full flex-col gap-[25px]">
       {items.map((item, i) => (
         <li key={item.step} className="flex w-full flex-col gap-2.5">
-          <p className="ts-body-large font-semibold">
+          <p className="ts-body-large font-semibold" style={STEP_TITLE}>
             {i + 1}. {item.step}
           </p>
           {item.lines.map((line) => (
@@ -256,10 +355,133 @@ function NumberedSteps({
   );
 }
 
+/**
+ * A design-breakdown walkthrough: a title, an optional journey, a handset
+ * playing the flow, and the numbered steps that describe it.
+ *
+ * The three parts are arranged differently in each range, so they are placed on
+ * a grid rather than nested in boxes that would have to be written twice.
+ *
+ * - Phone: one column, in reading order. Title, then journey, then the demo,
+ *   then the steps, so the recording arrives before the description of it.
+ * - Tablet: the title and journey run the full width on their own row, and the
+ *   demo and the steps share the row beneath.
+ * - Desktop: the title and journey sit at the top of the text column, on the
+ *   side Framer puts them, and the demo and the steps share the row beneath as
+ *   they do on a tablet. `side` is the only thing that differs between the two
+ *   walkthroughs; they alternate.
+ *
+ * From 810 the demo and the steps are both centred in that shared row, so the
+ * description sits level with the middle of the handset whichever of the two is
+ * taller.
+ */
+function Walkthrough({
+  title,
+  journey,
+  screen,
+  alt,
+  items,
+  side,
+}: {
+  title: string;
+  journey?: string[];
+  screen: string;
+  alt: string;
+  items: { step: string; lines: string[] }[];
+  /** Which side the demo sits on from 1200, as Framer draws it. */
+  side: "left" | "right";
+}) {
+  const demoLeft = side === "left";
+  return (
+    <div
+      className={`grid w-full grid-cols-1 items-start gap-8 pb-[50px] tablet:grid-cols-[38%_1fr] tablet:gap-x-10 tablet:gap-y-9 desktop:gap-x-[60px] desktop:gap-y-[86px] ${
+        demoLeft
+          ? "desktop:grid-cols-[240px_1fr] desktop:pr-[70px] desktop:pl-[100px]"
+          : "desktop:grid-cols-[1fr_240px] desktop:pr-[100px] desktop:pl-[70px]"
+      }`}
+    >
+      <div
+        className={`flex flex-col gap-2.5 tablet:col-span-2 tablet:col-start-1 tablet:row-start-1 desktop:col-span-1 desktop:row-start-1 ${
+          demoLeft ? "desktop:col-start-2" : "desktop:col-start-1"
+        }`}
+      >
+        <h4 className="ts-heading-5">{title}</h4>
+        {journey ? (
+          <div
+            className="flex flex-wrap items-center"
+            style={{ gap: JOURNEY.gap }}
+          >
+            {journey.map((label, i) => (
+              <Fragment key={label}>
+                {i > 0 ? (
+                  <span
+                    aria-hidden
+                    className="text-light-grey"
+                    style={{ fontSize: JOURNEY.fontSize }}
+                  >
+                    →
+                  </span>
+                ) : null}
+                <span
+                  className="ts-body-large whitespace-nowrap"
+                  style={{ fontSize: JOURNEY.fontSize }}
+                >
+                  {label}
+                </span>
+              </Fragment>
+            ))}
+          </div>
+        ) : null}
+      </div>
+
+      <div
+        /*
+          The demo column is 38% of the row, but the handset does not fill it:
+          it takes about two thirds of that column and is centred in the rest,
+          which puts it at roughly a quarter of the article, the share it has on
+          desktop. Filling the column instead drew a 426px handset at 1199
+          against Framer's 240, and the composition stopped reading as two
+          balanced columns.
+
+          240 is that desktop width, and it is the ceiling at every width below
+          1200 as well: a narrower screen should never draw this larger than the
+          layout it is scaled down from. Left at 72% of the column it reached
+          340x704 between 600 and 809, half the width of the article and a
+          screen and a half tall. It ramps to 240 and then holds.
+        */
+        className={`mx-auto w-[72%] max-w-[240px] tablet:row-start-2 tablet:w-[68%] tablet:self-center desktop:w-full desktop:max-w-none ${
+          demoLeft
+            ? "tablet:col-start-1 desktop:col-start-1"
+            : "tablet:col-start-1 desktop:col-start-2"
+        }`}
+      >
+        {/* `fluid` so the handset takes the column it is given; `width` still
+            sets the side buttons, which keeps desktop identical to Framer. */}
+        <PhoneMockup screen={screen} width={240} alt={alt} unoptimized fluid />
+      </div>
+
+      {/* The steps are shorter than the handset beside them, so from 810 they
+          are centred on it rather than hung from the top of the row. The row is
+          as tall as the handset, so centring in the row centres on the
+          handset. */}
+      <div
+        className={`tablet:col-start-2 tablet:row-start-2 tablet:self-center desktop:row-start-2 ${
+          demoLeft ? "desktop:col-start-2" : "desktop:col-start-1"
+        }`}
+      >
+        <NumberedSteps items={items} />
+      </div>
+    </div>
+  );
+}
+
 export default function BudgetCartPage() {
   return (
     <CaseShell
       more={MORE}
+      /* The same strip the Taipei page closes with, rather than the Chonburi
+         rule: one component, one set of card measurements, on both pages. */
+      moreVariant="compact"
       sidebar={<SidebarNav entries={SECTIONS} />}
       bodyWidth={1200}
       canvasWidth={1200}
@@ -275,9 +497,30 @@ export default function BudgetCartPage() {
         /* Framer's Desktop "Hero" is a horizontal stack with no gap: the two
            columns meet, and the image column's own 30px left padding is the
            only space between them. Below 1200 the 30px stays. */
-        className="flex w-full flex-col items-start gap-[30px] tablet:flex-row desktop:gap-0"
+        /*
+          Below 1200 the hero is held at the width it has on desktop, 951px,
+          and centred in the article.
+
+          The artwork overhangs the text column by design — Framer pins the
+          shopper 225px to the left of the image column — and that only works
+          at the proportions Framer drew it at. Below 1200 the section rail
+          stops taking a column, so the article grows to 1119px while the
+          artwork stays 701; the text column took the extra width, wrapped onto
+          fewer lines, ran shorter, and the shopper ended up painted across the
+          description. Holding the row at 951 keeps both columns in Framer's
+          ratio, so the tablet hero is the desktop hero at the same size or
+          smaller, never a different arrangement of it.
+        */
+        className="flex w-full flex-col items-start gap-[30px] tablet:mx-auto tablet:max-w-[951px] tablet:flex-row tablet:items-stretch desktop:max-w-none desktop:gap-0"
       >
-        <div className="flex flex-1 flex-col gap-[144px]">
+        {/* The 144px between the title and the project information is Framer's
+            minimum. From 810 the column stretches to the height of the artwork
+            beside it and the information sits at the foot of it, so the two
+            columns finish level. Framer leaves the artwork hanging 65px below
+            the information on its own Desktop frame; this closes that too.
+            Only the information moves — the title and description stay at the
+            top, clear of the shopper. */}
+        <div className="flex flex-1 flex-col gap-[144px] tablet:justify-between">
           <div className="flex w-full flex-col gap-5">
             <span className="ts-button self-start rounded-[30px] bg-dark-charcoal px-[15px] py-[3px] text-off-white">
               UI / UX Design
@@ -303,13 +546,18 @@ export default function BudgetCartPage() {
           {/* Framer's "Project Meta Grid" is one column on its Desktop frame.
               Below that the four facts read as a 2x2 block, as they do on the
               other case studies. */}
-          {/* Two across, and one column from 1200 where Framer's Desktop frame
-              draws it that way. Four across does not fit: this hero's text
-              column is half the row, so each fact would get 66px at 858 and
-              104px even at 1199, wrapping the values onto three and four
-              lines. The other case studies can manage four because their
-              headers run the full width. */}
-          <dl className="grid w-full grid-cols-2 gap-x-[6px] gap-y-5 desktop:grid-cols-1">
+          {/* Two across on a phone, and Framer's single column from 810.
+              Four across never fits: this hero's text column is half the row,
+              so each fact would get 66px at 858 and 104px even at 1199,
+              wrapping the values onto three and four lines. The other case
+              studies can manage four because their headers run the full width.
+
+              Two across does not work beside the artwork either. The shopper is
+              pinned 225px into the text column, and a 2x2 grid runs the full
+              width of that column, so the trolley was drawn over "Product
+              designer". A single column keeps the facts clear of it and is what
+              Framer draws above 1200 anyway. */}
+          <dl className="grid w-full grid-cols-2 gap-x-[6px] gap-y-5 tablet:grid-cols-1">
             {[
               ["Client", "Course Work Project"],
               ["Role", "Product designer"],
@@ -339,11 +587,29 @@ export default function BudgetCartPage() {
           own width, so the same composition simply arrives smaller and nothing
           leaves the screen.
         */}
-        <div className="relative w-full tablet:w-[56%] desktop:w-1/2">
+        {/*
+          Half the row, as on Framer's Desktop frame, but never wider than the
+          476px it comes to there.
+
+          Below 1200 the section rail stops taking a column, so the article is
+          wider on a tablet than it is on desktop — 1119px at 1199 against 951.
+          Left to fill it, the artwork would come out larger on the smaller
+          screen. The cap keeps the composition at its desktop size and lets the
+          text column take the extra width instead.
+        */}
+        {/* Whichever column is the taller one, the two finish level: the text
+            drops its project information to the foot of a short column, and the
+            artwork sits at the foot of this one when the text is the longer of
+            the two, which it is below about 950px. */}
+        <div className="relative w-full tablet:flex tablet:w-[min(50%,476px)] tablet:flex-col tablet:justify-end desktop:w-1/2">
           {/* 225px of the canvas hangs off the left, which is 47.32% of this
               column's width; a negative margin is what moves it there, since
-              `ml-auto` collapses to zero once a box is wider than its parent. */}
-          <div className="relative aspect-[700.5/628.4] w-full desktop:ml-[-47.32%] desktop:w-[147.32%]">
+              `ml-auto` collapses to zero once a box is wider than its parent.
+              The overhang runs from 810 rather than 1200: without it the whole
+              group was 56% of the article on a tablet against 73.7% on
+              desktop, which is what made it look like a small object in the
+              corner rather than the same composition scaled down. */}
+          <div className="relative aspect-[700.5/628.4] w-full tablet:ml-[-47.32%] tablet:w-[147.32%]">
             {/* "character". Behind the handset: Framer gives it a z-index of 1,
                 but its own render draws the handset in front, and the shopper's
                 arm reading over the screen is wrong. */}
@@ -428,22 +694,40 @@ export default function BudgetCartPage() {
           </div>
           <Reveal className="w-full">
             <div className="flex w-full items-end gap-2.5">
-              <Image
-                src="/case/R4QNcJcHWmiPn8uwiqRdpZP43Q.png"
-                alt="Shoppers comparing prices across apps"
-                width={800}
-                height={600}
-                sizes="400px"
-                className="h-auto w-[34%]"
-              />
-              <Image
-                src="/case/z1sqGS2uRo1HdtIjVlPi9HiTGE.png"
-                alt="A grocery receipt"
-                width={900}
-                height={700}
-                sizes="640px"
-                className="h-auto w-[55%]"
-              />
+              <div className="w-[34%]">
+                <Zoomable
+                  src="/case/R4QNcJcHWmiPn8uwiqRdpZP43Q.png"
+                  alt="Shoppers comparing prices across apps"
+                  width={960}
+                  height={960}
+                >
+                  <Image
+                    src="/case/R4QNcJcHWmiPn8uwiqRdpZP43Q.png"
+                    alt="Shoppers comparing prices across apps"
+                    width={960}
+                    height={960}
+                    sizes="(width < 810px) 32vw, 400px"
+                    className="h-auto w-full"
+                  />
+                </Zoomable>
+              </div>
+              <div className="w-[55%]">
+                <Zoomable
+                  src="/case/z1sqGS2uRo1HdtIjVlPi9HiTGE.png"
+                  alt="A grocery receipt"
+                  width={1942}
+                  height={991}
+                >
+                  <Image
+                    src="/case/z1sqGS2uRo1HdtIjVlPi9HiTGE.png"
+                    alt="A grocery receipt"
+                    width={1942}
+                    height={991}
+                    sizes="(width < 810px) 52vw, 640px"
+                    className="h-auto w-full"
+                  />
+                </Zoomable>
+              </div>
             </div>
           </Reveal>
         </div>
@@ -452,19 +736,11 @@ export default function BudgetCartPage() {
           <p className="ts-body">
             The problem statement that guided this project was:
           </p>
-          <div
-            className="flex h-[229px] w-full items-center justify-center rounded-[20px] px-10"
-            style={{
-              background:
-                "linear-gradient(117deg, rgba(240,253,244,1) 0%, rgba(238,245,254,1) 50%, rgba(255,255,255,1) 100%)",
-            }}
-          >
-            <p className="ts-heading-6 max-w-[900px] text-center">
-              How might we help budget-conscious shoppers make confident grocery
-              decisions without forcing them to constantly calculate budget,
-              eligibility, and trade-offs in their head?
-            </p>
-          </div>
+          <ProblemStatement>
+            How might we help budget-conscious shoppers make confident grocery
+            decisions without forcing them to constantly calculate budget,
+            eligibility, and trade-offs in their head?
+          </ProblemStatement>
         </div>
       </section>
 
@@ -498,14 +774,32 @@ export default function BudgetCartPage() {
           <h3 className="ts-heading-6">
             Make Cost Visible Early in the Shopping Journey
           </h3>
-          <div className="flex w-full flex-col gap-5 tablet:flex-row">
+          {/* From 810 the two columns are centred on each other rather than
+              stretched, so the four points sit level with the middle of the
+              handsets beside them instead of starting at their top edge. The
+              29px between the points is untouched: the group moves, not its
+              spacing. */}
+          <div className="flex w-full flex-col gap-5 tablet:flex-row tablet:items-center">
             <div className="flex flex-1 flex-col gap-[29px] py-5">
               <StarPointList points={SOLUTION_POINTS} bold />
             </div>
             {/* Both screens are 2.167:1, against the handset's 2.176:1 screen,
-                so each fills its frame with nothing cropped. */}
-            <div className="flex flex-1 gap-2.5">
-              <figure className="flex flex-1 flex-col gap-2.5">
+                so each fills its frame with nothing cropped.
+
+                One demo per row on a phone, each taking most of the column, so
+                the screens are worth looking at; side by side from 810. This is
+                the Taipei page's Solution Overview, to the class. */}
+            {/* Side by side from 700 rather than from Framer's 810: a 768px
+                iPad is the commonest tablet there is and it falls below that
+                breakpoint, so the pair stacked on exactly the device the row is
+                meant for. 700 is the width at which two capped handsets and
+                their gap still leave a comfortable margin.
+
+                Each handset is capped at the 228px it measures on desktop, so
+                neither the wider tablet article nor a full-width phone column
+                can draw it larger than the layout it is scaled down from. */}
+            <div className="flex flex-1 flex-col items-center gap-8 min-[700px]:flex-row min-[700px]:items-stretch min-[700px]:justify-center min-[700px]:gap-2.5">
+              <figure className="flex w-[72%] max-w-[300px] flex-col gap-2.5 min-[700px]:w-auto min-[700px]:max-w-[228px] min-[700px]:flex-1">
                 <PhoneMockup
                   screen="/case/gYGzaYBJBLaboENZJAHFQLRqlPo.gif"
                   alt="The redesigned shopping flow"
@@ -516,7 +810,7 @@ export default function BudgetCartPage() {
                   Shopping Flow
                 </figcaption>
               </figure>
-              <figure className="flex flex-1 flex-col gap-2.5">
+              <figure className="flex w-[72%] max-w-[300px] flex-col gap-2.5 min-[700px]:w-auto min-[700px]:max-w-[228px] min-[700px]:flex-1">
                 <PhoneMockup
                   screen="/case/fUdyc9IdXAA6b6f4B1kuPIoWD8.png"
                   alt="Selecting a store"
@@ -544,15 +838,21 @@ export default function BudgetCartPage() {
               Budget-constrained grocery shopping is a multi-constraint decision
               problem, not just price comparison
             </h3>
-            <div className="flex w-full flex-col items-start gap-6 tablet:flex-row tablet:items-center">
+            {/* The brain sits to the right of the quotes from 810 and below
+                them, still to the right, on a phone, where there is no room for
+                a column beside three quotes. It is the same order either way,
+                so `order` is set once: the illustration is first in the markup
+                because it is decorative, and last in the reading order. */}
+            <div className="flex w-full flex-col items-stretch gap-6 tablet:flex-row tablet:items-center">
               <Image
                 src="/case/LQPH6J1KtYHvjkpIS9qdZGva1mA.png"
                 alt=""
                 width={160}
                 height={175}
-                className="h-[175px] w-[160px] shrink-0 object-contain"
+                sizes="160px"
+                className="order-2 ml-auto h-[131px] w-[120px] shrink-0 object-contain tablet:h-[175px] tablet:w-[160px]"
               />
-              <div className="flex flex-1 flex-col gap-3">
+              <div className="order-1 flex flex-1 flex-col gap-3">
                 <p className="ts-body">
                   “I need to know I won’t{" "}
                   <strong className="font-semibold">go over my budget</strong>{" "}
@@ -600,22 +900,36 @@ export default function BudgetCartPage() {
                 {COMPETITORS.map((c) => (
                   <div
                     key={c.name}
-                    className="flex min-w-0 flex-col gap-[30px]"
+                    /* Logo, name and description are one column, centred on
+                       each other, so each competitor reads as a single unit. */
+                    className="flex min-w-0 flex-col items-center gap-[30px] text-center"
                   >
-                    <Image
-                      src={c.image}
-                      alt={c.name}
-                      width={c.size}
-                      height={c.size}
-                      className="object-contain"
-                      style={{
-                        width: "100%",
-                        maxWidth: c.size,
-                        height: "auto",
-                        borderRadius: c.radius,
-                      }}
-                    />
-                    <div className="flex flex-col gap-2.5">
+                    {/* The shared box. Every logo is centred in one of these and
+                        fitted inside it, so a tall mark and a wide one still
+                        occupy the same square and sit on the same axis. */}
+                    <div
+                      className="flex shrink-0 items-center justify-center"
+                      style={{ width: LOGO_BOX, height: LOGO_BOX }}
+                    >
+                      {/* A square of its own, so the element has a size before
+                          the file arrives and the row never shifts. The mark is
+                          fitted inside that square, which is what keeps a
+                          non-square logo at its own proportions. */}
+                      <Image
+                        src={c.image}
+                        alt={c.name}
+                        width={c.width}
+                        height={c.height}
+                        sizes="120px"
+                        className="object-contain"
+                        style={{
+                          width: `calc(${LOGO_BOX} * ${c.scale})`,
+                          height: `calc(${LOGO_BOX} * ${c.scale})`,
+                          borderRadius: c.radius,
+                        }}
+                      />
+                    </div>
+                    <div className="flex flex-col items-center gap-2.5">
                       <h4 className="ts-heading-6">{c.name}</h4>
                       <p className="ts-body">
                         {c.tail ? "Optimized for " : "Designed for "}
@@ -694,55 +1008,59 @@ export default function BudgetCartPage() {
               </div>
 
               <div className="flex w-full flex-col gap-[30px]">
+                {/* Both diagrams are 2800px wide and under 9:1, so in the
+                    column they come to 39px tall on a phone and the boxes are
+                    unreadable. They open full screen and pan. */}
                 <div className="flex w-full flex-col gap-[25px]">
-                  <p className="ts-body-large">Traditional Shopping Order:</p>
-                  <Image
+                  <p className="ts-body-large" style={LABEL}>
+                    Traditional Shopping Order:
+                  </p>
+                  <Zoomable
                     src="/case/qJMNLto7fdjSEa2nYM4IQinS1uI.png"
                     alt="The traditional shopping order"
-                    width={2000}
-                    height={400}
-                    sizes="1120px"
-                    className="h-auto w-full"
-                  />
+                    width={2800}
+                    height={320}
+                  >
+                    <Image
+                      src="/case/qJMNLto7fdjSEa2nYM4IQinS1uI.png"
+                      alt="The traditional shopping order"
+                      width={2800}
+                      height={320}
+                      sizes="(width < 810px) 92vw, 1120px"
+                      className="h-auto w-full"
+                    />
+                  </Zoomable>
                 </div>
                 <div className="flex w-full flex-col gap-[25px]">
-                  <p className="ts-body-large">BudgetCart Shopping Order:</p>
-                  <Image
+                  <p className="ts-body-large" style={LABEL}>
+                    BudgetCart Shopping Order:
+                  </p>
+                  <Zoomable
                     src="/case/7qcKT122ZJVDc2Paih8U6pkWwDs.png"
                     alt="The BudgetCart shopping order"
-                    width={2000}
-                    height={400}
-                    sizes="1120px"
-                    className="h-auto w-full"
-                  />
+                    width={2800}
+                    height={324}
+                  >
+                    <Image
+                      src="/case/7qcKT122ZJVDc2Paih8U6pkWwDs.png"
+                      alt="The BudgetCart shopping order"
+                      width={2800}
+                      height={324}
+                      sizes="(width < 810px) 92vw, 1120px"
+                      className="h-auto w-full"
+                    />
+                  </Zoomable>
                 </div>
               </div>
 
-              <div className="flex w-full flex-col items-center gap-[60px] pb-[50px] tablet:flex-row tablet:pr-[70px] tablet:pl-[100px]">
-                <PhoneMockup
-                  screen="/case/gYGzaYBJBLaboENZJAHFQLRqlPo.gif"
-                  width={240}
-                  alt="Building the cart once"
-                  unoptimized
-                />
-                <div className="flex w-full flex-col gap-[86px] tablet:w-3/5">
-                  <div className="flex w-full flex-col gap-2.5">
-                    <h4 className="ts-heading-5">Experience Walkthrough</h4>
-                    <div className="flex flex-wrap items-center gap-[28px]">
-                      <span className="ts-body-large">Build cart</span>
-                      <span aria-hidden className="text-light-grey">
-                        →
-                      </span>
-                      <span className="ts-body-large">Compare Price</span>
-                      <span aria-hidden className="text-light-grey">
-                        →
-                      </span>
-                      <span className="ts-body-large">Commit</span>
-                    </div>
-                  </div>
-                  <NumberedSteps items={WALKTHROUGH} />
-                </div>
-              </div>
+              <Walkthrough
+                title="Experience Walkthrough"
+                journey={["Build cart", "Compare Price", "Commit"]}
+                screen="/case/gYGzaYBJBLaboENZJAHFQLRqlPo.gif"
+                alt="Building the cart once"
+                items={WALKTHROUGH}
+                side="left"
+              />
             </div>
 
             <p className="ts-body">
@@ -756,27 +1074,22 @@ export default function BudgetCartPage() {
                 <h4 className="ts-heading-6">
                   2. Redesign store comparison interface
                 </h4>
-                <h3 className="ts-heading-6 italic">
+                {/* A sentence, not a heading: it reads as the body copy that
+                    introduces the walkthrough below it. */}
+                <p className="ts-body">
                   I redesigned the comparison interface so the system
                   automatically applies the same cart across stores and surfaces
                   total cost and trade-offs at a glance, reducing mental math
                   and decision fatigue.
-                </h3>
+                </p>
               </div>
-              <div className="flex w-full flex-col-reverse items-center gap-[60px] pb-[50px] tablet:flex-row tablet:pr-[100px] tablet:pl-[70px]">
-                <div className="flex w-full flex-col gap-[86px] tablet:w-3/5">
-                  <h4 className="ts-heading-5">
-                    Making Total Cost Comparable at a Glance
-                  </h4>
-                  <NumberedSteps items={COMPARISON_POINTS} />
-                </div>
-                <PhoneMockup
-                  screen="/case/dH7ECcQFl9EXqWSojBXUcjz2XyY.gif"
-                  width={240}
-                  alt="Comparing total cost across stores"
-                  unoptimized
-                />
-              </div>
+              <Walkthrough
+                title="Making Total Cost Comparable at a Glance"
+                screen="/case/dH7ECcQFl9EXqWSojBXUcjz2XyY.gif"
+                alt="Comparing total cost across stores"
+                items={COMPARISON_POINTS}
+                side="right"
+              />
             </div>
           </div>
 
@@ -821,15 +1134,25 @@ export default function BudgetCartPage() {
                 out-of-pocket costs.
               </p>
             </div>
+            {/* Framer's 60/30 inset is drawn against a 1120px column. On a
+                phone it took 120 of 342px, a third of the width, and left the
+                three screens in it too small to read. It holds from 1200. */}
             <Reveal className="w-full">
-              <Image
+              <Zoomable
                 src="/case/dU8zzf1NLNV9xV6KJ1ua3ocYhc.png"
                 alt="SNAP signals shown across the shopping journey"
-                width={2000}
-                height={1200}
-                sizes="1120px"
-                className="h-auto w-full rounded-[20px] px-[60px] py-[30px]"
-              />
+                width={2800}
+                height={1242}
+              >
+                <Image
+                  src="/case/dU8zzf1NLNV9xV6KJ1ua3ocYhc.png"
+                  alt="SNAP signals shown across the shopping journey"
+                  width={2800}
+                  height={1242}
+                  sizes="(width < 810px) 92vw, 1120px"
+                  className="h-auto w-full rounded-[20px] tablet:px-8 tablet:py-4 desktop:px-[60px] desktop:py-[30px]"
+                />
+              </Zoomable>
             </Reveal>
           </div>
         </div>
@@ -847,15 +1170,24 @@ export default function BudgetCartPage() {
             comparison information is structured so users can make faster,
             lower-effort decisions.
           </p>
+          {/* Three iterations side by side in one 2800px picture, so the inset
+              comes off below 1200 and it opens full screen to be read. */}
           <Reveal className="w-full">
-            <Image
+            <Zoomable
               src="/case/k9u4Ty2OAji64lIZlRF0SYyFmg.png"
               alt="Iterations of the store comparison interface"
-              width={2000}
-              height={1200}
-              sizes="1120px"
-              className="h-auto w-full rounded-[20px] px-[60px] py-[30px]"
-            />
+              width={2800}
+              height={1104}
+            >
+              <Image
+                src="/case/k9u4Ty2OAji64lIZlRF0SYyFmg.png"
+                alt="Iterations of the store comparison interface"
+                width={2800}
+                height={1104}
+                sizes="(width < 810px) 92vw, 1120px"
+                className="h-auto w-full rounded-[20px] tablet:px-8 tablet:py-4 desktop:px-[60px] desktop:py-[30px]"
+              />
+            </Zoomable>
           </Reveal>
         </div>
       </section>
@@ -863,28 +1195,18 @@ export default function BudgetCartPage() {
       {/* ---- Next steps ---------------------------------------------- */}
       <section className="flex w-full flex-col gap-2.5">
         <h2 className="ts-heading-3">Next Steps</h2>
-        <div className="flex w-full flex-col gap-2.5 pt-5">
-          <h3 className="ts-heading-6">
-            Explore an AI-powered shopping assistant
-          </h3>
-          <Paragraphs
-            items={[
-              "Users could upload a grocery list and the system would automatically generate a cart optimized for their budget.",
-              "This assistant could help users quickly identify the most affordable store and maximize SNAP usage without manually comparing prices.",
-            ]}
-          />
-        </div>
-        <div className="flex w-full flex-col gap-2.5">
-          <h3 className="ts-heading-6">
-            Conduct deeper testing with SNAP users
-          </h3>
-          <Paragraphs
-            items={[
-              "Due to limited access to SNAP participants, many early design decisions were informed by one interview and secondary research.",
-              "With more time, I would recruit more SNAP users to better understand their real budgeting behaviors and evaluate whether the solution truly reduces decision anxiety during real shopping scenarios.",
-            ]}
-          />
-        </div>
+        {/* Two numbered steps rather than two headed paragraphs: they are the
+            order the work would be picked up in. */}
+        <ol className="flex w-full list-none flex-col gap-10 pt-5">
+          {NEXT_STEPS.map((step, i) => (
+            <li key={step.title} className="flex w-full flex-col gap-2.5">
+              <h3 className="ts-heading-6">
+                {i + 1}. {step.title}
+              </h3>
+              <Paragraphs items={step.lines} />
+            </li>
+          ))}
+        </ol>
       </section>
 
       {/* ---- Reflection ---------------------------------------------- */}
