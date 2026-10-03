@@ -9,13 +9,22 @@ import {
   SubHeading,
 } from "@/components/case/CaseParts";
 import { CaseShell } from "@/components/case/CaseShell";
-import type { MoreProjectCard } from "@/components/case/MoreProjects";
+import { SidebarNav, type SidebarEntry } from "@/components/case/SidebarNav";
+import { LaptopMockup } from "@/components/case/LaptopMockup";
 
 export const metadata: Metadata = {
   title: "Jubo Healthcare Platform — Anne Lin",
   description:
     "Built frontend modules for a healthcare dashboard used in senior care facilities.",
 };
+
+/** This page's own sections; see CASE_STUDY_NAV_RULES.md. */
+const SECTIONS: SidebarEntry[] = [
+  { id: "overview", label: "Overview" },
+  { id: "my-role", label: "My Role" },
+  { id: "development-process", label: "Development Process" },
+  { id: "reflection", label: "Reflection" },
+];
 
 const SKILLS = [
   { name: "HTML", icon: "/case/Ur7CBU42qb5WP0bPckxIJIGn6g.svg" },
@@ -24,56 +33,44 @@ const SKILLS = [
   { name: "TypeScript", icon: "/case/JBV2LUOox3L1gJXqijRHZuuRids.svg" },
 ];
 
-/** Framer hand-picks these two, with their own spelling, for this page. */
-const MORE: MoreProjectCard[] = [
-  {
-    href: "/projects/taipei-metro-app",
-    category: "UI/UX Design",
-    title: "TAIPEI METRO APP REDEISGN ",
-    description:
-      "Reimagining Metro Points to make rewards visible, understandable, and part of everyday commuting.",
-  },
-  {
-    href: "/projects/little-chestnut-thief",
-    category: "Graphic Design",
-    title: "Little Chestnut THief",
-    description:
-      "Designed a boutique-style web store for chestnut-based desserts \u2014 a personal passion turned into a brand concept. ",
-  },
-];
-
 export default function JuboHealthcarePage() {
   return (
     <CaseShell
-      more={MORE}
-      pageTop={120}
-      pageBottom={120}
+      current="jubo-healthcare"
+      sidebar={<SidebarNav entries={SECTIONS} />}
+      bodyPadX={40}
+      moreVariant="compact"
+      pageTop={60}
       bodyPad={120}
-      gapToMore={80}
       moreBottom={120}
     >
       <CaseHeader
         category="Web Development"
         title="Jubo Healthcare Platform"
-        description="Built frontend modules for a healthcare dashboard used in senior care facilities. Collaborated with designers and nurses to streamline medical record input, reduce cognitive load, and improve patient data visibility across devices."
+        titleGap={20}
+        description="Designed frontend modules for a senior care platform to streamline medical record input and improve patient data visibility across devices."
         meta={[
           { label: "Client", value: "Jubo" },
           { label: "Role", value: "Frontend Developer" },
           { label: "Year", value: "2024" },
           { label: "Duration", value: "8 months" },
         ]}
+        media={
+          <LaptopMockup
+            screen="/case/OWmpqKnvk6IiDk3SNIkMzaYwrw.jpg"
+            alt="The Jubo healthcare dashboard showing a resident's assessment records"
+            sizes="(width < 810px) 92vw, 560px"
+            priority
+          />
+        }
       />
 
-      <Banner
-        src="/case/OWmpqKnvk6IiDk3SNIkMzaYwrw.jpg"
-        alt="The Jubo healthcare dashboard showing a resident's assessment records"
-        height={527}
-        priority
-      />
+      {/* The rule Metro and BudgetCart draw under their heroes. */}
+      <span className="h-px w-full bg-grey-100" aria-hidden />
 
       <SkillsRow skills={SKILLS} />
 
-      <CaseSection title="Overview">
+      <CaseSection id="overview" title="Overview">
         <Paragraphs
           items={[
             "A health tracking tool built for rural caregivers, grounded in real care routines and daily use.",
@@ -82,15 +79,19 @@ export default function JuboHealthcarePage() {
         />
       </CaseSection>
 
-      <CaseSection title="My Role">
+      <CaseSection id="my-role" title="My Role">
         <Paragraphs
           items={[
-            "My focus was the design and implementation of the metrics and feedback interface. I developed nine streamlined health assessment forms and one comprehensive evaluation form using React with Material-UI. To manage state cleanly across form sessions, I used Zustand and React hooks like useState and useEffect to ensure each visit started with a fresh state.",
+            "I collaborated closely with designers and nurses to translate real caregiving workflows into a practical digital experience. My focus was the design and implementation of the metrics and feedback interface, where I developed nine streamlined health assessment forms and one comprehensive evaluation form using React and Material UI. To keep form sessions consistent and reliable, I used Zustand and React hooks such as useState and useEffect to manage state and ensure each visit started fresh.",
           ]}
         />
       </CaseSection>
 
-      <CaseSection title="Development Process" gap={10}>
+      <CaseSection
+        id="development-process"
+        title="Development Process"
+        gap={10}
+      >
         <SubHeading
           title="Agile Workflow & Iteration"
           lede="Shaped by real caregiver feedback, week by week"
@@ -118,12 +119,11 @@ export default function JuboHealthcarePage() {
             src="/case/C43uWuxaA0RRm2fWLU2DnL1qmU.jpg"
             alt="Charts in the Jubo dashboard plotting blood pressure and heart rate over time"
             height="auto"
-            radius={0}
           />
         </div>
       </CaseSection>
 
-      <CaseSection title="Reflection">
+      <CaseSection id="reflection" title="Reflection">
         <Paragraphs
           items={[
             "This project taught me how to quickly adapt to the fast, iterative rhythm of agile development. At first, I felt a bit overwhelmed by the weekly sprint cycles, but I soon realized how valuable they were for building something that actually worked for real people, and I gradually became comfortable with the pace. ",

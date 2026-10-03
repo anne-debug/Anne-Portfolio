@@ -108,13 +108,33 @@ export function WorkCard({
   // previews are captured at that same shape, so they fill it without a crop.
   const aspectRatio = CARD_ASPECT;
 
+  /*
+    The cover grows a little under the pointer, the same 1.03 over the same
+    half second the More Projects cards use, clipped by the cover's own rounded
+    box so what moves is the picture inside the frame rather than the card in
+    the layout. These cards had only the arrow button answering the pointer,
+    which left them feeling fixed next to every other card on the site.
+
+    It is driven from `hovered` rather than a `group-hover:` class because that
+    state is already here for the arrow and already covers focus, so a card
+    reached by keyboard lifts too.
+  */
+  const coverMotion = `transition-transform duration-500 ${
+    hovered ? "scale-[1.03]" : ""
+  }`;
+
   // Phone stacks both shapes, so one cover across the card width serves both.
   const phoneCover = (
     <div
       className="relative w-full overflow-hidden rounded-lg bg-white tablet:hidden"
       style={{ aspectRatio }}
     >
-      <PreviewMedia preview={preview} alt={name} sizes="278px" />
+      <PreviewMedia
+        preview={preview}
+        alt={name}
+        sizes="278px"
+        className={coverMotion}
+      />
     </div>
   );
 
@@ -123,14 +143,24 @@ export function WorkCard({
       className="relative hidden flex-1 overflow-hidden rounded-lg bg-white tablet:block"
       style={{ aspectRatio }}
     >
-      <PreviewMedia preview={preview} alt="" sizes="55vw" />
+      <PreviewMedia
+        preview={preview}
+        alt=""
+        sizes="55vw"
+        className={coverMotion}
+      />
     </div>
   ) : (
     <div
       className="relative hidden w-full overflow-hidden rounded-lg bg-white tablet:block"
       style={{ aspectRatio }}
     >
-      <PreviewMedia preview={preview} alt="" sizes="(width < 1200px) 45vw, 464px" />
+      <PreviewMedia
+        preview={preview}
+        alt=""
+        sizes="(width < 1200px) 45vw, 464px"
+        className={coverMotion}
+      />
     </div>
   );
 

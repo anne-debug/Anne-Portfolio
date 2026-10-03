@@ -111,9 +111,9 @@ const PROJECTS = [
   },
   {
     slug: "ryze-coffee",
-    // The header and the cover share one wrapper, which also clips the glow.
+    // The header holds the words and the laptop, in one wrapper.
     hero: ["article > :nth-child(1)"],
-    widths: [1000, 1440],
+    widths: [810, 1199],
   },
   {
     slug: "little-chestnut-thief",
@@ -124,12 +124,18 @@ const PROJECTS = [
   },
   {
     slug: "jubo-healthcare",
-    // Header and banner are siblings, so the hero is the box around both. Its
-    // column is capped at 1000px, which holds it near 1.1:1 at every width;
-    // the cards anchor it to the top instead.
-    hero: ["article > :nth-child(1)", "article > :nth-child(2)"],
-    widths: [1440, 1440],
+    // The header now carries the laptop beside the words, so it is the whole
+    // hero on its own. Taking the next sibling too, which is what this did
+    // when the laptop sat below, pulled the skills row into the card.
+    hero: ["article > :nth-child(1)"],
+    widths: [810, 1199],
   },
+
+  // ibm-watsonx-builder-control-plane is deliberately absent, and must stay
+  // absent while it is password protected. Capturing it would write a picture
+  // of protected content to public/project-previews/, served to anyone who
+  // asks for the URL, which is precisely what the password screen exists to
+  // prevent. Its cards draw a plain cover instead; see ProjectCover.
 ];
 
 /** The background the heroes are captured on, and the band around them. */

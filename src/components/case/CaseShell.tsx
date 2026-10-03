@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
-import { MoreProjects, type MoreProjectCard } from "./MoreProjects";
+import { moreProjects } from "@/lib/projects";
+import { MoreProjects } from "./MoreProjects";
 import { SmoothScroll } from "./SmoothScroll";
 
 /**
@@ -14,7 +15,7 @@ import { SmoothScroll } from "./SmoothScroll";
  */
 export function CaseShell({
   children,
-  more,
+  current,
   /** Optional table-of-contents rail rendered beside the body. */
   sidebar,
   moreVariant = "rule",
@@ -35,7 +36,8 @@ export function CaseShell({
   moreBottom = 120,
 }: {
   children: ReactNode;
-  more: MoreProjectCard[];
+  /** This page's slug. The closing strip is the projects that follow it. */
+  current: string;
   sidebar?: ReactNode;
   moreVariant?: "rule" | "compact";
   bodyWidth?: number;
@@ -92,7 +94,7 @@ export function CaseShell({
             } as React.CSSProperties
           }
         >
-          <MoreProjects items={more} variant={moreVariant} />
+          <MoreProjects items={moreProjects(current)} variant={moreVariant} />
         </div>
       </main>
     </>

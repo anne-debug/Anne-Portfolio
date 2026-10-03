@@ -1652,3 +1652,673 @@ ignores.
 Measured at 390, 768, 810, 900, 1024, 1100, 1199, 1200, 1280 and 1440: no card
 carries a pixel of slack beyond content and padding, no star overlaps its text,
 and from 810 up both groups sit on their visual's centre exactly.
+
+### My Projects, between 510 and 1000
+
+The card is capped at 520px so its thumbnail does not stretch across a 1000px
+column. A block with a max-width keeps to the left of the space it is given, and
+from about 510 up that cap is narrower than the column, so the card sat against
+the left edge with the slack piled on the right: 40px to its left and 439 to its
+right at 999. Auto inline margins centre it in whatever column it lands in — the
+single one below 1000, either of the two above it — and from 1200 the cap is
+lifted and they have nothing to do.
+
+Measured at 390, 480, 509, 510, 600, 768, 834, 900, 999, 1000, 1100, 1160, 1199,
+1200, 1280 and 1440: the space either side of the cards is equal at every one.
+Card widths are unchanged at every width, so the column counts, proportions and
+spacing are as they were; below 510 and from 1200 nothing moved at all.
+
+### Ryze Coffee typography
+
+`CASE_STUDY_DESIGN_SYSTEM.md` writes down the scale the case studies share, off
+Taipei and BudgetCart. Ryze was the first page brought onto it.
+
+Six things were off. Its section titles came through `CaseSection`, which set
+them at Heading 2 — the size Metro and BudgetCart keep for the project title, so
+every section on the page shouted at 72px against their 55. Its project title
+came through `CaseHeader` at italic Heading 1, a different family and size again,
+over a plain 16px description where the other two set a lede that ramps to 20.
+Its research sub-blocks were `ts-heading-3b`, Libre Baskerville bold uppercase,
+which nothing else on the site uses. Its sub-headings were
+`ts-heading-6-small`, a flat 22px with no ramp, so they were larger than the
+system on a phone and smaller on a desktop. One line was `ts-body-medium-bold`,
+a near-duplicate of body with emphasis. And two diagram labels were
+`ts-body-large`, which steps to 32px through the tablet range.
+
+`CaseHeader` and `CaseSection` now carry the shared scale by default. Jubo and
+Little Chestnut Thief have not been standardised, so they pass `legacy` and
+render exactly as before — Libre Baskerville italic 56/80 and Instrument Serif
+42/72, measured either side of the change. The debt sits on the two pages that
+own it rather than in the shared component.
+
+`.ts-body-large-fluid` is new: the 16-to-20 ramp Metro and BudgetCart both
+carried as an inline clamp on their hero subtitles, given a name so a page can
+ask for the role instead of copying the number. Their inline copies can adopt it
+when those pages are next touched.
+
+Checked at 390, 1024 and 1440 across all three pages: project title, lede,
+section title, body and meta label come out identical on every one.
+
+Four more on Ryze. The hero was a still of the redesigned home page, cropped to
+a fixed 447px band by `object-cover`; it is the recording that opens the
+Solutions section now, width-led at its own 2558x1820, so it holds its shape and
+stays centred from 390 to 1440 instead of being cropped differently at each
+width.
+
+Its headings ran a level high. The three numbered solutions and "Validating the
+Redesign" were at Heading 3, the size Metro keeps for a section title, and the
+Problem sub-headings and the Solutions lede were at Heading 5. The page now runs
+the same three levels Metro does — 55 for a section, 36 for a sub-block, 24 for
+a sub-heading — and comes out identical to it at 390, 1024 and 1440.
+
+The prohibition glyph is off "Overall Impact".
+
+And the how-might-we statement was a flat picture of itself, so it could not
+rewrap and carried whatever type that export was drawn at. It is the shared card
+now, with real text: same gradient, corner, padding and Heading 6 as the other
+two, and at 1024 and 1440 it measures exactly the height Metro's does. At 390 it
+is taller, by one line, because the statement is longer — which is the point of
+sizing the card to its content.
+
+The hero recording sits in a laptop again. `LaptopMockup` reuses Framer's own
+export as the frame and lays the recording over exactly its screen, the way
+`PreviewMedia` lays an animation over the still it was captured from — the
+screenshot baked into that export is covered rather than removed, so there is no
+empty frame to draw and no new asset.
+
+Every figure was measured off the file: the screen sits at 10.016% from the left
+and 3.175% from the top of a 1248x756 frame, 79.968% wide and 85.847% tall. The
+notch hangs 3.24% of the screen's height into its top edge rather than sitting
+in the bezel, so covering the screen covers the notch too; it is redrawn over
+the recording, 12.22% wide at 43.89% across. Holding the frame at its own aspect
+ratio keeps those shares exact at any size.
+
+The recording is 1.405:1 against a 1.538:1 screen, so it fills from the top: the
+page's own header stays put and what goes is a little of the foot of the frame,
+rather than the picture being stretched. Measured at 390 through 1440 the frame
+holds 1.651:1, the screen holds 80.0 x 85.8% of it, the notch stays on the
+screen's top edge, and the whole mockup stays centred.
+
+Six more on Ryze. The page sat on a 1440 canvas with no horizontal padding,
+where Metro and BudgetCart use 1200 with 40; it matches them now, so the article
+starts 24px in on a phone, 40 from 810 and 160 at 1440, the same as theirs. The
+remaining difference at 1440 is Metro's rail, which Ryze has no equivalent of.
+
+The problems stood 42px apart and now stand 90, the gap the page uses between
+sections. The Solutions subtitle was at Heading 5 and is Heading 6, the size
+Metro sets a section's lede at: 18, 21 and 24 against Metro's own.
+
+`StarPointList` draws two columns as a grid rather than two stacks. Two stacks
+let each column set its own rhythm, so the four points ended at four different
+heights and nothing lined up across the gap; `auto-rows-fr` gives every row the
+height of its tallest point. Measured at 810 through 1440 the four cells come
+out the same height and each row's pair shares a top. Below 810 it is one
+column, where the question does not arise. Only Ryze passes `columns={2}`, so
+nothing else moved.
+
+"Explore our Prototype here" was a line of bold body text in the middle of the
+run, with nothing to say it could be clicked. It is a centred outlined pill with
+an arrow now, in the page's orange, and an anchor rather than a paragraph.
+Framer set it as plain text with no link behind it, so the address came from
+Anne rather than from the source file; it lives in `PROTOTYPE_URL` at the top of
+the page.
+
+The radial glow behind the hero is gone, and with it the `overflow-hidden` that
+was only there to clip it.
+
+The project type tag on Ryze is Metro's now rather than Framer's orange rule:
+`CategoryBadge` gained a `solid` variant, the filled charcoal pill Metro and
+BudgetCart set theirs in, and a standardised hero takes it while a `legacy` one
+keeps the outline. Measured against Metro at 390, 1024 and 1440 it matches on
+background, colour, border, radius, font and padding; only the words differ,
+"UI/UX Design" against Metro's "UI / UX Design". Jubo and Little Chestnut Thief
+still draw the orange rule, and so do the rule-variant project cards.
+
+Five more on Ryze. "target user" and "PersonA" read Target User and Persona, and
+the persona artwork has 20px of air under the copy that introduces it.
+
+The journey carousel stood at a fixed 600px, which on a phone left a band of
+empty card above and below a 16:9 slide and on a desktop cut it short.
+`Slideshow` takes a `ratio` now, defaulting to the 16:9 all eleven slides are,
+and the stage derives its height from the column: 342x192 at 390 up to 1120x630
+at 1440, holding 1.778 throughout. Its arrows shrink from 40 to 32px below 810
+so they do not sit over the slide. Only Ryze uses the component.
+
+The three pictures still drawn square — the problem shots and the two result
+charts — carry the 20px corner the rest of the page uses. The laptop frame keeps
+its own silhouette, which is not a rectangle to round.
+
+More Projects is the compact strip Metro closes with rather than the Chonburi
+rule. Heading, block width, card width, media, title ramp and badge all measure
+identically to Metro's at 390, 810, 1024 and 1440; the cards differ in height
+only where a description runs to a third line, which is the copy rather than the
+design.
+
+Two typos in that strip's own data: "Jubo Heallthcare Platform" and "Little
+Chestnut THief" now read as the projects are named elsewhere on the site.
+
+Words set in capitals now read as words. Ryze had "Ryze Coffee WEB Redesign",
+"UIUX designer/ Researcher", "SOLUTIONS", "MAKING THE EXPERIENCE CLEAR,
+TRANSPARENT, AND TRUSTWORTHY" and "RESULT & IMPACT "; BudgetCart had its three
+design opportunities as "COMPARISON EFFICIENCY", "BUDGET AWARENESS" and
+"ELIGIBILITY TRANSPARENCY". A sweep of the rendered text on both pages now turns
+up only UI/UX and SNAP/WIC, which are acronyms.
+
+The Solutions lede outranks the solutions under it. It was the smallest of the
+three headings in that section, which read as though each numbered solution
+outranked the sentence introducing all of them; the section now steps 55, 36 and
+24 on a desktop and 32, 22 and 18 on a phone, the scale's own adjacent sizes at
+every width between.
+
+Three more on Ryze. The A/B results picture has 24px of air above it.
+
+The demo recordings take the whole column on a phone. Framer sets them at 80% of
+it and insets the block a further 20px either side, which on a 342px column left
+a 273px recording of a web page — too small to follow. That 80% holds from 810;
+below it they are full width and the side padding comes off.
+
+The pain points were one flat picture of three cards, 342px wide and 78 tall on
+a phone with the type in it unreadable. They are the cards the Taipei page
+builds its own three from — stacked one to a row below 810, across from there —
+with the text real at every size and in the sentence case the rest of the page
+now uses. Verified: three rows below 810, one row from 810.
+
+The lines under a star point now start where the title starts. `StarPointList`
+indented them 32px, but the title sits 22 in — the star's 14 plus the 8 after it
+— so every sub-line stood 10px adrift of the point it belonged to. The indent is
+those two numbers added rather than a figure of its own, and the row's gap reads
+from the same constant, so the two cannot drift apart again. One component, so
+Taipei, BudgetCart and Ryze are all square: measured at 390, 810, 1024 and 1440,
+all twelve lists on the three pages start flush with their titles.
+
+### The mushroom that opens the prototype
+
+Ryze's "Explore our prototype" pill is a character now: a mushroom on the left
+waving a small wand, a speech bubble on its right reading "Click me to see the
+prototype!", and the whole thing one `<a>` to the same Figma address the pill
+carried.
+
+The artwork is Anne's own file, unaltered but for its backdrop. It arrived as a
+132x136 PNG with opaque white behind the character, which on the page's off-white
+would have shown as a pale square, so the background is keyed out by flooding in
+from the border — only white connected to the edge goes, which leaves the
+character's own light tones alone — then feathered by a pixel and trimmed to the
+figure. Nothing about the mushroom itself is redrawn.
+
+The character is mirrored so it faces the bubble rather than away from it — a
+flip, not a redraw, so the pixels stay the file's own. That swaps its arms, and
+the wand moves with them: the hand nearest the bubble is the one drawn at 9-21%
+across the file, which lands at 83-91% once flipped.
+
+Character, wand, sparkles and bubble are one flex row rather than boxes
+positioned against the page, so the pair scales together, and the wand lives in
+the character's own box with every offset written as a share of it. That is what
+holds the wand in the hand: the hand sits at 88% across and 72% down the figure,
+measured off the asset, and the wand's box is placed so its lower left corner —
+where the stick starts — lands there. It took two passes to look right. Drawn
+flat along the arm it read as a wire running across to the bubble; angled out
+toward the bubble its tip disappeared behind it. Steep, it reads as held.
+
+The animation is CSS, no library. The wand rides up and back down once every
+three seconds, with the sparkles timed to the top of the stroke rather than
+running on their own, and hovering shortens the cycle so the character answers
+the pointer. `prefers-reduced-motion` stops all three animations and leaves the
+sparkles showing rather than blinking, with the link, the bubble and the focus
+ring untouched.
+
+The bubble answers the pointer in three states rather than one. At rest it is
+white inside a grey-100 border; under the pointer or keyboard focus it takes the
+orange border, a 6% warm tint, orange type and a lift of a pixel; held, the tint
+deepens to 12% and it presses back down. The tail is a rotated square beside the
+bubble rather than part of it, so every state names both — colour one and not
+the other and the two come apart at the seam. The hover rules sit behind
+`(hover: hover)`, since a touch device has no pointer to leave and an unguarded
+`:hover` would stay lit after the tap; focus and the held state are unguarded,
+so both work everywhere. Under reduced motion the colours still change and
+nothing moves.
+
+The first artwork was a 132px file, which is where the softness came from: the
+character is drawn at 84 CSS px, and a 2x screen wants 168 real pixels for that.
+Anne's second file carries 169, so it now lands pixel for pixel — a render at 2x
+and the source at the same size are indistinguishable. It arrived with a
+transparent background already, so it is trimmed to the figure and otherwise
+untouched: no keying, no feathering, no resampling. The file name carries a hash
+of its contents, because replacing an image at the same path leaves Next serving
+the old one from its optimiser cache, which is exactly what happened on the
+first attempt.
+
+Checked at 375 through 1440: the mushroom is left of the bubble at every width,
+its aspect is its own, the wand stays inside the character's box, the whole
+group is one link to the right address with a pointer cursor, there is no
+overflow, and it keeps 80px clear of the Skip button below so the two never read
+as a pair of buttons. Hovering peaks the sparkles at full opacity and the wand
+at 16 degrees; under reduced motion all three animations report `none`.
+
+### Jubo
+
+Four things. Its More Projects strip pointed at Taipei and Little Chestnut Thief
+with the titles misspelt — "TAIPEI METRO APP REDEISGN " and "Little Chestnut
+THief" — and drew the Chonburi rule rather than the compact strip. It carries
+Taipei Metro and BudgetCart now, spelt as those pages spell themselves, through
+the same `moreVariant="compact"` the other case studies close with.
+
+The hero screenshot sits in the laptop rather than in a 527px band cropped to
+fit. `LaptopMockup` takes a still as well as a recording now — it tests the file
+extension and renders an `Image` or a `video` into the same screen — so Ryze's
+hero and this one are the same component.
+
+The charts picture asked for `radius={0}` and now takes the 20px corner the rest
+of the site uses.
+
+And the page came off the `legacy` typography it was pinned to: `CaseHeader` and
+every `CaseSection` now draw at the shared scale, which puts its project title
+in Instrument Serif at 42/61/72 and its section titles at 32/45/55, measured
+identical to Taipei's at 390, 1024 and 1440. `SubHeading` went with it — Framer
+sets those blocks at Heading 3, the size it gives the section titles themselves,
+so a block inside a section read as loudly as the section; it is Heading 5 over
+an italic Heading 6 now. The skills heading reads "Skills" rather than "skills".
+
+Two console warnings predate all of this and show on every case study: motion
+declining to animate a `gap` from `normal`, and Next's LCP hint on an image that
+is below the fold. Neither affects the render.
+
+### Ryze and Jubo heroes
+
+The project meta on both pages printed its labels grey and its values orange;
+Metro and BudgetCart set the label semibold and the value plain, both in the
+page's own colour. `CaseHeader` does that now, with the orange kept behind
+`legacy` for Little Chestnut Thief, which has not been standardised.
+
+Their cards were the odd ones out because their heroes were: a full-width title
+over a full-width picture, where Metro and BudgetCart put the words on the left
+and the artwork on the right. `CaseHeader` takes an optional `media` now, and
+given one it becomes that two-column shape and drops its facts into a 2x2 block,
+since half a row is too narrow for four across. Ryze's laptop and Jubo's moved
+into it, so both pages and both cards follow the house pattern.
+
+The capture regions moved with them. Jubo's named two siblings — the header and
+whatever followed — which was right while the laptop sat below the words and
+wrong once it moved up: it pulled the skills row into the card. Both are the
+header alone now, captured at 810 and 1199 like Metro and BudgetCart. Ryze's
+card comes out at 1.38:1 against Metro's 1.40 and BudgetCart's 1.41, and
+measures 374x271 in the frame against their 380x271 and 380x270. Jubo's picture
+is wider at 1.65, so it sits 230px tall in the same frame — inside the spread
+the strip already carries, Little Chestnut Thief being 1.19.
+
+Jubo's page ran 120px of padding under the whole frame on top of the 120 already
+under More Projects, and another 80 between the body and that strip, so the
+footer sat 240px below the last card against Metro's 120. It takes Metro's shell
+figures now — 60 at the top, nothing at the foot, no extra gap — and measures
+120 to the footer at 390 and 1440 alike.
+
+Its two block ledes were italic. Metro keeps italics for figure captions and
+uses none at heading sizes, so `SubHeading` sets its line plain. Nothing on the
+page is italic now.
+
+That leaves Jubo running Metro's families and scale throughout: Instrument Serif
+for the project and section titles at 42/61/72 and 32/45/55, DM Sans for
+everything under them, body at 16. It carries one rung Metro has no use for —
+Heading 5, for the named blocks inside Development Process, which Metro's
+sections do not have — so the ladder there is 55 to 36 to 24 to 16, all of it on
+the shared scale. The skills heading is an `h2` now, like every other section
+title on the page.
+
+### More Projects follows the index
+
+Each case study hand-wrote the two projects it closed with, and the five lists
+had drifted: a page could point at a project My Projects does not list, and the
+order bore no relation to the order there. `src/lib/projects.ts` holds the four
+in the order My Projects lists them and `CaseShell` takes the page's slug rather
+than a list.
+
+The strip is that order with the page you are on removed, and the rest left
+exactly where they were — a filter, not a rotation. The difference shows on
+BudgetCart: filtered it closes with Taipei and Ryze, the same pair in the same
+order as every other page draws them, where rotating from the current project
+would have started it at Ryze and Jubo. No page can link to itself, and Little
+Chestnut Thief, which My Projects does not index, gets the first two.
+
+My Projects renders from that array too, rather than keeping a second copy of
+the order beside it. Merging the two turned up three fields that had drifted
+apart: BudgetCart was "Product Design" there and "UI/UX Design" on its own badge
+and cards, Jubo was "Jubo Healthcare" there and "Jubo Healthcare Platform"
+everywhere else, and Jubo's line was still the sentence its subtitle used before
+it was rewritten. All three now read as the project's own page reads.
+
+### The Ryze hero
+
+The laptop has the mushroom standing in front of it now, with two sparkles over
+its cap. It is one canvas with a fixed aspect ratio and every piece placed as a
+percentage of it, which is what `CLAUDE.md` asks of a hero composition, so the
+laptop, the character and the marks keep their spacing and their overlap from
+390 up rather than each answering the viewport alone. The character is the one
+that invites you into the prototype further down the page, mirrored to face the
+screen it is presenting.
+
+That gives the card a character, which is what Metro's and BudgetCart's have and
+Ryze's did not. It captures at 1.40:1, the same as Metro's.
+
+The laptop was small for the room it had — 495px in a 1120px article, 44% of the
+row against the artwork Metro gives three quarters of its own. The media column
+takes 60% now and the laptop 84% of it, which is 564px, and the canvas is
+exactly as tall as the laptop standing in it. It carried slack underneath
+before, which put the artwork's own centre above the canvas's, so the header
+centred the box and the picture still sat high against the words. The character
+also stands in its own lane to the left rather than across the screen it is
+presenting; at 12% the laptop started under it and its cap covered the copy on
+the page it was showing.
+
+Four coffee beans drift around the group, drawn as an oval and a crease rather
+than an asset, in Ryze's own roast brown — they belong to this project the way
+Metro's green triangles belong to that one. The character breathes with them,
+slowly and out of step, so the group never reads as one pulsing block.
+`prefers-reduced-motion` stops both and leaves every piece where it lies, the
+mushroom included, whose flip lives in the keyframes so the animation cannot
+overwrite it.
+
+The character is resampled to twice its size, 338x414, because it is drawn at
+128px and a 2x screen wants 256 of real pixels for that where the file had 169.
+Lanczos and a light sharpen do not invent detail — the 266px original is the
+ceiling — but they beat the browser's own upscale, and the edges and gills come
+out visibly cleaner. A larger original would do better still.
+
+### Ryze hero, second pass
+
+The hero is the product now, not just the site: the bag standing on the left,
+the laptop behind it, the character at the other end turned back toward the
+screen, and roasted beans across the floor between them. The beans and the bag
+are the client's own photography. The bag arrived cut out already; the beans
+arrived as a screenshot of a transparent image, checkerboard and all, so the
+board is flooded out from the border, the edge feathered, and each bean lifted
+off by labelling the blobs that remain — five of the seven, the single beans and
+one pair. Their shape is pinned in the style rather than left to the file: they
+draw at 16 to 41px, small enough that rounding the height of the variant Next
+serves shifts the ratio by a couple of per cent, which is enough to read as a
+stretch.
+
+### Hero spacing, the rule, and the rail
+
+Ryze and Jubo set 23px between the subtitle and the project facts where Metro
+sets 120, and 23 between the badge and the title where Metro sets 20. One gap on
+that column cannot do both, so the badge and the title are one group now and the
+space before the facts is the column's own. Both pages measure 20, 20 and 120
+against Metro's 20, 20 and 120. Little Chestnut Thief keeps Framer's flat 23
+behind `legacy`.
+
+Both pages also draw the hairline rule under the hero that Metro and BudgetCart
+draw, and both have the section rail they were missing. Ryze lists seven phases
+and Jubo four, each built from the sections that page actually has:
+`CaseSection` takes an `id` now, so the anchors are the sections themselves.
+Ryze's research phase is one entry pointing at Research Process, the first of
+its sections, with Target User, Persona, Journey Mapping, Usability Testing and
+Pain points inside it rather than beside it — the rule in
+CASE_STUDY_NAV_RULES.md. Every anchor on both pages was clicked and lands.
+
+With the rule and the rail in place both heroes capture at 1.40:1, the same as
+Metro's; Jubo's was 1.65 before.
+
+### Ryze hero, third pass: the bag leans in and the beans spill
+
+The bag used to stand beside the laptop rather than against it, and the reason
+was not the gap in the numbers. The laptop frame is not a laptop-shaped cutout:
+it is opaque from 8.3% to 91.8% of its own box at every height, so with the
+frame at 16% of the canvas its first solid pixel is at 23%, and a bag running
+to 20% never touched it. It is 25% wide now and runs to 26.5%, which puts its
+last sixth behind the screen. The RYZE mark ends at 22% and the laptop begins
+at 23%, so the branding clears the edge — checked at 3x rather than taken from
+the arithmetic.
+
+That opacity is also why the spill needs two layers instead of one. There is no
+gap under the machine to fall through: behind the laptop means hidden, full
+stop. So four beans drop in the back layer and vanish past the left bezel at
+four different moments — `dx` is the same for all of them and the starting `x`
+differs, which is what staggers the disappearance — and six drop in front and
+land along the base. Depth is explicit now: bag, back beans, laptop, floor,
+character, with `isolate` on the canvas so the order belongs to the hero and
+not to the page.
+
+Nothing in the spill is a timeline. Each bean's offset is a function of the
+scroll position — the drop is `t²` so it accelerates, the sideways carry is
+`t(2 - t)` so it spends itself early — which means scrolling back up runs the
+spill backwards with no second animation to keep in step. The window it runs
+in is the canvas's own time on screen, opening just under half a viewport above
+the hero and closing as its upper third passes the top of the view. A flat
+window was the first attempt and was wrong everywhere: 540px of scroll outlived
+a desktop hero that leaves after 250.
+
+`dy` names where a bean's *top* lands, not the bean, so the first settle points
+put beans up to 8% of the canvas below its floor. Each is its own height short
+now — measured against the rotated box rather than the upright one, since a bean
+turned 44° has a bounding box a quarter taller than itself — and nothing in the
+composition crosses the canvas at any width in the sweep.
+
+The bag no longer floats. It had the same slow bob as the character, and a
+mouth that bobs while beans are leaving it reads as the bag doing the pouring,
+so `ryze-float` is gone. `prefers-reduced-motion` pins the spill at its end:
+the beans are simply already where they land, which is the same composition the
+scroll would have built.
+
+### Ryze hero, fourth pass: one heap instead of fifteen beans
+
+The scattered beans are gone, and so is the scroll animation that went with
+them — there is nothing left to roll. The hero is the bag, the laptop, a heap
+of roasted beans on the floor in the corner where those two meet, and the
+character. `RyzeBeanSpill`/`RyzeBeans` is deleted; the heap is one `Image` in
+`RyzeHeroArt`, and the only thing still moving in the hero is the character's
+breath.
+
+The heap runs from 10% to 36% of the canvas, so its middle sits on the 23%
+seam where the bag's front and the laptop's first opaque pixel meet. Its foot
+is at 101.9%, below the bag's at 94.9% and below the laptop's own at 99.9%,
+which is the point rather than an overhang: a thing nearer the viewer than the
+laptop meets the ground lower in the frame, and at 98.9% the heap read as
+floating against the machine's base. It is the one piece stacked in front of
+the laptop for the same reason. The canvas does not clip, and the two points
+measure 3 to 7px against at least 120px of gap beneath at every width.
+The supplied file carried 104px of transparent margin, which would have made
+every one of those percentages describe padding rather than beans, so it is
+trimmed to its content first: 796x384.
+
+The character stands on the laptop now rather than beside it: 77% to 90% of
+the canvas, inside the frame's own right edge at 93.1%, with its feet at 95% —
+below the screen, which ends at 89% — so it is planted on the base deck. It
+used to sit at 84% to 97%, hanging off the machine's right side with nothing
+under it. It keeps its breath, and over a full bob it never rises past 91.6%
+or reaches past 90%, so it stays on the machine at both ends of the cycle.
+
+### Where the Ryze artwork lives
+
+The pictures Anne supplied for this page are no longer mixed in with Framer's
+exports under `public/case/`. They are in `public/images/ryze/`:
+
+| file | what it is |
+| --- | --- |
+| `bag.0b8f0fca.png` | the product shot behind the laptop |
+| `coffee-beans.008c3884.png` | the heap on the floor |
+| `mushroom.2a3dacb3.png` | the character, in the hero and in the prototype invite |
+
+Each keeps a content hash in its name, which is what lets the file be replaced
+without Next's image optimizer serving the old one from cache off the old URL.
+The four single-bean cutouts that used to sit beside them are deleted: they
+were lifted out of a screenshot for the scatter, and nothing refers to them any
+more.
+
+## The IBM case study, and its password
+
+IBM watsonx Builder Control Plane is an ordinary project in the system with one
+extra property. `src/lib/projects.ts` carries `locked: true` on it, and that
+flag does two things and nothing else: the card draws a quiet padlock line, and
+the preview capture leaves the project alone. Ordering, card layout, the rail
+and the closing strip all treat it exactly like the other four.
+
+### The gate is server-side, because the architecture allows it
+
+`next.config.ts` sets no `output: "export"`, so this is a Next.js server app and
+the password can be checked somewhere the browser cannot see.
+
+`src/lib/ibm-access.ts` reads `IBM_CASE_STUDY_PASSWORD`. It is not
+`NEXT_PUBLIC_`, so Next never inlines it into a browser bundle, and the module
+imports `next/headers` and `node:crypto`, either of which fails the build if a
+client component pulls it in. With the variable unset nobody is admitted, which
+is the right way round: a fallback to a literal would put the password back into
+the source and undo the whole exercise. `.env.example` names the variable;
+`.env.local` holds the value and is ignored by git.
+
+`/api/ibm-access` compares the submitted password with `timingSafeEqual` — byte
+for byte, so it is case-sensitive by construction, and constant-time, so neither
+answer leaks through how long it took. On a match it sets `ibm_access` to an
+HMAC of a fixed string keyed by the password. Signed rather than a flag, because
+a flag is forgeable: anyone could type `ibm_access=1` into dev tools and walk
+in. Deriving it from the password means a valid cookie cannot be made without
+knowing the password, the server needs no session store, and changing the
+password invalidates every cookie already issued.
+
+The cookie is `httpOnly`, `sameSite=lax`, `secure` in production, and carries no
+`maxAge` — a session cookie. It survives navigation and a refresh and the
+browser drops it on close, which is the asked-for rule without `sessionStorage`,
+which the server could not read anyway.
+
+### No content behind the cover
+
+`page.tsx` asks `hasAccess()` before rendering anything. Without access it
+returns `PasswordGate` and never calls `CaseStudy`, which lives in its own
+module for that reason. Measured: the gate's HTML is 34KB and contains none of
+the case study's headings; the same route with a valid cookie is 59KB and
+contains all of them. There is nothing to find in the page source. Reading the
+cookie makes the route `ƒ (Dynamic)`; every other route stays static.
+
+### What this gate does and does not do
+
+It does: keep the case study's markup and text away from anyone without the
+password, keep the password out of the client bundle and out of git, and resist
+a forged cookie.
+
+It does not:
+
+- **Protect files in `public/`.** Anything there is served to anyone who asks
+  for the URL, with no check at all. This is why the preview capture skips the
+  project — a screenshot of the hero would be a public picture of protected
+  content. Real IBM images must not go in `public/`. Put them outside it and
+  serve them through a route handler that calls `hasAccess()` first.
+- **Survive a change of host.** The protection is the server check. Switching to
+  `output: "export"`, or to a purely static host, silently turns it into
+  decoration. Deploy to a Node or serverless host.
+- **Amount to confidentiality.** One shared, static password handed out by email
+  is access control suitable for a portfolio. It is not an NDA control. Anything
+  genuinely confidential — unreleased interfaces, internal metrics, customer
+  names — should be cleared for sharing before it goes in, not relied on this to
+  contain.
+
+### Requesting the password
+
+"Request Password" on the gate opens a dialog rather than jumping to a mail
+client: someone who has no password usually has something to explain, and a
+blank `mailto:` makes them write it from nothing. The dialog asks for a name, an
+address to reply to, and a message, and the message field's placeholder does the
+explaining — that the project is under NDA, that it is shared case by case, and
+what to say.
+
+It posts to `/api/password-request`, which sends the message on with the
+provider named by `RESEND_API_KEY` and `REQUEST_FROM_ADDRESS`. The key is read
+on the server and never reaches the browser, which only ever learns whether the
+message went.
+
+With no provider configured the route answers 503 and the dialog hands the
+finished message to the visitor's own mail client, already addressed, subjected
+and written. That is the part worth keeping: the feature works on the day it
+ships, on a portfolio with no mail account wired up, and upgrades to sending
+server-side the moment those two variables are set. What it never does is accept
+a message and quietly drop it — a contact form that loses mail is worse than no
+contact form, because the sender believes they have been heard.
+
+A hidden field no person can reach catches bots; anything in it gets a cheerful
+200 and goes nowhere. There is no rate limit, because that needs a store this
+portfolio does not have — worth adding if the address starts attracting noise.
+
+### The scaffold
+
+`CaseStudy.tsx` is structure, not content. Fifteen sections exist with their
+ids; each holds one grey line saying what belongs there. Nothing states a
+finding, a number, a quote or an outcome, because none was supplied. `Role`,
+`Team` and `Duration` read "To be added" for the same reason; `Client` is IBM.
+
+The rail carries eleven of the fifteen. Key Findings sits inside the research
+phase and gets no entry of its own — CASE_STUDY_NAV_RULES.md rule 3 — and
+Notifications, Workspace Collaboration and Control Plane Experience are the
+three parts of Design Breakdown rather than three phases beside it. All four
+keep their ids; an id does not earn a rail entry.
+
+### The IBM thumbnail
+
+The card picture is `IbmControlPlaneArt`, drawn in SVG rather than captured.
+There is no screenshot because there is nothing safe to screenshot: the work is
+under NDA, and `capture-previews` skips the project for the same reason.
+
+Nothing in it is taken from, traced over or reconstructed from the real product.
+It carries no words at all — grep it for `<text>` and there are none — so every
+surface inside the dashboard is a placeholder bar, a status dot or an abstract
+glyph, and there is no label that could read as a real one. What it communicates
+is the shape of the system: three agents side by side, a workflow that runs
+through them and branches, a ring and a few levels standing for watching it run,
+and dotted paths from outside systems into the one surface that governs them.
+
+SVG also means one asset does every size. It is drawn at 1120x800, which is
+`CARD_ASPECT` exactly, so it fills the 402px frame on My Projects and the 480px
+frame in a More Projects strip with no crop and no letterbox, and stays sharp in
+both. `ProjectCover` picks it up from a slug-to-component map, so the card
+component itself is untouched.
+
+Two passes were needed on the look. The agent mark began as a disc inside a
+rounded square, which is a camera lens; it is a hexagon now, which is how an
+enterprise diagram draws a module. And the background began tinted edge to edge,
+which made the card sit heavier than the four around it — every other card is a
+hero screenshot on off-white. The tint and both glows are halved.
+
+The IBM logo and the watsonx mark are the supplied files, placed and scaled and
+otherwise untouched: the logo's pixels are identical to the file as given.
+
+### Second pass: the builder story
+
+The picture now reads in three zones. The left is who builds it — watsonx at
+2.5x its first size, a builder at a desk with a laptop and a panel of code
+lines above it, and Bob standing in the foreground. The centre is the control
+plane, which moved right and shrank a little to open that column and is still
+60% of the canvas wide, by a wide margin the largest object here. The right is
+what it reaches: three outside systems on dotted paths, with IBM's signature
+below them, smaller than watsonx.
+
+Bob is the asset as supplied, and where he sits is the whole point. He is
+outside the dashboard, nothing is wired to him, he stands beside the builder
+rather than among the agent cards, and he is drawn at a different scale from
+anything inside the interface. He was a tool used to implement the work; he is
+not one of the things the control plane manages, and the composition has to say
+that without a word of explanation. He is also deliberately not the loudest
+thing on the canvas — the first pass had him larger and he pulled the eye off
+the dashboard, so he came down from 136 to 126 wide and the builder's figure
+was lightened from #4C6B96 to #6480A8 to stop it being the darkest mark in the
+picture.
+
+### Third pass: the real figure, and two pieces beside it
+
+The composition is the second pass's again — watsonx large at the top left, the
+control plane in the middle, Bob in the bottom-left corner, the nodes and IBM's
+signature on the right. What changed is that the builder is no longer drawn
+here. It is the figure out of the supplied illustration, with that
+illustration's own screen of code above the desk and its phone added below.
+
+The whole illustration went in first, at Anne's request and over a flagged
+concern, and the concern was right: its panel stack and platform sat level with
+the dashboard and the two argued for the same attention. Three pieces of it
+carry the same story without that fight.
+
+The pieces keep the spacing they have in the original — the code screen sits
+101/364ths of the figure's width to its left and 90/364ths above it, scaled by
+the same factor — so the pair reads as the one object it was drawn as at
+whatever size the card gives it.
+
+Each is masked to its own shape rather than cut as a rectangle. The dotted paths
+that run between the objects in the original pass straight through the boxes
+around them, so a plain crop brought a tail of loose dots along with it: a
+thousand stray pixels on the figure, two hundred on the phone. Every visible
+pixel of all three is identical in colour to the illustration as supplied;
+checked pixel by pixel against the original, not by hashing a file.

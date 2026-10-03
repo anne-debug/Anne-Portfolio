@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppearEffect } from "@/lib/framer-effects";
-import { PreviewMedia } from "@/components/project/PreviewMedia";
-import { projectPreview, type ProjectSlug } from "@/lib/project-previews";
+import {
+  LockGlyph,
+  ProjectCover,
+  StatusOverlay,
+} from "@/components/project/ProjectCover";
+import { PROJECTS } from "@/lib/projects";
 import { CARD_ASPECT } from "@/lib/thumbnails";
 
 export const metadata: Metadata = {
@@ -11,57 +15,6 @@ export const metadata: Metadata = {
   description:
     "Product and UX work: Taipei Metro Point Redesign, BudgetCart, Ryze Coffee and the Jubo healthcare platform.",
 };
-
-interface ProjectRow {
-  href: string;
-  /** Which case study's preview the row shows. */
-  preview: ProjectSlug;
-  category: string;
-  title: string;
-  challenge: string;
-  /** Framer stores four tool slots and stops rendering at the first empty one. */
-  tools: string[];
-}
-
-const PROJECTS: ProjectRow[] = [
-  {
-    href: "/projects/taipei-metro-app",
-    preview: "taipei-metro-app",
-    category: "UI/UX Design",
-    title: "Taipei Metro Point Redesign",
-    challenge:
-      "Reimagining Metro Points to make rewards visible, understandable, and part of everyday commuting",
-    tools: ["Figma ", "", "Javascript", "Typescript"],
-  },
-  {
-    href: "/projects/budgetcart",
-    preview: "budgetcart",
-    category: "Product Design",
-    title: "BudgetCart",
-    challenge:
-      "An online grocery app that eliminates checkout anxiety for budget-constrained shoppers",
-    tools: ["Figma ", "", "Javascript", "Typescript"],
-  },
-  {
-    // Framer points this card at the Jubo page, which is a copy-paste slip.
-    href: "/projects/ryze-coffee",
-    preview: "ryze-coffee",
-    category: "UI/UX Design",
-    title: "Ryze Coffee Redesign",
-    challenge:
-      "Redesigning with user trust and autonomy for long-term retention",
-    tools: ["Figma", "", "", ""],
-  },
-  {
-    href: "/projects/jubo-healthcare",
-    preview: "jubo-healthcare",
-    category: "Web Development",
-    title: "Jubo Healthcare",
-    challenge:
-      "Built frontend modules for a healthcare dashboard used in senior care facilities",
-    tools: ["HTML", "CSS", "Javascript", "Typescript"],
-  },
-];
 
 /** Tools render up to the first blank slot, which is how Framer's card behaves. */
 function visibleTools(tools: string[]): string[] {
@@ -102,8 +55,16 @@ export default function MyProjectsPage() {
                    sets them side by side, so the row starts at 1200.
 
                    Stacked, the card is capped at 520px, so the thumbnail tops out
-                   at 460px rather than stretching across a 1000px column. */
-                className="group flex w-full max-w-[520px] flex-col items-center gap-6 rounded-[40px] p-[30px] transition-colors hover:bg-light-grey-super/50 desktop:max-w-none desktop:flex-row desktop:items-start"
+                   at 460px rather than stretching across a 1000px column.
+
+                   That cap is narrower than the column it sits in from about
+                   510 up, and a block with a max-width keeps to the left of the
+                   space it is given: at 999 the card had 40px to its left and
+                   439 to its right. Auto inline margins centre it in whatever
+                   column it lands in — the single one below 1000, either of the
+                   two above it — and from 1200 the cap is lifted and they have
+                   nothing left to do. */
+                className="group mx-auto flex w-full max-w-[520px] flex-col items-center gap-6 rounded-[40px] p-[30px] transition-colors hover:bg-light-grey-super/50 desktop:max-w-none desktop:flex-row desktop:items-start"
               >
                 <div
                   /* Framer's desktop thumbnail measures 402px wide in a 1120px
@@ -113,12 +74,15 @@ export default function MyProjectsPage() {
                   className="relative w-full shrink-0 overflow-hidden rounded-3xl bg-white desktop:w-[402px]"
                   style={{ aspectRatio: CARD_ASPECT }}
                 >
-                  <PreviewMedia
-                    preview={projectPreview(project.preview)}
-                    alt={project.title}
+                  <ProjectCover
+                    slug={project.slug}
+                    title={project.title}
                     sizes="(width < 1200px) min(460px, 92vw), 402px"
                     className="transition-transform duration-500 group-hover:scale-[1.02]"
                   />
+                  {project.status ? (
+                    <StatusOverlay label={project.status} />
+                  ) : null}
                 </div>
 
                 {/* Stacked, the copy sits under the thumbnail with a little air
@@ -142,8 +106,18 @@ export default function MyProjectsPage() {
                       {project.title}
                     </h2>
                     <p className="ts-body w-full text-left">
-                      {project.challenge}
+                      {project.description}
                     </p>
+
+                    {/* A quiet line, not a badge: the card is the same card the
+                        other projects use, and this says where the link goes
+                        rather than competing with the title above it. */}
+                    {project.locked ? (
+                      <span className="ts-body-small inline-flex items-center gap-1.5 text-light-grey">
+                        <LockGlyph size={14} />
+                        Password protected
+                      </span>
+                    ) : null}
                   </div>
 
                   <ul className="flex flex-wrap items-end gap-2">

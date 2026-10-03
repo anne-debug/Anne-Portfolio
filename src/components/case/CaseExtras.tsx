@@ -17,7 +17,11 @@ import { AppearEffect } from "@/lib/framer-effects";
 /* -------------------------------------------------------------------------- */
 
 /** The four-pointed star Framer draws as a vector beside each key point. */
-export function StarGlyph({ size = 14 }: { size?: number }) {
+/** The star's own width, and the space between it and the text it opens. */
+export const STAR_SIZE = 14;
+const STAR_GAP = 8;
+
+export function StarGlyph({ size = STAR_SIZE }: { size?: number }) {
   return (
     <svg
       width={size}
@@ -47,36 +51,54 @@ export function StarPointList({
   columns?: 1 | 2;
   bold?: boolean;
 }) {
-  const half = Math.ceil(points.length / 2);
-  const groups = columns === 2 ? [points.slice(0, half), points.slice(half)] : [points];
+  /*
+    One column is a stack. Two is a grid rather than a pair of stacks, because
+    a stack lets each column set its own rhythm: the points end up at different
+    heights and nothing lines up across the gap. `auto-rows-fr` gives every row
+    the height of its tallest point, so the four read as a block.
+  */
+  const grid = columns === 2;
 
   return (
-    <div className={`flex w-full flex-col gap-10 ${columns === 2 ? "tablet:flex-row" : ""}`}>
-      {groups.map((group, gi) => (
-        <div key={gi} className="flex flex-1 flex-col gap-2.5">
-          {group.map((point) => (
-            <div key={point.title} className="flex w-full flex-col gap-2">
-              <div className="flex items-start gap-2">
-                <span className="pt-[4.5px] text-dark-charcoal">
-                  <StarGlyph />
-                </span>
-                <p className={`ts-body ${bold ? "font-semibold" : ""}`}>{point.title}</p>
-              </div>
-              {point.items?.length ? (
-                /* Framer indents these under the star without a second marker:
-                   the arrow that opens each line is the marker. */
-                <ul className="flex flex-col gap-1 pl-8">
-                  {point.items.map((item) => (
-                    <li key={item} className="ts-body text-dark-charcoal">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
+    <div
+      className={
+        grid
+          ? "grid w-full grid-cols-1 gap-x-10 gap-y-6 tablet:auto-rows-fr tablet:grid-cols-2"
+          : "flex w-full flex-col gap-10"
+      }
+    >
+      <div className={grid ? "contents" : "flex flex-1 flex-col gap-2.5"}>
+        {points.map((point) => (
+          <div key={point.title} className="flex w-full flex-col gap-2">
+            <div className="flex items-start" style={{ gap: STAR_GAP }}>
+              <span className="pt-[4.5px] text-dark-charcoal">
+                <StarGlyph />
+              </span>
+              <p className={`ts-body ${bold ? "font-semibold" : ""}`}>
+                {point.title}
+              </p>
             </div>
-          ))}
-        </div>
-      ))}
+            {point.items?.length ? (
+              /* Indented to where the title starts, not past it: the star and
+                 the gap after it, and nothing more. Framer sets these without a
+                 second marker — the arrow that opens each line is the marker —
+                 so the only thing holding them in line with the title above is
+                 this padding, and at the 32px it used to carry they sat 10px
+                 adrift of it. */
+              <ul
+                className="flex flex-col gap-1"
+                style={{ paddingLeft: STAR_SIZE + STAR_GAP }}
+              >
+                {point.items.map((item) => (
+                  <li key={item} className="ts-body text-dark-charcoal">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -143,6 +165,7 @@ export function VideoBlock({
   radius = 10,
 }: {
   src: string;
+  /** Framer's share of the column, from 810 up. A phone takes the lot. */
   width?: string;
   radius?: number;
 }) {
@@ -151,7 +174,10 @@ export function VideoBlock({
       enter={{ opacity: 0, y: 40, transition: "spring-duration 0.6s 0 0s" }}
       trigger="onInView"
       threshold={0.1}
-      className="flex w-full justify-center p-5"
+      /* No side padding on a phone: the recording is the point of the section
+         and 80% of an already narrow column, inset a further 20px either side,
+         left it too small to follow. */
+      className="flex w-full justify-center py-5 tablet:px-5"
     >
       <video
         src={src}
@@ -159,8 +185,10 @@ export function VideoBlock({
         loop
         muted
         playsInline
-        className="h-auto object-cover"
-        style={{ width, borderRadius: radius }}
+        className="h-auto w-full object-cover tablet:w-[var(--video-w)]"
+        style={
+          { borderRadius: radius, "--video-w": width } as React.CSSProperties
+        }
       />
     </AppearEffect>
   );
@@ -177,11 +205,17 @@ export function VideoBlock({
  */
 export function Slideshow({
   slides,
-  height = 600,
+  ratio = 16 / 9,
   alt = "",
 }: {
   slides: string[];
-  height?: number;
+  /**
+   * The slides' own shape, width over height. The stage takes the column and
+   * derives its height from this, rather than standing at a fixed pixel height
+   * the way Framer draws it: at 600px tall a 16:9 slide left a band of empty
+   * card above and below it on a phone and was cut short on a desktop.
+   */
+  ratio?: number;
   alt?: string;
 }) {
   const [index, setIndex] = useState(0);
@@ -196,7 +230,7 @@ export function Slideshow({
     <div className="flex w-full flex-col items-center gap-4">
       <div
         className="relative w-full overflow-hidden rounded-[20px]"
-        style={{ height }}
+        style={{ aspectRatio: ratio }}
       >
         <AnimatePresence initial={false} custom={direction} mode="popLayout">
           <motion.div
@@ -205,14 +239,19 @@ export function Slideshow({
             initial={{ x: direction > 0 ? "100%" : "-100%", opacity: 0.4 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: direction > 0 ? "-100%" : "100%", opacity: 0.4 }}
-            transition={{ type: "spring", stiffness: 200, damping: 40, mass: 1 }}
+            transition={{
+              type: "spring",
+              stiffness: 200,
+              damping: 40,
+              mass: 1,
+            }}
             className="absolute inset-0"
           >
             <Image
               src={slides[index]}
               alt={`${alt} ${index + 1} of ${slides.length}`}
               fill
-              sizes="1200px"
+              sizes="(width < 810px) 92vw, 1200px"
               className="object-contain"
             />
           </motion.div>
@@ -222,20 +261,32 @@ export function Slideshow({
           type="button"
           onClick={() => go(-1)}
           aria-label="Previous slide"
-          className="absolute top-1/2 left-3 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-dark-charcoal shadow-sm backdrop-blur transition hover:bg-white"
+          className="absolute top-1/2 left-2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-dark-charcoal shadow-sm backdrop-blur transition hover:bg-white tablet:left-3 tablet:size-10"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M10 3 5 8l5 5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M10 3 5 8l5 5"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
         <button
           type="button"
           onClick={() => go(1)}
           aria-label="Next slide"
-          className="absolute top-1/2 right-3 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-dark-charcoal shadow-sm backdrop-blur transition hover:bg-white"
+          className="absolute top-1/2 right-2 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-dark-charcoal shadow-sm backdrop-blur transition hover:bg-white tablet:right-3 tablet:size-10"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="m6 3 5 5-5 5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="m6 3 5 5-5 5"
+              stroke="currentColor"
+              strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         </button>
       </div>
@@ -264,13 +315,7 @@ export function Slideshow({
 /* -------------------------------------------------------------------------- */
 
 /** The orange pill that jumps past the research section. */
-export function SkipButton({
-  href,
-  label,
-}: {
-  href: string;
-  label: string;
-}) {
+export function SkipButton({ href, label }: { href: string; label: string }) {
   return (
     /* Framer centres this button under the section. */
     <div className="flex w-full justify-center pt-[30px]">
@@ -287,7 +332,13 @@ export function SkipButton({
 }
 
 /** A plain wrapper that fades its children in on scroll. */
-export function Reveal({ children, className }: { children: ReactNode; className?: string }) {
+export function Reveal({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   return (
     <AppearEffect
       enter={{ opacity: 0, y: 40, transition: "spring-duration 0.6s 0 0s" }}

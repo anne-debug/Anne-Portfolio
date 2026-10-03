@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import {
-  Banner,
   CaseHeader,
   CaseSection,
   Paragraphs,
@@ -16,7 +15,10 @@ import {
   VideoBlock,
 } from "@/components/case/CaseExtras";
 import { CaseShell } from "@/components/case/CaseShell";
-import type { MoreProjectCard } from "@/components/case/MoreProjects";
+import { SidebarNav, type SidebarEntry } from "@/components/case/SidebarNav";
+import { RyzeHeroArt } from "@/components/case/RyzeHeroArt";
+import { ProblemStatement } from "@/components/case/ProblemStatement";
+import { PrototypeInvite } from "@/components/case/PrototypeInvite";
 
 export const metadata: Metadata = {
   title: "Ryze Coffee Web Redesign — Anne Lin",
@@ -24,21 +26,38 @@ export const metadata: Metadata = {
     "Redesigning with user trust and autonomy for long-term retention.",
 };
 
-const MORE: MoreProjectCard[] = [
-  {
-    href: "/projects/jubo-healthcare",
-    category: "Web Development",
-    title: "Jubo Heallthcare Platform",
-    description:
-      "Built frontend modules for a senior care dashboard, reducing cognitive load and improving data visibility through close collaboration with designers and nurses.",
-  },
-  {
-    href: "/projects/little-chestnut-thief",
-    category: "Graphic Design",
-    title: "Little Chestnut THief",
-    description:
-      "Designed a boutique-style web store for chestnut-based desserts — a personal passion turned into a brand concept. ",
-  },
+/**
+ * The Figma prototype the Solutions section links out to. Framer set that line
+ * as plain text with no link behind it, so this came from Anne rather than from
+ * the source file.
+ */
+/**
+ * This page's own sections; see CASE_STUDY_NAV_RULES.md.
+ *
+ * The research phase is one entry pointing at Research Process, the first of
+ * its sections; Target User, Persona, Journey Mapping, Usability Testing and
+ * Pain points sit inside it and are not listed separately. "Design Breakdown"
+ * is this page's second Solutions section, the one that walks through the three
+ * redesigns.
+ */
+const SECTIONS: SidebarEntry[] = [
+  { id: "project-context", label: "Project Context" },
+  { id: "problem", label: "Problem" },
+  { id: "my-role", label: "My Role" },
+  { id: "solution-overview", label: "Solution Overview" },
+  { id: "research-process", label: "User Research" },
+  { id: "redesign-details", label: "Design Breakdown" },
+  { id: "result-impact", label: "Result & Impact" },
+];
+
+const PROTOTYPE_URL =
+  "https://www.figma.com/proto/KOtXVHJhI7dznw05o82Fvx/Ryze-High-Fi?node-id=2988-4920&viewport=54%2C46%2C0.14&t=hAMRthDpOGODITXq-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=2988%3A4920&page-id=2988%3A4792";
+
+/** The three the usability testing turned up; Framer holds them in a picture. */
+const PAIN_POINTS = [
+  { number: "01.", title: "Subscription transparency is unclear" },
+  { number: "02.", title: "Key information is hidden or hard to find" },
+  { number: "03.", title: "Promotions and wording reduce trust" },
 ];
 
 const PROBLEMS = [
@@ -71,7 +90,10 @@ const PROBLEMS = [
 const SOLUTION_POINTS = [
   {
     title: "Make the subscription model explicit",
-    items: ["Reworded CTA (e.g., “Subscription”)", "Clearly stated recurring payment details"],
+    items: [
+      "Reworded CTA (e.g., “Subscription”)",
+      "Clearly stated recurring payment details",
+    ],
   },
   {
     title: "Reduce cognitive load",
@@ -126,57 +148,38 @@ const FLOW_TWO = [
 export default function RyzeCoffeePage() {
   return (
     <CaseShell
-      more={MORE}
-      canvasWidth={1440}
+      current="ryze-coffee"
+      sidebar={<SidebarNav entries={SECTIONS} />}
+      moreVariant="compact"
+      canvasWidth={1200}
       bodyWidth={1200}
       bodyGap={50}
       pageTop={60}
       bodyPad={120}
+      bodyPadX={40}
       moreBottom={120}
     >
-      {/* Hero: the cover and its glow both overhang the column to the right */}
-      {/* The glow overhangs the column by design, so the stage clips it */}
-      <div className="relative w-full overflow-hidden pb-20">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute -z-10 rounded-full"
-          style={{
-            right: -120,
-            bottom: -19,
-            width: 976,
-            height: 623,
-            background:
-              "radial-gradient(50% 50% at 50% 50%, rgba(184, 66, 7, 0.48) 0%, rgba(255, 255, 255, 0.48) 100%)",
-          }}
-        />
+      <div className="relative w-full pb-20">
         <CaseHeader
-          category="UI / UX Design"
-          title="Ryze Coffee WEB Redesign"
+          category="UI/UX Design"
+          title="Ryze Coffee Web Redesign"
           description="Redesigning with user trust and autonomy for long-term retention"
           titleGap={20}
           meta={[
             { label: "Client", value: "Ryze coffee (Coursework Project)" },
-            { label: "Role", value: "UIUX designer/ Researcher" },
+            { label: "Role", value: "UI/UX Designer / Researcher" },
             { label: "Team", value: "Anne Lin, Tuyara Chinbat" },
             { label: "Duration", value: "4 weeks (2026)" },
           ]}
+          media={<RyzeHeroArt />}
         />
-        <Reveal className="mt-8 w-full">
-          <div className="relative mx-auto h-[447px] w-full max-w-[967px] overflow-hidden rounded-[20px]">
-            <Image
-              src="/case/TgcH0WP5wCamtgc6Wja3z3NQVE.png"
-              alt="The redesigned Ryze Coffee home page"
-              fill
-              sizes="967px"
-              className="object-cover"
-              priority
-            />
-          </div>
-        </Reveal>
       </div>
 
+      {/* The rule Metro and BudgetCart draw under their heroes. */}
+      <span className="h-px w-full bg-grey-100" aria-hidden />
+
       <div className="flex w-full flex-col gap-[90px]">
-        <CaseSection title="Project context" gap={10}>
+        <CaseSection id="project-context" title="Project context" gap={10}>
           <Paragraphs
             items={[
               "Ryze is a fast-growing wellness brand known for its mushroom coffee, which has gained popularity largely through social media and word of mouth.",
@@ -186,8 +189,8 @@ export default function RyzeCoffeePage() {
           />
         </CaseSection>
 
-        <CaseSection title="Problem" gap={40}>
-          <div className="flex w-full flex-col gap-[42px]">
+        <CaseSection id="problem" title="Problem" gap={40}>
+          <div className="flex w-full flex-col gap-[90px]">
             {PROBLEMS.map((problem) => (
               <Reveal key={problem.title} className="w-full">
                 <div
@@ -196,7 +199,7 @@ export default function RyzeCoffeePage() {
                   }`}
                 >
                   <div className="flex flex-1 flex-col gap-2.5">
-                    <h3 className="ts-heading-5">{problem.title}</h3>
+                    <h3 className="ts-heading-6">{problem.title}</h3>
                     <p className="ts-body">{problem.body}</p>
                   </div>
                   <div className="relative w-full tablet:w-[60%]">
@@ -206,7 +209,7 @@ export default function RyzeCoffeePage() {
                       width={1400}
                       height={900}
                       sizes="700px"
-                      className="h-auto w-full"
+                      className="h-auto w-full rounded-[20px]"
                     />
                   </div>
                 </div>
@@ -214,7 +217,7 @@ export default function RyzeCoffeePage() {
             ))}
 
             <div className="flex w-full flex-col gap-2.5">
-              <h3 className="ts-heading-5">🚫 Overall Impact</h3>
+              <h3 className="ts-heading-6">Overall Impact</h3>
               <BulletList
                 items={[
                   "Reduced user control and trust ",
@@ -227,16 +230,23 @@ export default function RyzeCoffeePage() {
           </div>
 
           <div className="flex w-full flex-col gap-2.5">
-            <p className="ts-body">The problem statement that guided this project was:</p>
-            <Banner
-              src="/case/L45GPIPkSSVXj1s0K0WvoiJaw.png"
-              alt="How might we reduce deceptive patterns and cognitive overload to build trust and help users feel in control when making a purchase decision, while still supporting business goals?"
-              height="auto"
-            />
+            <p className="ts-body">
+              The problem statement that guided this project was:
+            </p>
+            {/* Framer set this statement as a flat picture of itself, which
+                left it at whatever type that export was drawn at and unable to
+                rewrap. It is the shared card now, so it carries the same
+                gradient, corner, padding and Heading 6 as Metro and
+                BudgetCart, and the words are real text. */}
+            <ProblemStatement stars>
+              How might we reduce deceptive patterns and cognitive overload to
+              build trust and help users feel in control when making a purchase
+              decision, while still supporting business goals?
+            </ProblemStatement>
           </div>
         </CaseSection>
 
-        <CaseSection title="My role" gap={10}>
+        <CaseSection id="my-role" title="My role" gap={10}>
           <p className="ts-body">
             In this project, I led the redesign of{" "}
             <strong className="font-semibold">
@@ -246,43 +256,65 @@ export default function RyzeCoffeePage() {
           <p className="ts-body font-semibold">Key responsibilities:</p>
           <StarPointList
             points={[
-              { title: "Identified usability issues related to trust, clarity, and subscription transparency" },
-              { title: "Translated research insights into design solutions that reduce cognitive load and improve decision-making" },
-              { title: "Improved information hierarchy and CTA clarity to better communicate product " },
-              { title: "Collaborated on usability testing and iterated designs based on user feedback and behavioral insights" },
+              {
+                title:
+                  "Identified usability issues related to trust, clarity, and subscription transparency",
+              },
+              {
+                title:
+                  "Translated research insights into design solutions that reduce cognitive load and improve decision-making",
+              },
+              {
+                title:
+                  "Improved information hierarchy and CTA clarity to better communicate product ",
+              },
+              {
+                title:
+                  "Collaborated on usability testing and iterated designs based on user feedback and behavioral insights",
+              },
             ]}
           />
         </CaseSection>
 
-        <CaseSection title="Solutions" gap={10}>
-          <h3 className="ts-heading-3b w-full text-left">
-            Redesigned the experience with a focus on clarity, transparency, and user autonomy
+        <CaseSection id="solution-overview" title="Solutions" gap={10}>
+          <h3 className="ts-heading-6 w-full text-left">
+            Redesigned the experience with a focus on clarity, transparency, and
+            user autonomy
           </h3>
           <div className="w-full p-[30px]">
             <StarPointList points={SOLUTION_POINTS} columns={2} bold />
           </div>
-          <p className="ts-body-medium-bold">Explore our Prototype here🔗 </p>
-          <SkipButton href="#redesign-details" label="skip to Redesign Details" />
+          {/* The playful way into the prototype. It sits under the four
+              points and keeps its distance from the Skip button below, so the
+              two never read as a pair of competing buttons. */}
+          <div className="pt-6 pb-10">
+            <PrototypeInvite href={PROTOTYPE_URL} />
+          </div>
+          <SkipButton
+            href="#redesign-details"
+            label="Skip to redesign details"
+          />
         </CaseSection>
 
-        <CaseSection title="Research Process" gap={10}>
+        <CaseSection id="research-process" title="Research Process" gap={10}>
           <div className="flex w-full flex-col gap-2.5">
-            <h3 className="ts-heading-3b w-full text-left">target user</h3>
+            <h3 className="ts-heading-5 w-full text-left">Target User</h3>
             <p className="ts-body">
-              Health-conscious individuals who are looking for a healthier alternative to
-              coffee and are interested in improving their daily wellness habits.
+              Health-conscious individuals who are looking for a healthier
+              alternative to coffee and are interested in improving their daily
+              wellness habits.
             </p>
           </div>
 
           <div className="flex w-full flex-col gap-2.5 pt-[90px]">
-            <h3 className="ts-heading-3b w-full text-left">PersonA</h3>
+            <h3 className="ts-heading-5 w-full text-left">Persona</h3>
             <Paragraphs
               items={[
                 "Before jumping into the design, we wanted to understand our users better.",
                 "So we created a persona to represent our target user. This helped us identify key pain points and opportunities for improvement.",
               ]}
             />
-            <Reveal className="w-full">
+            <Reveal className="w-full pt-5">
               <div className="w-full tablet:w-[77%]">
                 <Image
                   src="/case/TiWQE7JDRoA2Uw2psZXUDkOqD24.png"
@@ -297,7 +329,7 @@ export default function RyzeCoffeePage() {
           </div>
 
           <div className="flex w-full flex-col gap-2.5 pt-[90px]">
-            <h3 className="ts-heading-3b w-full text-left">Journey Mapping</h3>
+            <h3 className="ts-heading-5 w-full text-left">Journey Mapping</h3>
             <div className="flex w-full flex-col gap-[25px]">
               <Paragraphs
                 items={[
@@ -305,11 +337,11 @@ export default function RyzeCoffeePage() {
                   "Users feel excited during product discovery, but their experience drops significantly during checkout, especially when they realize it is a subscription.",
                 ]}
               />
-              <Slideshow slides={JOURNEY_SLIDES} height={600} alt="Journey map slide" />
+              <Slideshow slides={JOURNEY_SLIDES} alt="Journey map slide" />
 
               <div className="flex w-full flex-col gap-2.5 tablet:flex-row">
                 <div className="flex flex-1 flex-col gap-2.5 py-[7px]">
-                  <p className="ts-body-large">Product Purchase Flow</p>
+                  <p className="ts-body-large-fluid">Product Purchase Flow</p>
                   <Image
                     src="/case/M7aLJj0ice1Acd6O9dArLQyET0.jpg"
                     alt="The product purchase flow"
@@ -320,7 +352,7 @@ export default function RyzeCoffeePage() {
                   />
                 </div>
                 <div className="flex flex-1 flex-col gap-2.5">
-                  <p className="ts-body-large">Service sign up flow</p>
+                  <p className="ts-body-large-fluid">Service sign up flow</p>
                   <Image
                     src="/case/kLxue3vInOHnU1O9CIjvU1sNOU.jpg"
                     alt="The mindfulness service sign-up flow"
@@ -335,7 +367,7 @@ export default function RyzeCoffeePage() {
           </div>
 
           <div className="flex w-full flex-col gap-2.5 pt-[90px]">
-            <h3 className="ts-heading-3b w-full text-left">Usability Testing</h3>
+            <h3 className="ts-heading-5 w-full text-left">Usability Testing</h3>
             <div className="flex w-full flex-col gap-[30px]">
               <Paragraphs
                 items={[
@@ -345,14 +377,22 @@ export default function RyzeCoffeePage() {
               />
               <div className="flex w-full flex-col gap-10 tablet:flex-row">
                 <div className="flex flex-1 flex-col gap-2.5">
-                  <h4 className="ts-heading-6-small">Flow 1: Purchase &amp; Checkout</h4>
-                  <p className="ts-body">Goal: Evaluate trust, clarity, and decision-making</p>
+                  <h4 className="ts-heading-6">
+                    Flow 1: Purchase &amp; Checkout
+                  </h4>
+                  <p className="ts-body">
+                    Goal: Evaluate trust, clarity, and decision-making
+                  </p>
                   <p className="ts-body">We tested:</p>
                   <BulletList items={FLOW_ONE} />
                 </div>
                 <div className="flex flex-1 flex-col gap-2.5">
-                  <h4 className="ts-heading-6-small">Flow 2: Mindfulness Service Sign-Up</h4>
-                  <p className="ts-body">Goal: Evaluate understanding and perceived value</p>
+                  <h4 className="ts-heading-6">
+                    Flow 2: Mindfulness Service Sign-Up
+                  </h4>
+                  <p className="ts-body">
+                    Goal: Evaluate understanding and perceived value
+                  </p>
                   <p className="ts-body">We tested:</p>
                   <BulletList items={FLOW_TWO} />
                 </div>
@@ -361,32 +401,48 @@ export default function RyzeCoffeePage() {
           </div>
 
           <div className="flex w-full flex-col gap-2.5 pt-[90px]">
-            <h3 className="ts-heading-3b w-full text-left">Pain points</h3>
+            <h3 className="ts-heading-5 w-full text-left">Pain points</h3>
             <p className="ts-body">
               Through the usability testing, we identified several key issues…
             </p>
-            <Reveal className="w-full">
-              <Image
-                src="/case/d7NfVDFgWnynAYPidIExAlDe0.png"
-                alt="The pain points identified during usability testing"
-                width={2000}
-                height={1200}
-                sizes="1200px"
-                className="h-auto w-full rounded-[20px] p-[5px]"
-              />
-            </Reveal>
+            {/* Framer draws these as one flat picture of three cards, which on a
+                phone came to 342px wide and 78 tall with the type inside it
+                unreadable. They are the cards the Taipei page builds the same
+                three points from: stacked one to a row below 810, across from
+                there, and real text at every size. */}
+            <div className="flex w-full flex-col gap-[9px] tablet:flex-row">
+              {PAIN_POINTS.map((point) => (
+                <div
+                  key={point.number}
+                  className="flex flex-1 flex-col gap-3 rounded-[20px] border border-grey-100 px-5 py-6 tablet:gap-[25px] tablet:px-[30px] tablet:py-10"
+                >
+                  <p className="ts-heading-5 font-bold">{point.number}</p>
+                  <p className="ts-body font-semibold">{point.title}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </CaseSection>
 
-        <section id="redesign-details" className="flex w-full flex-col gap-[60px]">
+        <section
+          id="redesign-details"
+          className="flex w-full flex-col gap-[60px]"
+        >
           <div className="flex w-full flex-col gap-[30px]">
             <div className="flex w-full flex-col gap-2.5">
-              <h2 className="ts-heading-2 w-full text-left text-grey-200">SOLUTIONS</h2>
-              <h3 className="ts-heading-3b w-full text-left">
-                MAKING THE EXPERIENCE CLEAR, TRANSPARENT, AND TRUSTWORTHY
+              <h2 className="ts-heading-3 w-full text-left text-grey-200">
+                Solutions
+              </h2>
+              {/* The section's umbrella statement, so it sits between the
+                  title above it and the numbered solutions under it: 36 against
+                  55 and 24 on a desktop, the scale's own steps. It used to be
+                  the smallest of the three, which read as though each solution
+                  outranked the sentence introducing all of them. */}
+              <h3 className="ts-heading-5 w-full text-left">
+                Making the experience clear, transparent, and trustworthy
               </h3>
               <div className="flex w-full flex-col gap-2">
-                <h3 className="ts-heading-3 w-full text-left">
+                <h3 className="ts-heading-6 w-full text-left">
                   1. Simplified UI to reduce cognitive load
                 </h3>
                 <Paragraphs
@@ -404,9 +460,9 @@ export default function RyzeCoffeePage() {
             <div className="flex w-full flex-col gap-[30px]">
               <div className="flex w-full flex-col gap-5">
                 <div className="flex w-full flex-col gap-2">
-                  <h3 className="ts-heading-3 w-full text-left">
-                    2. Redesigning the checkout flow to provide transparency to the
-                    subscription model
+                  <h3 className="ts-heading-6 w-full text-left">
+                    2. Redesigning the checkout flow to provide transparency to
+                    the subscription model
                   </h3>
                   <Paragraphs
                     items={[
@@ -418,12 +474,16 @@ export default function RyzeCoffeePage() {
                   />
                   <ul className="flex w-full list-disc flex-col gap-1 pl-5">
                     <li className="ts-body">
-                      Changed the CTA to <strong className="font-semibold">“Subscription”</strong> to
-                      clearly communicate the purchase type
+                      Changed the CTA to{" "}
+                      <strong className="font-semibold">“Subscription”</strong>{" "}
+                      to clearly communicate the purchase type
                     </li>
                     <li className="ts-body">
-                      Reworded the subscription details to explicitly state it is a{" "}
-                      <strong className="font-semibold">monthly recurring charge</strong>
+                      Reworded the subscription details to explicitly state it
+                      is a{" "}
+                      <strong className="font-semibold">
+                        monthly recurring charge
+                      </strong>
                     </li>
                     <li className="ts-body">
                       Clearly surfaced a{" "}
@@ -434,8 +494,8 @@ export default function RyzeCoffeePage() {
                     </li>
                   </ul>
                   <p className="ts-body">
-                    These changes help users better understand what they are purchasing and
-                    reduce the risk of unintended subscriptions.
+                    These changes help users better understand what they are
+                    purchasing and reduce the risk of unintended subscriptions.
                   </p>
                 </div>
               </div>
@@ -446,7 +506,7 @@ export default function RyzeCoffeePage() {
           <div className="flex w-full flex-col gap-[55px]">
             <div className="flex w-full flex-col gap-9">
               <div className="flex w-full flex-col gap-2">
-                <h3 className="ts-heading-3 w-full text-left">
+                <h3 className="ts-heading-6 w-full text-left">
                   3. Providing decision autonomy and information privacy
                 </h3>
                 <Paragraphs
@@ -464,22 +524,24 @@ export default function RyzeCoffeePage() {
           </div>
         </section>
 
-        <CaseSection title="RESULT & IMPACT " gap={10}>
-          <h3 className="ts-heading-3 w-full text-left">Validating the Redesign</h3>
+        <CaseSection id="result-impact" title="Result & Impact" gap={10}>
+          <h3 className="ts-heading-6 w-full text-left">
+            Validating the Redesign
+          </h3>
           <Paragraphs
             items={[
               "We conducted A/B testing with 5 users to evaluate the impact of our redesign.",
               "Each participant interacted with both the current website and our redesigned prototype. Afterward, we asked them to rate their levels of confusion, trust, and their likelihood to recommend or discourage others from purchasing for each version.",
             ]}
           />
-          <Reveal className="w-full">
+          <Reveal className="w-full pt-6">
             <Image
               src="/case/ww7dfiuEeuIGqmwsNcJrvgZPEE.png"
               alt="A/B testing results comparing the current site with the redesign"
               width={2000}
               height={1200}
               sizes="1200px"
-              className="h-auto w-full"
+              className="h-auto w-full rounded-[20px]"
             />
           </Reveal>
         </CaseSection>
@@ -502,7 +564,7 @@ export default function RyzeCoffeePage() {
                 width={2000}
                 height={1200}
                 sizes="1200px"
-                className="h-auto w-full"
+                className="h-auto w-full rounded-[20px]"
               />
             </Reveal>
           </div>

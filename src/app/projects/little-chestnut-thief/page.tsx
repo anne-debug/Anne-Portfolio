@@ -7,7 +7,6 @@ import {
   Paragraphs,
 } from "@/components/case/CaseParts";
 import { CaseShell } from "@/components/case/CaseShell";
-import type { MoreProjectCard } from "@/components/case/MoreProjects";
 
 export const metadata: Metadata = {
   title: "Little Chestnut Thief — Anne Lin",
@@ -15,33 +14,17 @@ export const metadata: Metadata = {
     "A boutique-style web store for chestnut-based desserts, a personal passion turned into a brand concept.",
 };
 
-const MORE: MoreProjectCard[] = [
-  {
-    href: "/projects/jubo-healthcare",
-    category: "Web Development",
-    title: "JUBO HEALTHCARE PLATFORM",
-    description:
-      "Built frontend modules for a senior care dashboard, reducing cognitive load and improving data visibility through close collaboration with designers and nurses.",
-  },
-  {
-    href: "/projects/taipei-metro-app",
-    category: "UI/UX Design",
-    title: "TAIPEI METRO GO APP REDEISGN ",
-    description:
-      "Reimagining Metro Points to make rewards visible, understandable, and part of everyday commuting.",
-  },
-];
-
 export default function LittleChestnutThiefPage() {
   return (
     <CaseShell
-      more={MORE}
+      current="little-chestnut-thief"
       pageTop={60}
       bodyPad={120}
       bodyGap={31}
       moreBottom={120}
     >
       <CaseHeader
+        legacy
         category="Graphic Design"
         title="Little Chestnut Thief"
         description="Designed a boutique-style web store for chestnut-based desserts — a personal passion turned into a brand concept. "
@@ -62,7 +45,7 @@ export default function LittleChestnutThiefPage() {
           priority
         />
 
-        <CaseSection title="OVERVIEW" gap={40}>
+        <CaseSection legacy title="OVERVIEW" gap={40}>
           <Paragraphs
             items={[
               "I’ve always had a deep love for chestnuts! The flavor, the warmth, the nostalgia. Every time I see a chestnut dessert, I just can’t help but get one for myself. Whether it’s chestnut cream cakes, roasted kuri, or handmade jam, these little treats always bring me joy!",
@@ -72,7 +55,7 @@ export default function LittleChestnutThiefPage() {
           />
         </CaseSection>
 
-        <CaseSection title="Design Process" gap={40}>
+        <CaseSection legacy title="Design Process" gap={40}>
           <Paragraphs
             items={[
               "This project was all about bringing that vision to life through thoughtful design.",
@@ -83,7 +66,7 @@ export default function LittleChestnutThiefPage() {
           />
         </CaseSection>
 
-        <CaseSection title="Deliverable" gap={40}>
+        <CaseSection legacy title="Deliverable" gap={40}>
           <Banner
             src="/case/1nbtGdwKuMThEe1frjcnG2HCoB4.jpg"
             alt="The full Little Chestnut Thief store design, from the home page through to product listings"

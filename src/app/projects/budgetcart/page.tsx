@@ -10,7 +10,6 @@ import {
 } from "@/components/case/CaseExtras";
 import { CaseShell } from "@/components/case/CaseShell";
 import { ProblemStatement } from "@/components/case/ProblemStatement";
-import type { MoreProjectCard } from "@/components/case/MoreProjects";
 import { PhoneMockup } from "@/components/case/PhoneMockup";
 import { SidebarNav, type SidebarEntry } from "@/components/case/SidebarNav";
 import { Tabs, type TabPanel } from "@/components/case/Tabs";
@@ -21,23 +20,6 @@ export const metadata: Metadata = {
   description:
     "An online grocery app that eliminates checkout anxiety for budget-constrained shoppers.",
 };
-
-const MORE: MoreProjectCard[] = [
-  {
-    href: "/projects/taipei-metro-app",
-    category: "UI/UX Design",
-    title: "Taipei Metro Point Redesign",
-    description:
-      "Reimagining Metro Points to make rewards visible, understandable, and part of everyday commuting.",
-  },
-  {
-    href: "/projects/ryze-coffee",
-    category: "UI/UX Design",
-    title: "Ryze Coffee Redesign",
-    description:
-      "Redesigning with user trust and autonomy for long-term retention",
-  },
-];
 
 /**
  * Framer's sidebar links on the Desktop variant point at the Taipei page, which
@@ -158,17 +140,17 @@ const COMPETITORS = [
 const OPPORTUNITIES = [
   {
     number: "01.",
-    title: "COMPARISON EFFICIENCY",
+    title: "Comparison Efficiency",
     body: "Redesign the flow so users compare stores without rebuilding carts.",
   },
   {
     number: "02.",
-    title: "BUDGET AWARENESS",
+    title: "Budget Awareness",
     body: "Provide continuous visibility into total cost and remaining budget before checkout",
   },
   {
     number: "03.",
-    title: "ELIGIBILITY TRANSPARENCY",
+    title: "Eligibility Transparency",
     body: "Surface SNAP coverage and out-of-pocket costs early in the journey",
   },
 ];
@@ -478,7 +460,7 @@ function Walkthrough({
 export default function BudgetCartPage() {
   return (
     <CaseShell
-      more={MORE}
+      current="budgetcart"
       /* The same strip the Taipei page closes with, rather than the Chonburi
          rule: one component, one set of card measurements, on both pages. */
       moreVariant="compact"
@@ -823,7 +805,7 @@ export default function BudgetCartPage() {
             </div>
           </div>
         </div>
-        <SkipButton href="#design-breakdown" label="Skip to Redesign Details" />
+        <SkipButton href="#design-breakdown" label="Skip to redesign details" />
       </section>
 
       {/* ---- Research ------------------------------------------------- */}

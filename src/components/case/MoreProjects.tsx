@@ -4,9 +4,12 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { useState } from "react";
 
-import { PreviewMedia } from "@/components/project/PreviewMedia";
 import { AppearEffect } from "@/lib/framer-effects";
-import { projectPreview, type ProjectSlug } from "@/lib/project-previews";
+import {
+  LockGlyph,
+  ProjectCover,
+  StatusOverlay,
+} from "@/components/project/ProjectCover";
 import { CARD_ASPECT } from "@/lib/thumbnails";
 import { CategoryBadge } from "./CaseParts";
 
@@ -48,6 +51,10 @@ export interface MoreProjectCard {
   /** Title exactly as that page spells it, including its own quirks. */
   title: string;
   description: string;
+  /** Set on a case study that sits behind the password screen. */
+  locked?: boolean;
+  /** Where the work stands, shown over the picture on hover. */
+  status?: string;
 }
 
 /**
@@ -56,20 +63,39 @@ export interface MoreProjectCard {
  * its own, but several were page screenshots rather than heroes, one of them
  * with Framer's editor chrome in it.
  */
-function CardMedia({ href, title }: { href: string; title: string }) {
-  const slug = href.replace("/projects/", "") as ProjectSlug;
+function CardMedia({
+  href,
+  title,
+  status,
+}: {
+  href: string;
+  title: string;
+  status?: string;
+}) {
+  const slug = href.replace("/projects/", "");
   return (
     <div
       className="relative w-full overflow-hidden rounded-[20px] bg-white"
       style={{ aspectRatio: CARD_ASPECT }}
     >
-      <PreviewMedia
-        preview={projectPreview(slug)}
-        alt={title}
+      <ProjectCover
+        slug={slug}
+        title={title}
         sizes="480px"
         className="transition-transform duration-500 group-hover:scale-[1.03]"
       />
+      {status ? <StatusOverlay label={status} /> : null}
     </div>
+  );
+}
+
+/** The same quiet line the My Projects card carries, at the card's own size. */
+function LockedNote() {
+  return (
+    <span className="ts-body-small inline-flex items-center gap-1.5 text-light-grey">
+      <LockGlyph size={14} />
+      Password protected
+    </span>
   );
 }
 
@@ -91,7 +117,11 @@ function RuleCard({ card, index }: { card: MoreProjectCard; index: number }) {
         /* The card sizes its own title; see CARD_TITLE. */
         style={{ containerType: "inline-size" }}
       >
-        <CardMedia href={card.href} title={card.title.trim()} />
+        <CardMedia
+          href={card.href}
+          title={card.title.trim()}
+          status={card.status}
+        />
         <div className="flex w-full flex-col items-start gap-5">
           <CategoryBadge label={card.category} size="small" />
           <h3 className="ts-heading-3 w-full text-left" style={CARD_TITLE}>
@@ -100,6 +130,7 @@ function RuleCard({ card, index }: { card: MoreProjectCard; index: number }) {
           <p className="ts-body-small-light w-full text-left">
             {card.description}
           </p>
+          {card.locked ? <LockedNote /> : null}
         </div>
       </Link>
     </AppearEffect>
@@ -130,7 +161,11 @@ function CompactCard({
         /* The card sizes its own title; see CARD_TITLE. */
         style={{ containerType: "inline-size" }}
       >
-        <CardMedia href={card.href} title={card.title.trim()} />
+        <CardMedia
+          href={card.href}
+          title={card.title.trim()}
+          status={card.status}
+        />
         <div className="flex w-full flex-col items-start gap-2.5">
           <span className="ts-button rounded-[30px] bg-dark-charcoal px-3 py-1 text-off-white">
             {card.category}
@@ -141,6 +176,7 @@ function CompactCard({
           <p className="ts-body-small-light w-full text-left">
             {card.description}
           </p>
+          {card.locked ? <LockedNote /> : null}
         </div>
       </Link>
     </AppearEffect>

@@ -12,7 +12,6 @@ import {
 } from "@/components/case/CaseExtras";
 import { CaseShell } from "@/components/case/CaseShell";
 import { ProblemStatement } from "@/components/case/ProblemStatement";
-import type { MoreProjectCard } from "@/components/case/MoreProjects";
 import { PhoneMockup } from "@/components/case/PhoneMockup";
 import { Zoomable } from "@/components/case/Zoomable";
 import { SidebarNav, type SidebarEntry } from "@/components/case/SidebarNav";
@@ -22,23 +21,6 @@ export const metadata: Metadata = {
   description:
     "Reimagining Metro Points to make rewards visible, understandable, and part of everyday commuting.",
 };
-
-const MORE: MoreProjectCard[] = [
-  {
-    href: "/projects/budgetcart",
-    category: "UI/UX Design",
-    title: "BudgetCart",
-    description:
-      "An online grocery app that eliminates checkout anxiety for budget-constrained shoppers",
-  },
-  {
-    href: "/projects/jubo-healthcare",
-    category: "Web Development",
-    title: "Jubo Healthcare Platform",
-    description:
-      "Built frontend modules for a senior care dashboard, reducing cognitive load and improving data visibility through close collaboration with designers and nurses",
-  },
-];
 
 /**
  * This page's own sections; see CASE_STUDY_NAV_RULES.md.
@@ -385,7 +367,7 @@ const ITERATIONS = [
 export default function TaipeiMetroPage() {
   return (
     <CaseShell
-      more={MORE}
+      current="taipei-metro-app"
       moreVariant="compact"
       sidebar={<SidebarNav entries={SECTIONS} />}
       bodyWidth={1200}
@@ -943,7 +925,7 @@ export default function TaipeiMetroPage() {
             </div>
           </div>
         </div>
-        <SkipButton href="#design-breakdown" label="Skip to Redesign Details" />
+        <SkipButton href="#design-breakdown" label="Skip to redesign details" />
       </section>
 
       {/* ---- Research ------------------------------------------------ */}

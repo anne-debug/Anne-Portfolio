@@ -180,6 +180,21 @@
     color: var(--color-dark-charcoal);
   }
 
+  /* Framer's Body Large is 20px on its Desktop frame and 32px on its tablet
+     one, and the step is wrong wherever this is a lede or a label rather than a
+     block of copy: Metro and BudgetCart both carry an inline clamp on their
+     hero subtitles to undo it. This is that clamp, shared, so a case study can
+     reach for the role rather than copy the number. */
+  .ts-body-large-fluid {
+    font-family: var(--font-dm-sans);
+    font-weight: 400;
+    font-size: clamp(16px, calc(16px + 4 * (100vw - 390px) / 810), 20px);
+    line-height: 1.3em;
+    letter-spacing: 0;
+    text-transform: capitalize;
+    color: var(--color-dark-charcoal);
+  }
+
   .ts-body-large-italic {
     font-family: var(--font-dm-sans);
     font-weight: 600;
@@ -417,4 +432,178 @@ body {
  */
 [id] {
   scroll-margin-top: 110px;
+}
+
+/* ---------------------------------------------------------------------------
+   Prototype invite
+
+   The mushroom that opens the Ryze prototype. The wand rides up and down on a
+   three-second cycle, one stroke each way, with the sparkles timed to the top
+   of it rather than running on their own. Hovering shortens the cycle so the
+   character answers the pointer instead of carrying on at its own pace.
+
+   The wand pivots at its left end, which is the hand it is drawn against, not
+   at its own middle, so rotating it walks the tip up and down. Everything is
+   transform and opacity, so none of it costs a layout.
+--------------------------------------------------------------------------- */
+
+@keyframes invite-wave {
+  0%,
+  100% { transform: rotate(-9deg); }
+  50% { transform: rotate(13deg); }
+}
+
+@keyframes invite-sparkle {
+  0%,
+  22% { opacity: 0; transform: scale(0.6); }
+  50% { opacity: 1; transform: scale(1); }
+  74% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 0; transform: scale(0.6); }
+}
+
+@keyframes invite-bob {
+  0%,
+  100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.invite-character {
+  animation: invite-bob 4.5s ease-in-out infinite;
+}
+
+/* The wand swings about the hand it is held in, which is this box's lower
+   left corner, not its middle: up and back down, once every three seconds. */
+.invite-wand {
+  transform-origin: 9% 91%;
+  animation: invite-wave 3s ease-in-out infinite;
+}
+
+.invite-spark {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: invite-sparkle 3s ease-in-out infinite;
+}
+.invite-spark-2 { animation-delay: 0.12s; }
+.invite-spark-3 { animation-delay: 0.24s; }
+
+/*
+   The bubble at rest, and the states it answers with.
+
+   The tail is a rotated square beside the bubble rather than part of it, so
+   every state has to name both or the two come apart at the seam. The colours
+   are the portfolio's own: grey-100 and white at rest, orange with a warm tint
+   under the pointer, and a deeper tint while held.
+*/
+.invite-bubble,
+.invite-tail {
+  border-color: var(--color-grey-100);
+  background: var(--color-white);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.invite-bubble {
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.05);
+}
+
+.invite-bubble-text {
+  color: var(--color-dark-charcoal);
+  transition: color 0.2s ease;
+}
+
+/* Hover answers the pointer: the same stroke, sooner, with the group lifted
+   and the bubble picking up the accent. Every hover rule is behind the media
+   query — a touch device has no pointer to leave, so an unguarded `:hover`
+   would stay lit after the tap. */
+@media (hover: hover) {
+  .invite:hover { transform: scale(1.04); }
+  .invite:hover .invite-wand,
+  .invite:hover .invite-spark { animation-duration: 1.6s; }
+
+  .invite:hover .invite-bubble,
+  .invite:hover .invite-tail {
+    border-color: var(--color-orange);
+    background: color-mix(in srgb, var(--color-orange) 6%, var(--color-white));
+  }
+
+  .invite:hover .invite-bubble {
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.08);
+    transform: translateY(-1px);
+  }
+
+  .invite:hover .invite-bubble-text { color: var(--color-orange); }
+}
+
+/* Keyboard focus gets the same emphasis as the pointer, on every device. */
+.invite:focus-visible { transform: scale(1.04); }
+
+.invite:focus-visible .invite-bubble,
+.invite:focus-visible .invite-tail {
+  border-color: var(--color-orange);
+  background: color-mix(in srgb, var(--color-orange) 6%, var(--color-white));
+}
+
+.invite:focus-visible .invite-bubble {
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.08);
+  transform: translateY(-1px);
+}
+
+.invite:focus-visible .invite-bubble-text { color: var(--color-orange); }
+
+/* Held: the bubble presses back down under the finger or the pointer. */
+.invite:active .invite-bubble,
+.invite:active .invite-tail {
+  border-color: var(--color-orange);
+  background: color-mix(in srgb, var(--color-orange) 12%, var(--color-white));
+}
+
+.invite:active .invite-bubble {
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.08);
+  transform: translateY(1px);
+}
+
+.invite:active { transform: scale(0.99); }
+
+@media (prefers-reduced-motion: reduce) {
+  .invite-character,
+  .invite-wand,
+  .invite-spark {
+    animation: none;
+  }
+  /* The sparkles stay put and visible rather than blinking. */
+  .invite-spark { opacity: 0.9; }
+  .invite-wand { transform: rotate(-9deg); }
+  .invite,
+  .invite:hover,
+  .invite:focus-visible,
+  .invite:active { transform: none; }
+  /* The states still read — colour carries them — but nothing moves. */
+  .invite:hover .invite-bubble,
+  .invite:focus-visible .invite-bubble,
+  .invite:active .invite-bubble { transform: none; }
+}
+
+/* ---------------------------------------------------------------------------
+   Ryze hero
+
+   Only the character breathes. The bag, the heap of beans and the laptop are
+   deliberately still; the hero is a photograph with one thing alive in it.
+--------------------------------------------------------------------------- */
+
+@keyframes ryze-bob {
+  0%,
+  100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.ryze-bob { animation: ryze-bob 5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ryze-bob {
+    animation: none;
+  }
 }
