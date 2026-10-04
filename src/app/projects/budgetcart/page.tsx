@@ -10,6 +10,7 @@ import {
 } from "@/components/case/CaseExtras";
 import { CaseShell } from "@/components/case/CaseShell";
 import { ProblemStatement } from "@/components/case/ProblemStatement";
+import { BudgetCartHeroArt } from "@/components/case/BudgetCartHeroArt";
 import { PhoneMockup } from "@/components/case/PhoneMockup";
 import { SidebarNav, type SidebarEntry } from "@/components/case/SidebarNav";
 import { Tabs, type TabPanel } from "@/components/case/Tabs";
@@ -493,7 +494,7 @@ export default function BudgetCartPage() {
           ratio, so the tablet hero is the desktop hero at the same size or
           smaller, never a different arrangement of it.
         */
-        className="flex w-full flex-col items-start gap-[30px] tablet:mx-auto tablet:max-w-[951px] tablet:flex-row tablet:items-stretch desktop:max-w-none desktop:gap-0"
+        className="flex w-full flex-col items-start gap-[30px] tablet:mx-auto tablet:max-w-[951px] tablet:flex-row tablet:items-center tablet:gap-10 desktop:max-w-none"
       >
         {/* The 144px between the title and the project information is Framer's
             minimum. From 810 the column stretches to the height of the artwork
@@ -554,89 +555,11 @@ export default function BudgetCartPage() {
           </dl>
         </div>
 
-        {/*
-          Framer's "Hero Image Container".
-
-          The shopper, the handset, the doodle and the money bag are one
-          composition, not four elements that each answer to the viewport. Every
-          one of them is placed as a percentage of the canvas below, so the whole
-          group scales together and keeps Framer's spacing, overlap and hierarchy
-          at any size.
-
-          The canvas is this column extended 225px to the left, which is where
-          Framer pins the shopper. From 1200 it keeps that width and overhangs the
-          text column, exactly as Framer draws it. Below 1200 it is the column's
-          own width, so the same composition simply arrives smaller and nothing
-          leaves the screen.
-        */}
-        {/*
-          Half the row, as on Framer's Desktop frame, but never wider than the
-          476px it comes to there.
-
-          Below 1200 the section rail stops taking a column, so the article is
-          wider on a tablet than it is on desktop — 1119px at 1199 against 951.
-          Left to fill it, the artwork would come out larger on the smaller
-          screen. The cap keeps the composition at its desktop size and lets the
-          text column take the extra width instead.
-        */}
-        {/* Whichever column is the taller one, the two finish level: the text
-            drops its project information to the foot of a short column, and the
-            artwork sits at the foot of this one when the text is the longer of
-            the two, which it is below about 950px. */}
-        <div className="relative w-full tablet:flex tablet:w-[min(50%,476px)] tablet:flex-col tablet:justify-end desktop:w-1/2">
-          {/* 225px of the canvas hangs off the left, which is 47.32% of this
-              column's width; a negative margin is what moves it there, since
-              `ml-auto` collapses to zero once a box is wider than its parent.
-              The overhang runs from 810 rather than 1200: without it the whole
-              group was 56% of the article on a tablet against 73.7% on
-              desktop, which is what made it look like a small object in the
-              corner rather than the same composition scaled down. */}
-          <div className="relative aspect-[700.5/628.4] w-full tablet:ml-[-47.32%] tablet:w-[147.32%]">
-            {/* "character". Behind the handset: Framer gives it a z-index of 1,
-                but its own render draws the handset in front, and the shopper's
-                arm reading over the screen is wrong. */}
-            <Image
-              src="/case/CzIpIqrBNYg6Mptyt3oTzVDzm8c.png"
-              alt=""
-              width={350}
-              height={350}
-              className="absolute h-auto object-contain"
-              style={{ left: "0%", top: "35.55%", width: "49.96%" }}
-            />
-
-            {/* Framer's iPhone 17 Pro variant, 265px of a 700.5px canvas. */}
-            <div
-              className="absolute"
-              style={{ left: "47.30%", top: "7.96%", width: "37.83%" }}
-            >
-              <PhoneMockup
-                screen="/case/gYGzaYBJBLaboENZJAHFQLRqlPo.gif"
-                alt="The BudgetCart shopping flow"
-                unoptimized
-                fluid
-              />
-            </div>
-
-            {/* Framer's "Vector" doodle */}
-            <Image
-              src="/vectors/squiggle.png"
-              alt=""
-              width={57}
-              height={57}
-              className="absolute h-auto object-contain"
-              style={{ left: "80.59%", top: "1.75%", width: "8.14%" }}
-            />
-
-            {/* "money", in front of the handset */}
-            <Image
-              src="/case/5resnnnMK0AZd5cIOtw7aPC0eng.png"
-              alt=""
-              width={400}
-              height={715}
-              className="absolute z-[1] h-auto object-contain"
-              style={{ left: "72.85%", top: "79.14%", width: "27.15%" }}
-            />
-          </div>
+        {/* The hero collage, rebuilt on the card's own 1.4:1 shape; see
+            BudgetCartHeroArt. The canvas is self-contained now, so the
+            overhang that used to push it back over the words is gone. */}
+        <div className="w-full shrink-0 tablet:w-[58%]">
+          <BudgetCartHeroArt />
         </div>
       </section>
 

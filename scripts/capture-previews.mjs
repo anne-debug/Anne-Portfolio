@@ -79,12 +79,38 @@ const MANIFEST = path.join(ROOT, "src", "lib", "project-previews.json");
 /** Pixel density of the capture. The largest card draws its cover at about
  *  530 CSS px, so every preview comes out at well over twice that. */
 const SCALE = 2;
-/** Background band around the hero, in CSS px. */
-const MARGIN = 60;
+/**
+ * Background band around the artwork, in CSS px.
+ *
+ * Smaller than it was. At 60 it was sized for a whole hero section 950px wide;
+ * around an artwork column half that, the same band was a wide empty border.
+ */
+const MARGIN = 28;
+/**
+ * A project can ask for none of it.
+ *
+ * The band exists so a frame that is not quite the capture's shape trims
+ * background rather than artwork. Art that already carries its own panel and
+ * its own padding — Taipei Metro's — needs no second one, and the band only
+ * shrinks the picture inside the card: 28px each side is 9% of the width, and
+ * that 9% comes straight off the demo.
+ */
+const marginFor = (project) => project.margin ?? MARGIN;
 /** The home page card frame. */
 const TARGET_ASPECT = 1.4;
+/** For the foreground layer, which must carry nothing but its subjects. */
+const TRANSPARENT = { r: 0, g: 0, b: 0, alpha: 0 };
 /** Width of the re-encoded phone animation. A card draws it about 125px wide. */
 const SCREEN_WIDTH = 300;
+/**
+ * Width of a re-encoded hero video. A card draws a laptop screen about 290px
+ * wide, so this is 2x that.
+ *
+ * Ryze's hero plays a 2558x1820 mp4 weighing 4.6MB, which is the page's asset
+ * and far more than a card needs. Re-encoded here it comes to about half a
+ * megabyte — less than either of the GIF-derived animations.
+ */
+const SCREEN_VIDEO_WIDTH = 580;
 /**
  * Kept high on purpose. WebP compresses an animation by describing each frame
  * as a change from the one before, and below about 80 that guess goes wrong on
@@ -98,37 +124,67 @@ const SCREEN_QUALITY = 80;
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex").slice(0, 8);
 
 const PROJECTS = [
+  /*
+   * Each `hero` is the hero's ARTWORK, not the whole hero.
+   *
+   * The previews used to be the whole hero section, which meant every card
+   * printed the project's title, its one-line description and its four facts —
+   * all of which the card already sets in type beside the picture. The card was
+   * saying everything twice, once as text and once as a screenshot of text too
+   * small to read. These selectors take only the column the artwork lives in,
+   * so the picture is the design and nothing else.
+   *
+   * The widths are fixed rather than searched. The old script swept a range
+   * looking for the window width where the hero happened to be 1.4:1, the card
+   * frame's shape; the artwork columns have fixed aspect ratios of their own
+   * (Metro's stage is 550/594, Ryze's 760/387) that no window width changes, so
+   * there is nothing to search for. `PreviewMedia` sizes each picture to its own
+   * shape and centres it in the frame, so a tall one keeps its proportions
+   * rather than being cropped to fit.
+   */
   {
     slug: "taipei-metro-app",
-    // The hero is the article's first section.
-    hero: ["article > section:nth-of-type(1)"],
-    widths: [810, 1199],
+    // The hero's second column: the mascot, the handset and the Metro marks.
+    hero: ["article > section:nth-of-type(1) > div:nth-child(2)"],
+    hide: ["article > section:nth-of-type(1) > div:nth-child(1)"],
+    // Its art is already a panel with its own padding, and it is already the
+    // card's shape, so a band around it would only make the demo smaller.
+    margin: 0,
+    widths: [1280, 1280],
   },
   {
     slug: "budgetcart",
-    hero: ["article > section:nth-of-type(1)"],
-    widths: [810, 1199],
+    // The canvas inside the column, not the column: the composition is pinned
+    // 225px further left than its column starts, so the column clips it.
+    // The canvas is self-contained now, so this is the column itself rather
+    // than the box inside it, and there is no overhang left to hide behind.
+    hero: ["article > section:nth-of-type(1) > div:nth-child(2)"],
+    hide: ["article > section:nth-of-type(1) > div:nth-child(1)"],
+    // Its art is already a panel with its own padding, and already the card's
+    // shape, so a band around it would only make the demo smaller.
+    margin: 0,
+    widths: [1280, 1280],
   },
   {
     slug: "ryze-coffee",
-    // The header holds the words and the laptop, in one wrapper.
-    hero: ["article > :nth-child(1)"],
-    widths: [810, 1199],
-  },
-  {
-    slug: "little-chestnut-thief",
-    // Header, then the banner that opens the page. The banner's wrapper also
-    // holds the sections that follow, so the banner itself is the second half.
-    hero: ["article > :nth-child(1)", "article > :nth-child(2) > :first-child"],
-    widths: [1440, 1440],
+    // CaseHeader's media column: bag, laptop, beans, character.
+    hero: ["article > div:nth-child(1) > header > div:nth-child(2)"],
+    hide: ["article > div:nth-child(1) > header > div:nth-child(1)"],
+    widths: [1280, 1280],
   },
   {
     slug: "jubo-healthcare",
-    // The header now carries the laptop beside the words, so it is the whole
-    // hero on its own. Taking the next sibling too, which is what this did
-    // when the laptop sat below, pulled the skills row into the card.
-    hero: ["article > :nth-child(1)"],
-    widths: [810, 1199],
+    // CaseHeader's media column: the dashboard in its laptop.
+    hero: ["article > header > div:nth-child(2)"],
+    hide: ["article > header > div:nth-child(1)"],
+    widths: [1280, 1280],
+  },
+  {
+    slug: "little-chestnut-thief",
+    // This header carries no artwork at all — the page opens on a banner
+    // underneath it, and that banner is the design this card should show.
+    hero: ["article > div:nth-child(2) > div:nth-child(1)"],
+    widths: [1440, 1440],
   },
 
   // ibm-watsonx-builder-control-plane is deliberately absent, and must stay
@@ -241,6 +297,22 @@ async function capture(browser, project, width) {
     }
   });
 
+  /*
+   * And the hero's words.
+   *
+   * `visibility` rather than `display`, so the column keeps its space and the
+   * artwork stays exactly where the page puts it. Without this a composition
+   * that reaches back over its neighbour prints that neighbour's text into the
+   * card, which is the thing these previews are meant to stop showing.
+   */
+  if (project.hide?.length) {
+    await page.evaluate((selectors) => {
+      for (const s of selectors) {
+        for (const el of document.querySelectorAll(s)) el.style.visibility = "hidden";
+      }
+    }, project.hide);
+  }
+
   // Pin every animated GIF in the hero to its first frame.
   const gifs = await page.evaluate((selectors) => {
     const found = new Set();
@@ -277,6 +349,29 @@ async function capture(browser, project, width) {
     );
   }
 
+  /*
+   * Pin every hero video to its first frame, and remember where it came from.
+   *
+   * Same reason as the GIFs: the still has to be the same picture on every run,
+   * and the card lays the moving version back over exactly that patch. Without
+   * this the screenshot caught whatever frame the video happened to be on.
+   */
+  await page.evaluate(async (selectors) => {
+    const seen = [];
+    for (const s of selectors) {
+      for (const v of document.querySelector(s).querySelectorAll("video")) {
+        v.dataset.previewVideo = new URL(v.currentSrc || v.src, location.href).pathname;
+        v.pause();
+        if (v.currentTime !== 0) {
+          const seeked = new Promise((r) => v.addEventListener("seeked", r, { once: true }));
+          v.currentTime = 0;
+          seen.push(seeked);
+        }
+      }
+    }
+    await Promise.all(seen);
+  }, project.hero);
+
   await settle(page, project.hero);
   const box = await heroBox(page, project.hero);
 
@@ -288,7 +383,7 @@ async function capture(browser, project, width) {
    * edge down. The strip above it is the status bar, which does not move.
    */
   const screens = await page.evaluate(
-    ({ box, margin }) => {
+    ({ box, margin, s0 }) => {
       const full = { w: box.width + margin * 2, h: box.height + margin * 2 };
       const frac = (rect) => ({
         left: (rect.left - box.x + margin) / full.w,
@@ -297,7 +392,7 @@ async function capture(browser, project, width) {
         height: rect.height / full.h,
       });
 
-      return [...document.querySelectorAll("[data-preview-gif]")].map((img) => {
+      const gifScreens = [...document.querySelectorAll("[data-preview-gif]")].map((img) => {
         // The screen is the box that clips the picture; the shell holds both it
         // and the island.
         const clip = img.parentElement;
@@ -320,6 +415,7 @@ async function capture(browser, project, width) {
         const style = getComputedStyle(clip);
         const imgStyle = getComputedStyle(img);
         return {
+          kind: "gif",
           src: img.dataset.previewGif,
           screen: frac(clipRect),
           // However the page fits the recording into the screen, the card has
@@ -332,8 +428,84 @@ async function capture(browser, project, width) {
           radius: parseFloat(style.borderBottomLeftRadius) / clipRect.width,
         };
       });
+
+      /*
+       * A video is simpler than a handset: the element is its own screen, so
+       * there is no island to start below and no shell to measure a radius
+       * against beyond its own. What it does share is the fit — the page sizes
+       * the recording into the screen with object-fit, and the card has to do
+       * the same or the moving version lands beside the still rather than on
+       * it.
+       */
+      const videos = [...document.querySelectorAll("[data-preview-video]")].map((v) => {
+        const rect = v.getBoundingClientRect();
+        const style = getComputedStyle(v);
+
+        /*
+         * Anything the hero paints IN FRONT of this screen.
+         *
+         * The card lays the moving version over the still, which repaints the
+         * screen's rectangle — and on Ryze the character stands on the laptop,
+         * inside that rectangle. Overlaid flat, the card lost the character.
+         *
+         * These are marked here and then photographed on their own, against
+         * nothing, so the card can lay them back over the moving version. The
+         * first attempt punched holes in the video instead, which worked but
+         * showed a frozen rectangle of the first frame around the character,
+         * because a bounding box is not a cut-out.
+         *
+         * "In front" is read by walking up from the video and, at each step,
+         * looking at that node's own siblings: a sibling that overlaps and
+         * paints later — higher z-index, or the same and further down the
+         * document — is in front of it. Looking only at the hero's top-level
+         * children missed it, because the hero's root here is the media column
+         * and its single child is the whole canvas.
+         */
+        const root = document.querySelector(s0);
+        const order = (el) => {
+          const z = parseInt(getComputedStyle(el).zIndex, 10);
+          return Number.isNaN(z) ? 0 : z;
+        };
+        const front = [];
+        for (let node = v; node && node !== root; node = node.parentElement) {
+          const parent = node.parentElement;
+          if (!parent) break;
+          for (const sib of parent.children) {
+            if (sib === node) continue;
+            const later =
+              order(sib) > order(node) ||
+              (order(sib) === order(node) &&
+                node.compareDocumentPosition(sib) & Node.DOCUMENT_POSITION_FOLLOWING);
+            if (later) front.push(sib);
+          }
+        }
+
+        for (const el of front) {
+          const r = el.getBoundingClientRect();
+          const overlaps =
+            r.width > 0 &&
+            r.right > rect.left &&
+            r.left < rect.right &&
+            r.bottom > rect.top &&
+            r.top < rect.bottom;
+          if (overlaps) el.dataset.previewFront = "";
+        }
+
+        return {
+          kind: "video",
+          src: v.dataset.previewVideo,
+          screen: frac(rect),
+          fit: style.objectFit,
+          position: style.objectPosition,
+          clipTop: 0,
+          radius: parseFloat(style.borderBottomLeftRadius) / rect.width,
+          front: document.querySelectorAll("[data-preview-front]").length > 0,
+        };
+      });
+
+      return [...gifScreens, ...videos];
     },
-    { box, margin: MARGIN },
+    { box, margin: marginFor(project), s0: project.hero[0] },
   );
   const shot = await page.screenshot({
     clip: box,
@@ -341,9 +513,121 @@ async function capture(browser, project, width) {
     animations: "disabled",
     caret: "hide",
   });
+  /*
+   * The foreground, photographed on its own against nothing.
+   *
+   * Everything in the hero is hidden and only the marked elements — and the
+   * ancestors that position them — are shown again, so what comes back is the
+   * character and its neighbours on transparency, in exactly the place they
+   * occupy in the still. The card lays this over the moving version, and the
+   * things standing in front of the screen survive it.
+   */
+  let frontShot = null;
+  if (screens.some((s) => s.kind === "video" && s.front)) {
+    await page.evaluate((selector) => {
+      const root = document.querySelector(selector);
+
+      /*
+       * The white this capture forces everywhere has to come off first.
+       * `omitBackground` drops only the page's default background, not a
+       * background something actually paints, so the layer came back opaque
+       * white and hid the picture it was meant to sit on. A hidden element
+       * paints nothing at all, so only the root and what encloses it matter.
+       */
+      const clear = (el) => {
+        // The capture stylesheet sets the page white with `!important`, so an
+        // ordinary inline style loses to it.
+        el.style.setProperty("background", "transparent", "important");
+        el.style.setProperty("background-color", "transparent", "important");
+      };
+      clear(document.documentElement);
+      clear(document.body);
+      for (let up = root; up; up = up.parentElement) clear(up);
+
+      for (const el of root.querySelectorAll("*")) el.style.visibility = "hidden";
+      for (const el of root.querySelectorAll("[data-preview-front]")) {
+        el.style.visibility = "visible";
+        for (let up = el.parentElement; up && up !== root; up = up.parentElement) {
+          up.style.visibility = "visible";
+        }
+      }
+    }, project.hero[0]);
+    frontShot = await page.screenshot({
+      clip: box,
+      fullPage: true,
+      omitBackground: true,
+      animations: "disabled",
+      caret: "hide",
+    });
+  }
+
+  /*
+   * Re-encode a hero video at the size a card draws it, before the context
+   * closes, because this is done by the browser rather than by sharp: sharp
+   * can re-encode an animation it can read, but it cannot author one from
+   * frames, and there is no ffmpeg here. Chromium can, so a canvas is fed the
+   * video frame by frame and MediaRecorder writes the result out as WebM.
+   */
+  const videoScreen = screens.find((s) => s.kind === "video");
+  let recorded = null;
+  if (videoScreen) {
+    const b64 = await page.evaluate(
+      async ({ src, width }) => {
+        const v = document.createElement("video");
+        v.src = src;
+        v.muted = true;
+        v.playsInline = true;
+        await new Promise((res, rej) => {
+          v.onloadeddata = res;
+          v.onerror = () => rej(new Error(`cannot load ${src}`));
+        });
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        // Even height: some encoders refuse an odd one.
+        canvas.height = Math.round((v.videoHeight / v.videoWidth) * width / 2) * 2;
+        const ctx = canvas.getContext("2d");
+
+        const type = MediaRecorder.isTypeSupported("video/webm;codecs=vp9")
+          ? "video/webm;codecs=vp9"
+          : "video/webm;codecs=vp8";
+        const rec = new MediaRecorder(canvas.captureStream(24), {
+          mimeType: type,
+          videoBitsPerSecond: 900000,
+        });
+        const chunks = [];
+        rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
+        const stopped = new Promise((r) => (rec.onstop = r));
+
+        rec.start();
+        v.currentTime = 0;
+        await v.play();
+        await new Promise((done) => {
+          const tick = () => {
+            ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
+            if (!v.ended && v.currentTime < v.duration - 0.06) requestAnimationFrame(tick);
+            else done();
+          };
+          tick();
+        });
+        rec.stop();
+        await stopped;
+
+        const bytes = new Uint8Array(await new Blob(chunks).arrayBuffer());
+        let binary = "";
+        for (let i = 0; i < bytes.length; i += 0x8000) {
+          binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+        }
+        return btoa(binary);
+      },
+      { src: videoScreen.src, width: SCREEN_VIDEO_WIDTH },
+    );
+    recorded = Buffer.from(b64, "base64");
+  }
+
   await context.close();
 
-  const pad = Math.round(MARGIN * SCALE);
+  const pad = Math.round(marginFor(project) * SCALE);
   const image = sharp(shot).extend({
     top: pad,
     bottom: pad,
@@ -366,16 +650,37 @@ async function capture(browser, project, width) {
     // One handset per hero; if that ever changes, the largest one is the one
     // the card is showing.
     const pick = [...screens].sort((a, b) => b.screen.width - a.screen.width)[0];
-    const file = path.join(ROOT, "public", decodeURIComponent(pick.src));
-    const bytes = await sharp(await readFile(file), {
-      animated: true,
-      limitInputPixels: false,
-    })
-      .resize({ width: SCREEN_WIDTH })
-      .webp({ quality: SCREEN_QUALITY, effort: 4 })
-      .toBuffer();
-    const name = `${project.slug}-screen.${digest(bytes)}.webp`;
+    /* A video is already encoded, above, by the browser. A GIF is re-encoded
+       here by sharp, which can do it because the input is itself an
+       animation. Either way what comes out is one file sized for a card. */
+    let bytes;
+    let name;
+    if (pick.kind === "video") {
+      bytes = recorded;
+      name = `${project.slug}-screen.${digest(bytes)}.webm`;
+    } else {
+      const file = path.join(ROOT, "public", decodeURIComponent(pick.src));
+      bytes = await sharp(await readFile(file), {
+        animated: true,
+        limitInputPixels: false,
+      })
+        .resize({ width: SCREEN_WIDTH })
+        .webp({ quality: SCREEN_QUALITY, effort: 4 })
+        .toBuffer();
+      name = `${project.slug}-screen.${digest(bytes)}.webp`;
+    }
     await writeFile(path.join(OUT_DIR, name), bytes);
+
+    let frontName = null;
+    if (frontShot) {
+      const frontBytes = await sharp(frontShot)
+        .extend({ top: pad, bottom: pad, left: pad, right: pad, background: TRANSPARENT })
+        .webp({ lossless: true, effort: 6 })
+        .toBuffer();
+      frontName = `${project.slug}-front.${digest(frontBytes)}.webp`;
+      await writeFile(path.join(OUT_DIR, frontName), frontBytes);
+    }
+
     screen = {
       src: `/project-previews/${name}`,
       from: pick.src,
@@ -385,6 +690,7 @@ async function capture(browser, project, width) {
       radius: pick.radius,
       fit: pick.fit,
       position: pick.position,
+      ...(frontName ? { front: `/project-previews/${frontName}` } : {}),
     };
   }
 
@@ -476,6 +782,9 @@ async function main() {
                 radius: +result.screen.radius.toFixed(5),
                 fit: result.screen.fit,
                 position: result.screen.position,
+                /* What the hero stands in front of the screen, for the card
+                   to punch holes for. */
+                ...(result.screen.front ? { front: result.screen.front } : {}),
               },
             }
           : {}),

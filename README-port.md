@@ -2322,3 +2322,174 @@ around them, so a plain crop brought a tail of loose dots along with it: a
 thousand stray pixels on the figure, two hundred on the phone. Every visible
 pixel of all three is identical in colour to the illustration as supplied;
 checked pixel by pixel against the original, not by hashing a file.
+
+## Project cards: the design, and only the design
+
+The previews used to be the whole hero section, so every card printed the
+project's title, its one-line description and its four facts — all of which the
+card already sets in type beside the picture. The card said everything twice,
+once as text and once as a screenshot of text too small to read.
+`capture-previews` now points at each hero's artwork column instead, and the
+picture is the design.
+
+The widths are fixed rather than searched. The old script swept a range looking
+for the window width at which the hero happened to be 1.4:1, the card frame's
+shape. The artwork columns have fixed aspect ratios of their own — Metro's stage
+is 550/594, Ryze's 760/387 — that no window width changes, so there was nothing
+left to search for. `PreviewMedia` already sizes each picture to its own shape
+and centres it, so a tall one keeps its proportions instead of being cropped.
+
+One hero needed more than a selector. BudgetCart's composition is pinned 225px
+to the left of its own column, so it reaches back across the words, and the
+first capture printed the tail of the description under the trolley. Each
+project can now name the parts to hide for the shot, and the words go.
+
+### The Ryze card moves now
+
+Ryze's hero plays an mp4 in a laptop, and a screenshot froze it while Metro and
+BudgetCart animated. It plays in the card now.
+
+sharp could not do this. It re-encodes the other two because their sources are
+animated GIFs and it can read an animation and write it back; it cannot author
+one from frames, and there is no ffmpeg here — a stack of frames handed to it
+with `pageHeight` comes back as a single tall still. Chromium can, so the
+capture now draws the video frame by frame into a canvas and lets MediaRecorder
+write a WebM. The page's own file is 2558x1820 and 4.6MB; what the card loads is
+580px wide and about 580KB, less than either of the GIF-derived animations.
+
+The hard part was not the encoding. The card lays the moving version over the
+still, which repaints the screen's rectangle — and the character stands *on*
+the laptop, inside that rectangle, so the first working version lost it
+completely. Punching holes for whatever stands in front half-worked and was
+worse: a bounding box is not a cut-out, so a frozen rectangle of the first frame
+showed around the character, and three holes strung into one CSS `polygon()`
+joined themselves with seams that cut visible wedges across the picture.
+
+What works is a third layer. Whatever the hero paints in front of the screen is
+photographed on its own against nothing — everything hidden, then those elements
+and the ancestors that position them shown again — and the card lays that back
+over the video. 60KB, 95% transparent, and nothing is lost or frozen. Getting it
+transparent took one more go: `omitBackground` drops only the page's default
+background, and this capture forces `html, body { background: #fff !important }`,
+which an inline style cannot beat. It is cleared with `setProperty(..., "important")`.
+
+### Taipei Metro's hero, rebuilt on the card's shape
+
+Framer drew this hero as a 550x594 stage — taller than wide — holding the
+handset, the green triangles, a blue disc, the Metro Taipei mark and the mascot.
+It is rebuilt here on a 1.4:1 canvas, the shape the cards are cut to and the
+shape the IBM hero already uses, with the route threading the composition, the
+mascot and the mark half again as large, and panels receding behind the handset.
+This is a deliberate departure from the Framer frame, which `CLAUDE.md` asks to
+be recorded: Framer's portrait stage left a third of every card empty.
+
+The arithmetic is worth keeping, because it is not obvious. A card draws the
+picture 480px wide at most, which is 343px tall, and a handset is twice as tall
+as it is wide. Whatever shape the canvas takes, a handset that fits *inside* it
+lands at about 152px in the card — which is what the old portrait stage already
+gave. Widening the canvas alone cannot enlarge the demo; it trades empty side
+margin for a smaller phone. Measured on the real card, 1.4:1 with no crop came
+out at 154px against the old 152.
+
+So the handset is 40% of the canvas and its last fifth runs past the bottom edge,
+which the canvas clips. It reads as the phone standing up out of the frame
+rather than floating in the middle of it, and the demo is the size it should be.
+
+The capture's white band comes off for this project too. The band exists so a
+frame that is not quite the capture's shape trims background rather than
+artwork; this art is already a panel with its own padding and already the card's
+shape, so the band only shrank the picture — 28px each side is 9% of the width,
+and that 9% came straight off the demo. `margin` is per project now.
+
+End to end the animated screen went from about 104px in a 402px card, when the
+preview was the whole hero section, to 122 once the previews became artwork
+only, to 146 after this. The card fills the frame instead of 66% of it.
+
+### BudgetCart's hero, the same way
+
+The same rebuild, on the same 1.4:1 canvas, for the same reason: the handset is
+40% of it with its last fifth clipped, the capture's white band comes off, and
+the card fills the frame with a 146px demo — the identical figures Metro now
+has, which is what makes the two read as a set.
+
+It also retires the overhang `CLAUDE.md` documents. That canvas was the image
+column extended 225px to the left, where Framer pins the shopper, and a negative
+margin pushed it back across the words; it needed a `hide` rule in the capture
+too, because the shot caught the tail of the description printed under the
+trolley. The new canvas is self-contained, so the column simply holds it and
+there is nothing to reach back over.
+
+The composition keeps Framer's four pieces — shopper, handset, doodle, money —
+and adds two fragments of the interface floating beside the phone: a budget
+track with a fill and a marker short of the end, and a smaller chip to its
+right. The track is the one device that says what this project is about, since
+it is a project about knowing where the total stands before the till tells you.
+Both are abstract: a figure printed at card size would be unreadable and would
+read as a claim.
+
+The palette is sampled off the recording rather than guessed — #007830 is the
+app's own green, with the gold it marks money in and the mint behind its cards.
+
+One small correction came with it. The money bag was declared 400x715 in the
+markup against a file that is 2800x1797, and `object-contain` had been
+letterboxing the difference inside a box nearly twice as tall as the art. It is
+declared at its own size now.
+
+### Nothing stacked behind the handsets, and BudgetCart on white
+
+The translucent panels receding behind the handset are gone from both phone
+heroes. The IBM hero layers them because it is about one surface standing for
+many; Metro and BudgetCart are each a single app, and the panels only crowded
+the screen they sat behind.
+
+BudgetCart's tinted wash and its two glows are gone with them. The card frame
+behind it is white, so on white the picture reads as the composition itself
+rather than as a coloured panel sitting in a card — and the file halved, from
+328KB to 174KB, since most of what the lossless encoder was storing was the
+gradient. Its two floating interface fragments carry a thin edge of their own
+now, which the tint used to do for them.
+
+Metro keeps its wash: only BudgetCart was asked to go white.
+
+One thing to watch when editing these by hand: the `<defs>` for both files lived
+inside the background `<svg>`. Removing BudgetCart's wash took its gradients
+with it and left the budget track pointing at an id that no longer existed,
+which paints as nothing rather than as an error. The track is a flat fill now,
+and a check for dangling `url(#...)` paint references on the rendered page comes
+back clean.
+
+### The Metro route became a network
+
+One green line said "a line". Taipei's map is read by colour before it is read
+at all — Tamsui–Xinyi red, Bannan blue, Songshan–Xindian green, Zhonghe–Xinlu
+orange, Wenhu brown — so the hero carries five, in the operator's own colours
+rather than a palette invented to match the page. Drawn as a map is drawn: right
+angles and 45s, rounded joins, a plain dot where a line ends and a larger ringed
+one where two meet.
+
+They are placed around what is already in the picture — the mark top left, the
+mascot bottom left, the triangles top right — so the network fills the bands
+those leave: a crossing on the left, a junction on the lower right, a short run
+under it.
+
+The crossing is solved, not eyeballed. Red runs y = 196 + (x − 104) and green
+y = 320 − (x − 104), which meet at (166, 258); placed by eye the interchange dot
+sat 27px left of the join, which on a transit map reads as a mistake.
+
+### Metro on white, and the sizes ordered
+
+The wash and its two glows are gone, as BudgetCart's were, so both phone heroes
+now sit on the same white the card frame is. The file came down from 338KB to
+147KB; most of what the lossless encoder was storing was the gradient.
+
+The sizes are ordered on purpose, because the first pass had five things asking
+for attention at once. The handset at 40% of the canvas leads; the mascot (25 →
+22%) and the triangles (32 → 20%, tucked into the corner) sit well below it; the
+mark is smaller again (21 → 17%); and the map is the quietest thing in the
+picture, its strokes down from 8 to 7 and its dots from 10/13 to 9/11.
+
+Two things came out rather than being shrunk. The fifth line went — four is a
+network, five was a thicket. And Framer's blue disc went altogether: reduced to
+a halo it sat entirely behind the handset and drew nothing at all, and left at
+its old size it was a field of colour competing with the screen. The blue is
+carried by the mark and by the Bannan line instead.

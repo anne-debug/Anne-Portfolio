@@ -63,7 +63,13 @@ export function PreviewMedia({
         className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${className}`}
         style={stage}
       >
-        <Image src={preview.src} alt={alt} fill sizes={sizes} className="object-contain" />
+        <Image
+          src={preview.src}
+          alt={alt}
+          fill
+          sizes={sizes}
+          className="object-contain"
+        />
       </div>
     );
   }
@@ -84,7 +90,13 @@ export function PreviewMedia({
       className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${className}`}
       style={{ ...stage, containerType: "inline-size" }}
     >
-      <Image src={preview.src} alt={alt} fill sizes={sizes} className="object-contain" />
+      <Image
+        src={preview.src}
+        alt={alt}
+        fill
+        sizes={sizes}
+        className="object-contain"
+      />
 
       {/*
         The animation, laid over the still of its own first frame.
@@ -108,21 +120,58 @@ export function PreviewMedia({
           clipPath: `inset(${(screen.clipTop * 100).toFixed(3)}% 0 0 0)`,
         }}
       >
-        {/* Animated: Next's optimizer would flatten it to a single frame. It is
-            fitted exactly as the page fits it, so it lands on the still rather
-            than beside it. */}
+        {/* Fitted exactly as the page fits it, so it lands on the still
+            rather than beside it.
+
+            Two kinds arrive here. A handset's recording is an animated WebP,
+            which Next's optimizer would flatten to a single frame, hence
+            `unoptimized`. A laptop's is a WebM, re-encoded from the page's own
+            mp4 at the size a card draws it, and has to be a real video
+            element — an <img> would show nothing at all. */}
+        {/\.(webm|mp4)$/i.test(screen.src) ? (
+          <>
+            <video
+              src={screen.src}
+              autoPlay
+              loop
+              muted
+              playsInline
+              aria-hidden
+              className="absolute inset-0 h-full w-full"
+              style={{
+                objectFit: screen.fit as "cover" | "contain",
+                objectPosition: screen.position,
+              }}
+            />
+          </>
+        ) : (
+          <Image
+            src={screen.src}
+            alt=""
+            fill
+            sizes={sizes}
+            unoptimized
+            style={{
+              objectFit: screen.fit as "cover" | "contain",
+              objectPosition: screen.position,
+            }}
+          />
+        )}
+      </div>
+
+      {/* The hero's foreground, back on top of the moving version: whatever
+          the page draws in front of the screen — Ryze's character stands on
+          the laptop — would otherwise be painted over by it. Mostly
+          transparent, and the same box as the still, so it needs no placing. */}
+      {screen.front ? (
         <Image
-          src={screen.src}
+          src={screen.front}
           alt=""
           fill
           sizes={sizes}
-          unoptimized
-          style={{
-            objectFit: screen.fit as "cover" | "contain",
-            objectPosition: screen.position,
-          }}
+          className="object-contain"
         />
-      </div>
+      ) : null}
     </div>
   );
 }

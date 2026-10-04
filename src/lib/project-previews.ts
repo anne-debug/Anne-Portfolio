@@ -27,6 +27,16 @@ export interface PreviewScreen {
   /** How the page fits the recording into the screen, mirrored by the card. */
   fit: string;
   position: string;
+  /**
+   * The hero's foreground, photographed on its own against nothing.
+   *
+   * The card lays the moving version over the still, which repaints the
+   * screen's rectangle — and Ryze's character stands on the laptop, inside
+   * that rectangle. This layer goes back over the top, so the character
+   * survives the overlay. It covers the whole picture and is mostly
+   * transparent.
+   */
+  front?: string;
 }
 
 export interface ProjectPreview {
@@ -36,7 +46,6 @@ export interface ProjectPreview {
   /** Present only for the heroes that play an animation. */
   screen?: PreviewScreen;
 }
-
 
 /**
  * The picture for a slug, or null when there is not one.
