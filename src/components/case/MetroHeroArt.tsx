@@ -199,7 +199,7 @@ export function MetroHeroArt() {
         height={1680}
         sizes="(width < 810px) 26vw, 200px"
         className={`absolute h-auto ${Z.front}`}
-        style={{ left: "1%", top: "62%", width: "22%" }}
+        style={{ left: "5%", top: "66%", width: "22%" }}
       />
     </div>
   );
