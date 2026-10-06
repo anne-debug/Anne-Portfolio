@@ -99,7 +99,7 @@ export function CaseHeader({
     <header
       className={
         split
-          ? "flex w-full flex-col items-start gap-[30px] tablet:flex-row tablet:items-center tablet:gap-10"
+          ? "flex w-full flex-col items-start gap-[30px] tablet:flex-row tablet:items-center tablet:gap-10 desktop:gap-6"
           : "flex w-full flex-col items-start gap-[23px]"
       }
     >
@@ -176,8 +176,21 @@ export function CaseHeader({
         </dl>
       </div>
 
+      {/*
+        The artwork takes a little more of the row on desktop — 64% against the
+        60% it keeps below — with the gap closing from 40 to 24 to pay for part
+        of it. Anchored at the right edge, so it grows leftward and everything
+        inside keeps its place; it is the same composition, drawn larger.
+
+        64 is the ceiling, not a preference. The words column cannot go below
+        309px without Ryze's title falling from two lines to three, which would
+        change a hero rather than scale its artwork; 64% with a 24px gap leaves
+        it 318px, nine to spare. Jubo's title is three lines either way.
+      */}
       {media ? (
-        <div className="w-full shrink-0 tablet:w-[60%]">{media}</div>
+        <div className="w-full shrink-0 tablet:w-[60%] desktop:w-[64%]">
+          {media}
+        </div>
       ) : null}
     </header>
   );

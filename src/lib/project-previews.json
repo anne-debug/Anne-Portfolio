@@ -1,69 +1,29 @@
 {
-  "taipei-metro-app": {
-    "src": "/project-previews/taipei-metro-app.b992533a.webp",
-    "width": 1102,
-    "height": 788,
-    "capturedAt": {
-      "windowWidth": 1280,
-      "scale": 2
-    },
-    "screen": {
-      "src": "/project-previews/taipei-metro-app-screen.9fd259d4.webp",
-      "left": 0.36809,
-      "top": 0.09532,
-      "width": 0.36379,
-      "height": 1.10793,
-      "clipTop": 0.05976,
-      "radius": 0.2143,
-      "fit": "cover",
-      "position": "50% 50%"
-    }
-  },
-  "budgetcart": {
-    "src": "/project-previews/budgetcart.c92172c3.webp",
-    "width": 1102,
-    "height": 788,
-    "capturedAt": {
-      "windowWidth": 1280,
-      "scale": 2
-    },
-    "screen": {
-      "src": "/project-previews/budgetcart-screen.f173aa49.webp",
-      "left": 0.39809,
-      "top": 0.09532,
-      "width": 0.36379,
-      "height": 1.10793,
-      "clipTop": 0.05976,
-      "radius": 0.2143,
-      "fit": "cover",
-      "position": "50% 50%"
-    }
-  },
   "ryze-coffee": {
-    "src": "/project-previews/ryze-coffee.ea6b4c74.webp",
-    "width": 1252,
-    "height": 692,
+    "src": "/project-previews/ryze-coffee.81083dec.webp",
+    "width": 1328,
+    "height": 730,
     "capturedAt": {
       "windowWidth": 1280,
       "scale": 2
     },
     "screen": {
-      "src": "/project-previews/ryze-coffee-screen.e7ecff09.webm",
-      "left": 0.26697,
-      "top": 0.10735,
-      "width": 0.61169,
-      "height": 0.71919,
+      "src": "/project-previews/ryze-coffee-screen.38a2e53d.webm",
+      "left": 0.26568,
+      "top": 0.10338,
+      "width": 0.6151,
+      "height": 0.72654,
       "clipTop": 0,
       "radius": 0,
       "fit": "cover",
       "position": "50% 0%",
-      "front": "/project-previews/ryze-coffee-front.280e0e03.webp"
+      "front": "/project-previews/ryze-coffee-front.eaa75b94.webp"
     }
   },
   "jubo-healthcare": {
-    "src": "/project-previews/jubo-healthcare.aa1c12cd.webp",
-    "width": 1252,
-    "height": 802,
+    "src": "/project-previews/jubo-healthcare.b351e765.webp",
+    "width": 1328,
+    "height": 848,
     "capturedAt": {
       "windowWidth": 1280,
       "scale": 2

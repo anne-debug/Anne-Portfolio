@@ -1,9 +1,22 @@
 import Image from "next/image";
 
-import { PhoneMockup } from "./PhoneMockup";
+import { PhoneMockup } from "@/components/case/PhoneMockup";
 
 /**
- * The BudgetCart hero.
+ * The BudgetCart project card's picture.
+ *
+ * This is the card only. The case study's own hero is the collage Anne designed
+ * on the page itself and is not this: a card is 480px wide at most, where a
+ * hero has a column to fill, and the two want different compositions. They were
+ * briefly the same thing — the previews used to be screenshots of the hero — and
+ * that is what pulled the card's shape back onto the page. Nothing here is
+ * rendered by the case study, and the capture script no longer visits these two
+ * projects at all.
+ *
+ * It draws straight into the card, like `IbmControlPlaneArt`, rather than being
+ * photographed: there is no still, no manifest entry and no overlay to line up.
+ * The handset plays the re-encoded animation in `public/case/`, which is half
+ * the weight of the source GIF the page uses.
  *
  * Framer drew this as a 700.5x628.4 canvas — the hero's image column extended
  * 225px to the left, which is where it pins the shopper — carrying the shopper,
@@ -32,7 +45,7 @@ import { PhoneMockup } from "./PhoneMockup";
  * piece placed as a percentage of it.
  */
 
-/** The canvas: the card's own shape, so the picture fills it. */
+/** The shape everything below is a percentage of; the card frame matches it. */
 const CANVAS = { w: 760, h: 543 };
 
 /** Sampled off the recording itself rather than guessed: the app's own green,
@@ -44,11 +57,18 @@ const MINT = "#A8D8C0";
 /** Depth, back to front. */
 const Z = { wash: "z-0", scenery: "z-[1]", phone: "z-[2]", front: "z-[3]" };
 
-export function BudgetCartHeroArt() {
+export function BudgetCartCardArt({
+  title,
+  className = "",
+}: {
+  title: string;
+  className?: string;
+}) {
   return (
     <div
-      className="relative isolate w-full overflow-hidden rounded-[18px]"
-      style={{ aspectRatio: `${CANVAS.w} / ${CANVAS.h}` }}
+      className={`absolute inset-0 isolate overflow-hidden ${className}`}
+      role="img"
+      aria-label={title}
     >
       {/* White, flat. The tinted wash and its two glows are gone: the card
           frame behind this is white too, so the picture reads as the
@@ -121,7 +141,7 @@ export function BudgetCartHeroArt() {
         style={{ left: "38%", top: "7%", width: "40%" }}
       >
         <PhoneMockup
-          screen="/case/gYGzaYBJBLaboENZJAHFQLRqlPo.gif"
+          screen="/case/budgetcart-demo.f173aa49.webp"
           alt="The BudgetCart shopping flow"
           unoptimized
           fluid

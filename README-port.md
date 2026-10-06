@@ -2493,3 +2493,31 @@ network, five was a thicket. And Framer's blue disc went altogether: reduced to
 a halo it sat entirely behind the handset and drew nothing at all, and left at
 its old size it was a field of colour competing with the screen. The blue is
 carried by the mark and by the Bannan line instead.
+
+## The card and the hero are separate things again
+
+For a while the project previews were screenshots of each case study's hero, so
+the two could not differ: making a card better meant editing the page, and
+reshaping a hero to a card's proportions is how Metro's and BudgetCart's heroes
+ended up wearing the card's composition. They are split now.
+
+Both pages are back to the heroes Anne designed — Metro's 550x594 collage and
+BudgetCart's 700.5x628.4 canvas with its overhang, restored from f56ca20, which
+held nothing else of mine.
+
+The card pictures live in `src/components/project` as `MetroCardArt` and
+`BudgetCartCardArt`, drawn straight into the card like `IbmControlPlaneArt`
+rather than photographed: no still, no manifest entry, no animation to line up
+over it. The handset plays the re-encoded animation, moved to `public/case/` so
+it belongs to the component rather than to the capture script — half the weight
+of the source GIF the page uses.
+
+`capture-previews` no longer visits either project, and the comment there says
+why it must not start again. The manifest is down to the three projects whose
+cards really are screenshots.
+
+Selected Work on the home page went through `PreviewMedia` and the manifest
+directly, which made it the one surface that could disagree with the other two.
+`WorkCard` takes a slug now and asks `ProjectCover`, like My Projects and the
+closing strips, so all three show whatever that project's card is supposed to
+be.

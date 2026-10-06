@@ -5,8 +5,6 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { useState } from "react";
 
-import { projectPreview } from "@/lib/project-previews";
-
 import { WorkCard, type WorkCardProps } from "./WorkCard";
 
 /**
@@ -24,7 +22,7 @@ const WORK: WorkCardProps[] = [
     name: "Taipei Metro Point Redesign",
     summary:
       "Reimagining Metro Points to make rewards visible, understandable, and part of everyday commuting",
-    preview: projectPreview("taipei-metro-app"),
+    slug: "taipei-metro-app",
     category: "UI/UX Design",
     href: "/projects/taipei-metro-app",
   },
@@ -33,29 +31,22 @@ const WORK: WorkCardProps[] = [
     name: "BudgetCart",
     summary:
       "An online grocery app that eliminates checkout anxiety for budget-constrained shoppers",
-    preview: projectPreview("budgetcart"),
+    slug: "budgetcart",
     category: "UI/UX Design",
     href: "/projects/budgetcart",
   },
   {
     variant: "standard",
     name: "Ryze Coffee Redesign",
-    summary:
-      "Redesigning with user trust and autonomy for long-term retention",
-    preview: projectPreview("ryze-coffee"),
+    summary: "Redesigning with user trust and autonomy for long-term retention",
+    slug: "ryze-coffee",
     category: "UI/UX Design",
     href: "/projects/ryze-coffee",
   },
 ];
 
 /** Framer component "Load more button". */
-function LoadMoreButton({
-  href,
-  label,
-}: {
-  href: string;
-  label: string;
-}) {
+function LoadMoreButton({ href, label }: { href: string; label: string }) {
   const [hovered, setHovered] = useState(false);
 
   return (

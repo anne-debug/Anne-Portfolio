@@ -1,16 +1,23 @@
+import { BudgetCartCardArt } from "@/components/project/BudgetCartCardArt";
 import { IbmControlPlaneArt } from "@/components/project/IbmControlPlaneArt";
+import { MetroCardArt } from "@/components/project/MetroCardArt";
 import { PreviewMedia } from "@/components/project/PreviewMedia";
 import { projectPreview } from "@/lib/project-previews";
 
 /**
  * Projects whose card picture is drawn rather than captured.
  *
- * A protected case study has no capture by design, but that does not mean it
- * has to settle for the plain cover below: a picture made for the card, holding
- * nothing protected, says far more about the work than a padlock does.
+ * Two reasons to be here. IBM is protected, so there is nothing safe to
+ * photograph. Metro and BudgetCart are here because a card and a hero want
+ * different compositions: a card is 480px wide at most and the hero has a
+ * column to fill. While the previews were screenshots of the heroes the two
+ * could not differ, and making the card better meant changing the page. Drawn
+ * for the card, they are free of each other.
  */
 const DRAWN: Record<string, typeof IbmControlPlaneArt | undefined> = {
   "ibm-watsonx-builder-control-plane": IbmControlPlaneArt,
+  "taipei-metro-app": MetroCardArt,
+  budgetcart: BudgetCartCardArt,
 };
 
 /**

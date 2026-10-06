@@ -143,29 +143,6 @@ const PROJECTS = [
    * rather than being cropped to fit.
    */
   {
-    slug: "taipei-metro-app",
-    // The hero's second column: the mascot, the handset and the Metro marks.
-    hero: ["article > section:nth-of-type(1) > div:nth-child(2)"],
-    hide: ["article > section:nth-of-type(1) > div:nth-child(1)"],
-    // Its art is already a panel with its own padding, and it is already the
-    // card's shape, so a band around it would only make the demo smaller.
-    margin: 0,
-    widths: [1280, 1280],
-  },
-  {
-    slug: "budgetcart",
-    // The canvas inside the column, not the column: the composition is pinned
-    // 225px further left than its column starts, so the column clips it.
-    // The canvas is self-contained now, so this is the column itself rather
-    // than the box inside it, and there is no overhang left to hide behind.
-    hero: ["article > section:nth-of-type(1) > div:nth-child(2)"],
-    hide: ["article > section:nth-of-type(1) > div:nth-child(1)"],
-    // Its art is already a panel with its own padding, and already the card's
-    // shape, so a band around it would only make the demo smaller.
-    margin: 0,
-    widths: [1280, 1280],
-  },
-  {
     slug: "ryze-coffee",
     // CaseHeader's media column: bag, laptop, beans, character.
     hero: ["article > div:nth-child(1) > header > div:nth-child(2)"],
@@ -187,6 +164,15 @@ const PROJECTS = [
     widths: [1440, 1440],
   },
 
+  // taipei-metro-app and budgetcart are absent too, for a different reason:
+  // their cards are drawn rather than photographed. A card is 480px wide at
+  // most and a hero has a column to fill, so the two want different
+  // compositions, and while the previews were screenshots of the heroes they
+  // could not differ — improving the card meant editing the case study. They
+  // are React now, in src/components/project, and wired up through
+  // ProjectCover. This script must not start capturing them again: it would
+  // put the card's composition back on the page.
+  //
   // ibm-watsonx-builder-control-plane is deliberately absent, and must stay
   // absent while it is password protected. Capturing it would write a picture
   // of protected content to public/project-previews/, served to anyone who

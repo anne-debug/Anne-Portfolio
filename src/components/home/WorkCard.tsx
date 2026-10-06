@@ -5,8 +5,7 @@ import { motion } from "motion/react";
 import { useState } from "react";
 
 import { AppearEffect } from "@/lib/framer-effects";
-import { PreviewMedia } from "@/components/project/PreviewMedia";
-import type { ProjectPreview } from "@/lib/project-previews";
+import { ProjectCover } from "@/components/project/ProjectCover";
 import { CARD_ASPECT } from "@/lib/thumbnails";
 
 /**
@@ -34,7 +33,15 @@ export interface WorkCardProps {
   variant: "large" | "standard";
   name: string;
   summary: string;
-  preview: ProjectPreview;
+  /**
+   * The project's slug, not its picture.
+   *
+   * `ProjectCover` decides what a card shows — a captured preview for some
+   * projects, a drawn one for others — so Selected Work, My Projects and the
+   * closing strips all show the same thing. Passing a preview in made this the
+   * one surface that could disagree with the other two.
+   */
+  slug: string;
   category: string;
   href: string;
 }
@@ -65,7 +72,7 @@ export function WorkCard({
   variant,
   name,
   summary,
-  preview,
+  slug,
   category,
   href,
 }: WorkCardProps) {
@@ -129,9 +136,9 @@ export function WorkCard({
       className="relative w-full overflow-hidden rounded-lg bg-white tablet:hidden"
       style={{ aspectRatio }}
     >
-      <PreviewMedia
-        preview={preview}
-        alt={name}
+      <ProjectCover
+        slug={slug}
+        title={name}
         sizes="278px"
         className={coverMotion}
       />
@@ -143,9 +150,9 @@ export function WorkCard({
       className="relative hidden flex-1 overflow-hidden rounded-lg bg-white tablet:block"
       style={{ aspectRatio }}
     >
-      <PreviewMedia
-        preview={preview}
-        alt=""
+      <ProjectCover
+        slug={slug}
+        title={name}
         sizes="55vw"
         className={coverMotion}
       />
@@ -155,9 +162,9 @@ export function WorkCard({
       className="relative hidden w-full overflow-hidden rounded-lg bg-white tablet:block"
       style={{ aspectRatio }}
     >
-      <PreviewMedia
-        preview={preview}
-        alt=""
+      <ProjectCover
+        slug={slug}
+        title={name}
         sizes="(width < 1200px) 45vw, 464px"
         className={coverMotion}
       />
