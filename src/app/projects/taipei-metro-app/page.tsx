@@ -12,7 +12,6 @@ import {
 } from "@/components/case/CaseExtras";
 import { CaseShell } from "@/components/case/CaseShell";
 import { ProblemStatement } from "@/components/case/ProblemStatement";
-import { MetroHeroArt } from "@/components/case/MetroHeroArt";
 import { PhoneMockup } from "@/components/case/PhoneMockup";
 import { Zoomable } from "@/components/case/Zoomable";
 import { SidebarNav, type SidebarEntry } from "@/components/case/SidebarNav";
@@ -384,7 +383,7 @@ export default function TaipeiMetroPage() {
           level with the last row of the meta grid. Aligned to the top instead,
           the collage's own height decided where it finished, which put it
           anywhere from 71px above that line to 56px below it. */}
-      <section className="flex w-full flex-col items-start gap-[30px] tablet:flex-row tablet:items-center tablet:gap-10">
+      <section className="flex w-full flex-col items-start gap-[30px] tablet:flex-row tablet:items-end tablet:gap-[10px]">
         {/* Framer's text column measures 424px against a 550px stage, which is
             wider than the two together fit; capping the text and letting the
             stage take the rest keeps Framer's line breaks. */}
@@ -447,10 +446,86 @@ export default function TaipeiMetroPage() {
           </dl>
         </div>
 
-        {/* The hero collage, rebuilt on the card's own 1.4:1 shape; see
-            MetroHeroArt for why the handset runs off the bottom edge. */}
-        <div className="w-full shrink-0 tablet:w-[58%]">
-          <MetroHeroArt />
+        {/* Framer's hero collage, measured off its Desktop frame: a 550x594
+            stage holding the green triangles, the Metro Taipei mark, the blue
+            disc, the mascot and the handset. Every piece is placed as a
+            percentage of that stage, so the whole composition keeps its
+            proportions at any width instead of coming apart. */}
+        <div className="relative w-full max-w-[550px] tablet:min-w-0 tablet:flex-1">
+          <div className="relative aspect-[550/594] w-full">
+            {/* Green triangles, tiled the way Framer tiles them */}
+            <svg
+              aria-hidden
+              viewBox="0 0 265 262"
+              className="absolute"
+              style={{
+                left: "51.82%",
+                top: "0%",
+                width: "48.18%",
+                height: "44.11%",
+              }}
+              fill="#44AE3A"
+            >
+              <polygon points="5,8 125,8 125,128" />
+              <polygon points="141,8 253,8 253,120" />
+              <polygon points="5,136 125,136 125,256" />
+              <polygon points="141,136 253,136 253,248" />
+            </svg>
+
+            {/* Blue disc, mostly behind the handset */}
+            <span
+              aria-hidden
+              className="absolute rounded-full bg-[#017BAE]"
+              style={{
+                left: "29.09%",
+                top: "58.42%",
+                width: "40%",
+                height: "37.04%",
+              }}
+            />
+
+            <Image
+              src="/case/1MeOVEBvOGnOx8hi8SWSqyAG1lU.png"
+              alt="Metro Taipei"
+              width={800}
+              height={600}
+              sizes="140px"
+              className="absolute object-contain"
+              style={{
+                left: "9.27%",
+                top: "23.4%",
+                width: "23.82%",
+                height: "15.32%",
+              }}
+            />
+
+            <Image
+              src="/case/GSjPc6ucjUjRwG2ne6R89XIuY.png"
+              alt=""
+              width={800}
+              height={600}
+              sizes="180px"
+              className="absolute object-contain"
+              style={{
+                left: "2.18%",
+                top: "69.36%",
+                width: "30.91%",
+                height: "25.76%",
+              }}
+            />
+
+            <div
+              className="absolute"
+              style={{ left: "40.55%", top: "7.41%", width: "48%" }}
+            >
+              <PhoneMockup
+                screen="/case/DtQR8qdhX8W9HeHl0NMKVdtndI.gif"
+                alt="The redesigned Metro Points page"
+                unoptimized
+                fluid
+              />
+            </div>
+          </div>
         </div>
       </section>
 
