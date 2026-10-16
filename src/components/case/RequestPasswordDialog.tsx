@@ -126,6 +126,8 @@ export function RequestPasswordDialog({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, message, company }),
+        // Same reason as the gate: a hung request must not sit there silently.
+        signal: AbortSignal.timeout(12_000),
       });
 
       if (response.ok) {

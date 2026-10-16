@@ -55,6 +55,11 @@ export function PasswordGate({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password }),
+        /* Give up rather than hang. A request that never answers — a dev
+           server mid-restart is enough to cause it — left this button greyed
+           out and silent for as long as the socket stayed open, which reads
+           as a password being refused rather than as a request in flight. */
+        signal: AbortSignal.timeout(12_000),
       });
 
       if (response.ok) {
@@ -69,8 +74,12 @@ export function PasswordGate({
           ? "This case study is not accepting passwords right now. Please request access below."
           : "Incorrect password. Please try again.",
       );
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (cause) {
+      setError(
+        cause instanceof DOMException && cause.name === "TimeoutError"
+          ? "The server did not respond. Please try again."
+          : "Something went wrong. Please try again.",
+      );
     } finally {
       setBusy(false);
     }
