@@ -65,10 +65,46 @@ const mansalva = Mansalva({
   display: "swap",
 });
 
+const SITE = "https://www.annelinyuen.com";
+const TAGLINE =
+  "I'm a Product designer with tech BG, passionate about transforming complexity into clear, useful products that spark moments of delight and connection";
+
+/**
+ * What a link to this site unfurls as.
+ *
+ * Without any of this, a scraper has nothing to go on and picks an image off
+ * the page itself — which on the home page meant a frame of a case study's
+ * phone recording. A portfolio link was previewing as somebody else's app.
+ *
+ * `opengraph-image.png` and `twitter-image.png` sit beside this file, which is
+ * all Next needs: it serves them, works out their size and type, and writes
+ * the tags. They are the home page's own hero, captured at 1200x630. Recapture
+ * with `npm run og` after changing the hero.
+ *
+ * `metadataBase` is what makes those tags absolute. Relative URLs are ignored
+ * by most scrapers, so without it the image would be advertised and then not
+ * fetched.
+ */
 export const metadata: Metadata = {
-  title: "Anne Lin",
-  description:
-    "I'm a Product designer with tech BG, passionate about transforming complexity into clear, useful products that spark moments of delight and connection",
+  metadataBase: new URL(SITE),
+  title: {
+    default: "Anne Lin — Product Designer",
+    template: "%s",
+  },
+  description: TAGLINE,
+  openGraph: {
+    type: "website",
+    siteName: "Anne Lin",
+    title: "Anne Lin — Product Designer",
+    description: TAGLINE,
+    url: SITE,
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Anne Lin — Product Designer",
+    description: TAGLINE,
+  },
 };
 
 const fontVariables = [

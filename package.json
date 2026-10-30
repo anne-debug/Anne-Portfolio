@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "previews": "node scripts/capture-previews.mjs"
+    "previews": "node scripts/capture-previews.mjs",
+    "og": "node scripts/capture-og.mjs"
   },
   "dependencies": {
     "clsx": "^2.1.1",

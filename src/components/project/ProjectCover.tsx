@@ -1,5 +1,6 @@
 import { BudgetCartCardArt } from "@/components/project/BudgetCartCardArt";
 import { IbmControlPlaneArt } from "@/components/project/IbmControlPlaneArt";
+import { IbmNotificationsArt } from "@/components/project/IbmNotificationsArt";
 import { MetroCardArt } from "@/components/project/MetroCardArt";
 import { PreviewMedia } from "@/components/project/PreviewMedia";
 import { projectPreview } from "@/lib/project-previews";
@@ -16,6 +17,7 @@ import { projectPreview } from "@/lib/project-previews";
  */
 const DRAWN: Record<string, typeof IbmControlPlaneArt | undefined> = {
   "ibm-watsonx-builder-control-plane": IbmControlPlaneArt,
+  "ibm-watsonx-orchestrate-notification-experience": IbmNotificationsArt,
   "taipei-metro-app": MetroCardArt,
   budgetcart: BudgetCartCardArt,
 };

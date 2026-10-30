@@ -173,11 +173,11 @@ const PROJECTS = [
   // ProjectCover. This script must not start capturing them again: it would
   // put the card's composition back on the page.
   //
-  // ibm-watsonx-builder-control-plane is deliberately absent, and must stay
-  // absent while it is password protected. Capturing it would write a picture
-  // of protected content to public/project-previews/, served to anyone who
-  // asks for the URL, which is precisely what the password screen exists to
-  // prevent. Its cards draw a plain cover instead; see ProjectCover.
+  // Both IBM projects are deliberately absent, and must stay
+  // absent while they are password protected. Capturing either would write a
+  // picture of protected content to public/project-previews/, served to anyone
+  // who asks for the URL, which is precisely what the password screen exists
+  // to prevent. Their cards are drawn instead; see ProjectCover.
 ];
 
 /** The background the heroes are captured on, and the band around them. */

@@ -2521,3 +2521,37 @@ directly, which made it the one surface that could disagree with the other two.
 `WorkCard` takes a slug now and asks `ProjectCover`, like My Projects and the
 closing strips, so all three show whatever that project's card is supposed to
 be.
+
+## A second IBM case study
+
+IBM watsonx Orchestrate Notification Experience is built to the same shape as
+the Builder Control Plane one: the route at
+`/projects/ibm-watsonx-orchestrate-notification-experience` decides on the
+server before rendering, `CaseStudy` lives in its own module so it is never
+called for a visitor without access, the page is `noindex`, and the rail
+carries the same eleven phases.
+
+It shares the Builder's gate. `hasAccess()` is scoped to the password rather
+than to a route, and both studies are the same internship under the same NDA,
+so one password opens both and nobody has to type it twice. Splitting them
+means a second secret and a second cookie in `ibm-access.ts`; nothing in either
+page would change but the import.
+
+Design Breakdown has no subsections. The Builder page names its three because
+they were given; here they were not, and inventing structure for an NDA project
+is the same mistake as inventing findings. They go inside that phase when the
+content is written — not into the rail.
+
+The card picture is `IbmNotificationsArt`, a sibling of `IbmControlPlaneArt`:
+same 1120x800 canvas, same IBM blues, watsonx top left, IBM signing bottom
+right, drawn into the card rather than photographed. The subject differs — the
+control plane card is one surface standing for many systems, this one is many
+events arriving in one place — and like its sibling it contains no text at all,
+only placeholder bars, severity edges and abstract glyphs. `capture-previews`
+skips both projects for the same reason: a screenshot of either would publish
+protected content to a guessable URL.
+
+One placement note worth keeping. The foreground notification first sat at
+y 596, which put its foot at 716, and the IBM signature — fixed at 687 to match
+the Builder card — printed straight across it. The signature's position is the
+constant of the pair, so the notification moved to 548 rather than the logo.

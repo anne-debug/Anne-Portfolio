@@ -33,11 +33,42 @@ export interface Project {
 /**
  * Every case study, in the order My Projects lists them.
  *
+ * The two IBM studies lead. That is a deliberate choice about what to show
+ * first, and it reaches further than My Projects: the closing strip on every
+ * other case study takes the first two of whatever remains, so those strips
+ * now end on two password-protected cards. If that is not wanted, the strip's
+ * order can be split from this one — see `moreProjects`.
+ *
  * The one place that order lives. My Projects renders straight from it and each
  * case study's closing strip filters it, so the two cannot drift and a project
  * added here appears in both without touching a page.
  */
 export const PROJECTS: Project[] = [
+  {
+    slug: "ibm-watsonx-builder-control-plane",
+    href: "/projects/ibm-watsonx-builder-control-plane",
+    category: "Enterprise AI · UX Design",
+    title: "IBM watsonx Builder Control Plane",
+    description:
+      "Control plane experience for IBM watsonx Builder, completed during my IBM internship.",
+    /* Left empty on purpose: the tools have not been confirmed, and the card
+       renders no chips rather than guessed ones. */
+    tools: [],
+    locked: true,
+    status: "In progress",
+  },
+  {
+    slug: "ibm-watsonx-orchestrate-notification-experience",
+    href: "/projects/ibm-watsonx-orchestrate-notification-experience",
+    category: "Enterprise AI · UX Design",
+    title: "IBM watsonx Orchestrate Notification Experience",
+    description:
+      "Notification experience for IBM watsonx Orchestrate, completed during my IBM internship.",
+    /* Left empty on purpose: the tools have not been confirmed, and the card
+       renders no chips rather than guessed ones. */
+    tools: [],
+    locked: true,
+  },
   {
     slug: "taipei-metro-app",
     href: "/projects/taipei-metro-app",
@@ -64,19 +95,6 @@ export const PROJECTS: Project[] = [
     description:
       "Redesigning with user trust and autonomy for long-term retention",
     tools: ["Figma", "", "", ""],
-  },
-  {
-    slug: "ibm-watsonx-builder-control-plane",
-    href: "/projects/ibm-watsonx-builder-control-plane",
-    category: "Enterprise AI · UX Design",
-    title: "IBM watsonx Builder Control Plane",
-    description:
-      "Control plane experience for IBM watsonx Builder, completed during my IBM internship.",
-    /* Left empty on purpose: the tools have not been confirmed, and the card
-       renders no chips rather than guessed ones. */
-    tools: [],
-    locked: true,
-    status: "In progress",
   },
   {
     slug: "jubo-healthcare",

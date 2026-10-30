@@ -131,7 +131,14 @@ export function RequestPasswordDialog({
       });
 
       if (response.ok) {
-        setStatus({ kind: "sent" });
+        /* 200 does not mean it went: with no mail provider configured the
+           server answers `sent: false` and leaves the delivering to us. */
+        const body = await response.json().catch(() => ({ sent: true }));
+        setStatus(
+          body?.sent === false
+            ? { kind: "mail", href: mailHref() }
+            : { kind: "sent" },
+        );
         return;
       }
       if (response.status === 400) {
@@ -141,8 +148,8 @@ export function RequestPasswordDialog({
         });
         return;
       }
-      /* 503 unconfigured, or 502 the provider refused: hand the message to the
-         visitor's own mail client rather than losing it. */
+      /* 502, the provider refused: hand the message to the visitor's own mail
+         client rather than losing it. */
       setStatus({ kind: "mail", href: mailHref() });
     } catch {
       setStatus({ kind: "mail", href: mailHref() });

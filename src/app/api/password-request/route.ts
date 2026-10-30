@@ -8,9 +8,11 @@ import { NextResponse } from "next/server";
  * client: the browser posts a name, an address and a message, and is told only
  * whether it went.
  *
- * With no provider configured this answers 503 `unconfigured`, and the dialog
- * falls back to opening the visitor's own mail client with everything already
- * filled in. That way the feature works the day it ships, on a portfolio with
+ * With no provider configured this answers 200 with `sent: false`, and the
+ * dialog falls back to opening the visitor's own mail client with everything
+ * already filled in. It is 200 rather than 503 because nothing went wrong:
+ * a fault status belongs to a fault, and this is a configuration the code
+ * knows how to handle. That way the feature works the day it ships, on a portfolio with
  * no email account wired up, and silently upgrades to sending server-side the
  * moment the two variables below are set. What it must never do is accept a
  * message and quietly drop it.
@@ -76,7 +78,7 @@ export async function POST(request: Request) {
     body !== null &&
     typeof (body as Record<string, unknown>).company === "string" &&
     ((body as Record<string, unknown>).company as string).length > 0;
-  if (isHoneypot) return NextResponse.json({ ok: true });
+  if (isHoneypot) return NextResponse.json({ ok: true, sent: true });
 
   const payload = read(body);
   if (!payload) {
@@ -86,10 +88,20 @@ export async function POST(request: Request) {
   const key = process.env.RESEND_API_KEY;
   const from = process.env.REQUEST_FROM_ADDRESS;
   if (!key || !from) {
-    return NextResponse.json(
-      { error: "unconfigured" as const },
-      { status: 503 },
-    );
+    /*
+      Not an error: an expected state with a handled outcome.
+
+      This used to answer 503, which is honest HTTP but put a red line in the
+      console and the network tab every time someone pressed Send — on a site
+      where the fallback works and the visitor sees nothing wrong. A fault
+      status should mean something went wrong; having no provider configured is
+      a decision, not a fault.
+
+      So the answer is 200 and `sent: false`, and the dialog reads that and
+      hands the finished message to the visitor's own mail client. What it must
+      never do is answer as though the mail went out — see `sent`.
+    */
+    return NextResponse.json({ ok: true, sent: false, reason: "unconfigured" });
   }
 
   try {
@@ -114,11 +126,12 @@ export async function POST(request: Request) {
     });
 
     if (!sent.ok) {
+      /* A real fault: the provider was asked and refused. */
       return NextResponse.json({ error: "send" as const }, { status: 502 });
     }
   } catch {
     return NextResponse.json({ error: "send" as const }, { status: 502 });
   }
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, sent: true });
 }
