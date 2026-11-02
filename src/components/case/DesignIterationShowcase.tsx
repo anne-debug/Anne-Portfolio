@@ -50,6 +50,11 @@ export interface DesignShot {
   alt: string;
   width: number;
   height: number;
+  /**
+   * What the picture is, where several sit under one screen and the reader
+   * would otherwise be looking at the same panel header twice.
+   */
+  caption?: string;
 }
 
 export interface DesignIteration {
@@ -77,6 +82,18 @@ export interface DesignIteration {
    * this is set the single image is ignored.
    */
   shots?: DesignShot[];
+  /**
+   * Close-ups that belong under the version's screen rather than instead of
+   * it.
+   *
+   * Issues Final is one screen with a tabbed panel in it, and the panel's two
+   * tabs are the point of the version: the screen can only ever show one of
+   * them, so the other is captured on its own. They sit in a row under the
+   * screen, as a pair of alternatives rather than a sequence — which is what
+   * they are, two states of one panel. Still not `shots`: those replace the
+   * screen, and these are read against it.
+   */
+  details?: DesignShot[];
 }
 
 export interface DesignArea {
@@ -520,6 +537,30 @@ function AreaBlock({
         ) : null}
 
         {/*
+          The screen's own detail, in a row under it.
+
+          Issues Final is a list and a tabbed investigation panel in one
+          capture, and the panel shows one tab at a time. The two tabs are
+          captured separately and set side by side, which is how they are
+          compared — the same header with a different thing under it. Two
+          across from 810 and one below it, top-aligned rather than stretched:
+          the captures are different shapes, and giving the shorter one the
+          taller one's height would only add empty frame under the picture.
+
+          Side by side each is about 465px wide, where the panel's own prose is
+          too small to read. That is what the lightbox is for, and it is reached
+          from either of them; the full-width screen above still carries the
+          version.
+        */}
+        {iteration.details?.length ? (
+          <div className="grid w-full grid-cols-1 items-start gap-5 tablet:grid-cols-2">
+            {iteration.details.map((shot) => (
+              <DetailPlate key={shot.src} shot={shot} />
+            ))}
+          </div>
+        ) : null}
+
+        {/*
           Several studies rather than one screen: a grid, two across from 810
           and one below it. Each is its own picture and opens on its own —
           they were four separate explorations and a montage of them would be
@@ -568,6 +609,61 @@ function AreaBlock({
 }
 
 /**
+ * A close-up under a version's screen: the same frame, one picture.
+ *
+ * No layer stack and no animated ratio, because nothing crossfades here —
+ * these belong to one version, and switching away unmounts them, which is also
+ * why the scroll position needs no resetting. What it keeps from the frame
+ * above is what makes the two read as one thing: the same height cap, the same
+ * clipping with the rest scrollable in place, and the same cue to the lightbox.
+ */
+function DetailPlate({ shot }: { shot: DesignShot }) {
+  return (
+    <figure className="m-0 flex w-full flex-col gap-2.5">
+      {/* The cue is pinned to this, not to the scroller, so it holds still
+          while the picture runs past under it. */}
+      <div className="relative w-full">
+        <div
+          className={`relative w-full overflow-x-hidden overflow-y-auto rounded-[12px] ${FRAME_CAP}`}
+          style={{ aspectRatio: `${shot.width} / ${shot.height}` }}
+        >
+          <Zoomable
+            src={shot.src}
+            alt={shot.alt}
+            width={shot.width}
+            height={shot.height}
+            fitZoom
+            triggerClassName="relative"
+          >
+            <Image
+              src={shot.src}
+              alt={shot.alt}
+              width={shot.width}
+              height={shot.height}
+              sizes="(width < 810px) 92vw, (width < 1200px) 47vw, 465px"
+              className="h-auto w-full"
+            />
+          </Zoomable>
+        </div>
+        {/* The icon on its own. Spelled out, the pill is 175px of a 466px
+            plate — better than a third of the picture, sitting on the panel's
+            own buttons. The wording is on the full-width screen above, which
+            is where the behaviour is learned; here it only has to be
+            recognised. */}
+        <ExpandCue compact />
+      </div>
+      {/* Both captures carry the same panel header with a different tab lit,
+          so without a word under them they read as the same picture twice. */}
+      {shot.caption ? (
+        <figcaption className="ts-body-small-light m-0 w-full">
+          {shot.caption}
+        </figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
+/**
  * The expand cue, over the bottom right of a picture.
  *
  * A `span`, not a button: `Zoomable` already wraps the picture in one, named
@@ -576,11 +672,13 @@ function AreaBlock({
  * the wheel going to the picture underneath — which also lets it sit outside
  * the scroller, so it holds still while a tall screenshot runs past.
  */
-function ExpandCue() {
+function ExpandCue({ compact = false }: { compact?: boolean }) {
   return (
     <span
       aria-hidden
-      className="ts-body-small-light pointer-events-none absolute right-3 bottom-3 flex items-center gap-1.5 rounded-full border border-grey-100 bg-[var(--color-off-white)]/95 px-3 py-1.5 text-light-grey"
+      className={`ts-body-small-light pointer-events-none absolute right-3 bottom-3 flex items-center rounded-full border border-grey-100 bg-[var(--color-off-white)]/95 text-light-grey ${
+        compact ? "justify-center p-2" : "gap-1.5 px-3 py-1.5"
+      }`}
     >
       <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
         <path
@@ -591,7 +689,7 @@ function ExpandCue() {
           strokeLinejoin="round"
         />
       </svg>
-      View full screenshot
+      {compact ? null : "View full screenshot"}
     </span>
   );
 }

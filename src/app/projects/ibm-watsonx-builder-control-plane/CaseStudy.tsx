@@ -209,14 +209,17 @@ const OWNERSHIP: { area: string; body: string }[] = [
  * in sequence — the closing line under the showcase says so, and the control
  * is a tab list precisely so any one of them can be reached first.
  *
- * The two stills are 1292x919 and the Home recording is 960x681, so they do
- * not share a shape. The showcase holds the tallest of them across a swap and
- * letterboxes the rest, which is what keeps the page still.
+ * Home and Issues are screen recordings at 960x681 and 960x683; Metrics is a
+ * still at 1292x918. They do not share a shape, so the showcase holds the
+ * tallest of them across a swap and letterboxes the rest, which is what keeps
+ * the page still.
  *
  * `imageRadius` is the corner each file already carries, measured off its own
  * alpha, not a styling choice — the showcase clips every step to the largest
- * of them so the set reads as one. A new screenshot needs its own measurement
- * here; see `StickyStepShowcase`.
+ * of them so the set reads as one. All three are square now, the two GIFs
+ * because the format has no alpha to draw a curve with, so the corner the set
+ * shares is the showcase's own fallback rather than any file's. A new
+ * screenshot needs its own measurement here; see `StickyStepShowcase`.
  *
  * Metrics points at `metrics-artifact-view` rather than `metric-views`: it is
  * the artifact-centric screen, and it carries both the hierarchical tree and
@@ -232,8 +235,9 @@ const SHOWCASE: ShowcaseStep[] = [
       "A starting point for recent work, shortcuts, and items needing attention.",
     /* A screen recording rather than a still, so Home shows the page being
        used. 960x681, 177 frames, looping. The still it replaces is kept
-       beside it, and `IbmHeroArt` still uses the un-masked one. */
-    imageSrc: "/images/ibm/home/control-plane-home.51c2ce92.gif",
+       beside it, and `IbmHeroArt` still uses the un-masked one. Anne renamed
+       the file to `Home.gif`; nothing about the recording changed. */
+    imageSrc: "/images/ibm/home/Home.gif",
     imageAlt:
       "A recording of the Home tab of the Builder Control Plane: a greeting with a count of critical issues, pinned shortcuts, a list of the latest issues ordered by urgency, and a row of the builder's most recently modified artifacts.",
     imageWidth: 960,
@@ -250,13 +254,22 @@ const SHOWCASE: ShowcaseStep[] = [
     subtitle: "Investigate Problems",
     description:
       "An investigation hub connecting issue severity, affected artifacts, execution details, and next steps.",
-    imageSrc: "/images/ibm/issues/issue-investigation.6d140d03.png",
+    /* A recording, like Home: Issues is a path through a problem rather than
+       one screen, and the still could only ever show the end of it.
+
+       960x683, 292 frames at 40ms, looping. Trimmed from `issues.gif`, whose
+       last 25 frames carry the macOS screen-recording controls — the stop
+       button, `Options`, `Capture` — across the bottom left. The cut is a
+       byte-level truncation of the frame blocks, so every frame that is kept
+       is the original's, untouched; the original stays beside it. */
+    imageSrc: "/images/ibm/issues/issues-trimmed.gif",
     imageAlt:
-      "The Issues investigation panel: a failing agent's artifact relationship map, a timestamped execution trace ending in a forbidden tool call, and a list of recommended next steps.",
-    imageWidth: 1292,
-    imageHeight: 919,
-    /* The window's own curve, already in the file's alpha. */
-    imageRadius: 16,
+      "A recording of the Issues tab of the Builder Control Plane: the issue list with nothing selected, then an agent failure opened beside it — the artifact relationship graph and timestamped execution trace under Execution flow, and a table of the affected assets under Impacted dependencies.",
+    imageWidth: 960,
+    imageHeight: 683,
+    /* Square, like Home: a GIF has one transparent colour rather than an alpha
+       channel, so it carries no curve for the showcase to measure. */
+    imageRadius: 0,
   },
   {
     id: "metrics",
@@ -285,9 +298,9 @@ const SHOWCASE: ShowcaseStep[] = [
       "The Metrics tab: a searchable hierarchical tree of agents, subagents and workflows beside an overview of one agent's runs per week, error rate, average response time and token spend.",
     imageWidth: 1292,
     imageHeight: 918,
-    /* Square, like the recording: this is the untouched capture. Issues is
-       now the only step carrying a curve of its own, so it sets the corner
-       the three of them share. */
+    /* Square: this is the untouched capture. With Issues now a recording,
+       no step carries a curve of its own, and the corner the three of them
+       share comes from the showcase's fallback. */
     imageRadius: 0,
   },
 ];
@@ -540,11 +553,27 @@ const DESIGN_AREAS: DesignArea[] = [
           "We combined them into a unified experience and introduced tabs to organize the supporting information, without overwhelming builders. We also added issue IDs and timestamps to provide more context during investigation.",
           "The final design brings issue details, execution information, and affected artifacts closer together, helping builders follow a clearer path from identifying a problem to investigating its impact.",
         ],
-        imageSrc: "/images/ibm/issues/Iteration/Issues_V3.png",
+        imageSrc: "/images/ibm/issues/Iteration/Issues_V3_Expanded.png",
         imageAlt:
-          "The final Issues concept: an investigation panel holding the failing artifact's relationships, its execution trace, and the recommended next steps.",
+          "The final Issues concept with an issue opened: the list on the left and, beside it, the investigation panel holding the failing artifact's relationships, its execution trace, and the recommended next steps, under Execution flow and Impacted dependencies tabs.",
         imageWidth: 2160,
         imageHeight: 1536,
+        details: [
+          {
+            src: "/images/ibm/issues/Iteration/Execution flow-trimmed.png",
+            alt: "The Execution flow tab close up: a written account of why the agent failed, the artifact relationship graph with its health legend, and an execution trace whose steps turn red at the failing tool call, beside the recommended next steps.",
+            width: 1678,
+            height: 2030,
+            caption: "Execution flow",
+          },
+          {
+            src: "/images/ibm/issues/Iteration/Impacted dependencies-trimmed.png",
+            alt: "The Impacted dependencies tab close up: a count of affected assets split into critical, at risk and informational, over a table giving each asset's type, alerts, users, tokens, success rate and average latency.",
+            width: 1678,
+            height: 1202,
+            caption: "Impacted dependencies",
+          },
+        ],
       },
     ],
   },

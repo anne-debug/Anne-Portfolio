@@ -103,6 +103,23 @@ const EASE = [0.16, 1, 0.3, 1] as const;
  * edge than the screenshot already did.
  */
 const CLIP_MARGIN = 1;
+/**
+ * The corner a set takes when not one of its files carries one.
+ *
+ * The clip below exists to reconcile files that disagree about their own
+ * corners, and it can only ever take more away. With every step square — two
+ * GIF recordings, which have no alpha to draw a curve with, and a capture
+ * trimmed to its own edge — there is nothing left to reconcile, and the set
+ * would come out hard-edged: the only pictures on the page with no corner at
+ * all. 16px is what the rest of the case study rounds a picture to, and it is
+ * within two pixels of the 21-over-1292 share the Issues screenshot used to
+ * set here, so the section keeps the corner it has been showing.
+ *
+ * A pixel count rather than a share: a share of a frame that runs from 92vw to
+ * 1072px leaves a phone with a 5px corner, which is not a corner. Any step that
+ * does carry a baked curve still wins — this is the floor, not an override.
+ */
+const BARE_CORNER = 16;
 const EXIT_TRANSITION = { duration: 0.15, ease: EASE } as const;
 const ENTER_TRANSITION = { duration: 0.3, ease: EASE } as const;
 
@@ -240,7 +257,7 @@ export function StickyStepShowcase({
   */
   const corner = (s: ShowcaseStep) =>
     cornerShare === 0
-      ? undefined
+      ? `${BARE_CORNER}px`
       : `${(cornerShare * 100).toFixed(4)}% / ${(
           cornerShare *
           100 *

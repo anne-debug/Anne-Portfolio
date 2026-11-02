@@ -4058,3 +4058,129 @@ overflow at either edge. A study opens fitted and centred in the lightbox at
 1034x600 inside a 1440x900 window, with the zoom controls and its own alt text
 as the dialog's name. `tsc`, `eslint`, `prettier` and `next build` clean, no
 console errors.
+
+### Issues Final: the opened panel, and the two tabs under it
+
+`Issues_V3.png` was the empty state. The right-hand two thirds of it says
+`Click an issue to see more` and nothing else, so the version whose whole point
+is that issues and their impacted artifacts were brought together was shown by a
+picture in which they are not. Anne swapped it for `Issues_V3_Expanded.png`,
+which is the same screen with `Agentic workflow execution failures` open: the
+list on the left, and beside it the investigation panel with its
+`Execution flow` and `Impacted dependencies` tabs, the artifact relationship
+graph, the execution trace and the recommended next steps. The copy already
+described that screen; now the screenshot does too. The old file is left in
+place, unused.
+
+**Why the two tabs are shown separately.** Under them Anne added
+`Execution flow.png` and `Impacted dependencies.png`, which are those two tabs
+captured on their own at 1680px wide. They have to be separate pictures: the
+panel is one tab at a time, and in the full screen at 951px its prose renders at
+about 6px — visibly a panel, legibly nothing. Shown at the column's own width
+the explanation, the trace timings and the dependency table can be read.
+
+**`details`, not `shots`.** `shots` replaces the version's screen and lays its
+pictures two across, which is right for Metrics V2.5 — four alternatives, none
+of them the screen — and wrong here: these belong under a screen, not instead of
+one, and at half a column the illegibility that prompted them comes straight
+back. `DesignIteration` gained `details`, a list rendered below the screen, each
+one full width in the same frame the screen uses: same height cap, same clipping
+with the remainder scrollable in place, same cue to the lightbox. No layer stack
+and no animated ratio, because nothing crossfades — they belong to one version,
+and switching away unmounts them, which is also why their scroll position needs
+no resetting.
+
+**A caption under each.** Both captures carry the same panel header with a
+different tab lit, so without a word under them they read as the same picture
+twice. `DesignShot` gained an optional `caption`; the two say `Execution flow`
+and `Impacted dependencies`, which is what the tabs in the pictures say.
+
+**The pair sits in one row.** They were stacked at first, each the full width
+of the column. Anne asked for them side by side, which is also how two states of
+one panel are compared: the same header with a different thing under it, read
+across rather than scrolled between. Two across from 810 and one below it, in
+the grid the Metrics studies use.
+
+They are top-aligned, not stretched. At 1440 each plate is 466px wide, where
+`Execution flow` stands 562px tall and `Impacted dependencies` 333px, so the row
+ends ragged. The alternative is giving the shorter one the taller one's height,
+which adds 167px of empty frame under a picture that has already finished —
+worse than an uneven bottom edge, and the caption under each keeps it clear
+which is which. Only `Execution flow` is still clipped at this size, by 62px,
+and it scrolls as before.
+
+**The cue went compact.** Spelled out, the pill is 175px of a 466px plate —
+better than a third of the picture, and on `Execution flow` it sat over the
+panel's own `Inspect in Flow` button. `ExpandCue` gained a `compact` form, the
+icon alone in a round badge; the full-width screen above still carries the
+wording, which is where the behaviour is learned. This is the same reasoning
+that took the badge off the Metrics studies, one step short of removing it:
+these are clipped and those were not.
+
+**Checked** at 390, 810, 1024 and 1440. Three figures in the Final panel, no
+element crossing either viewport edge. Stacked at 390 and side by side from 810,
+both plates starting on the same line at 810, 1024 and 1440. The frames cap at
+360 / 440 / 440 / 500, and what runs past the cap is scrollable: a wheel over the
+first plate moved it 300px of its 649 and the article not at all. Each plate
+opens on its own in the lightbox, fitted — `Impacted dependencies` at 1146x820
+inside a 1440x900 window — with its own alt as the dialog's name, and Escape
+closes it. The Final copy is untouched: same title, same three paragraphs.
+`tsc`, `eslint`, `prettier` and `next build` clean, no console errors.
+
+**The left border came off the files.** Both captures carried their leftmost two
+columns as solid `#e0e0e0` — the panel's own left edge, where the capture was cut
+against the issue list beside it. On the page it drew a hairline down the left of
+each plate, inside a frame that has no border of its own, so it read as a frame
+the other pictures do not have. Cropped to 1678 wide as
+`Execution flow-trimmed.png` and `Impacted dependencies-trimmed.png`, which is
+the naming `metrics-artifact-view-trimmed` already set; the originals stay in
+place untouched. Nothing else was resampled — the crop is two columns of one
+colour — and the lightbox now opens the trimmed file too, so the line is gone
+there as well. Checked at the rendered left edge: white at the first pixel of
+both, where it was `e0e0e0`.
+
+### Solution Overview: Issues becomes a recording too
+
+Anne renamed the Home recording to `Home.gif`, so the showcase's `imageSrc`
+follows it; the file is the same 960x681, 177 frames. Nothing else about Home
+changed, and `IbmHeroArt` still points at its own still.
+
+Issues was the still `issue-investigation.6d140d03.png`, the end of an
+investigation with nothing to say about how it was reached. The recording walks
+it: the list with nothing selected, an agent failure opened beside it, the
+artifact graph and execution trace under `Execution flow`, then the affected
+assets under `Impacted dependencies`. The still stays in place, unused.
+
+**The last 25 frames had to go.** `issues.gif` ends with the macOS
+screen-recording controls fading in across its bottom left — the stop button,
+`Options`, `Capture`. A GIF loops, so that is not a tail, it is a thing the page
+shows for a second every thirteen. Trimmed at frame 292, which is the last frame
+before they appear and which leaves the loop ending on the dependency table with
+the cursor at rest.
+
+The trim is a byte-level truncation, not a re-encode. A GIF is a header, a
+palette and a run of frame blocks, so cutting after a frame's data and writing
+the trailer leaves every kept frame exactly as it was: 4.51MB against 4.62MB, and
+each of the 292 frames rendering identical to the original's, measured at zero
+mean difference. Pillow's `save_all` was tried first and wrote 34.8MB, because it
+re-encodes each frame whole rather than keeping the deltas, and dropped five
+frames on the way. The original stays beside the trimmed file.
+
+**The set lost its last baked corner.** `imageRadius` records the curve a file
+carries in its own alpha, and the clip reconciles files that disagree. Issues was
+the only step still carrying one; a GIF has a single transparent colour and no
+alpha, so with it gone every step is square and the clip had nothing to
+reconcile — the three pictures would have come out hard-edged, the only ones on
+the page with no corner at all. `StickyStepShowcase` gained `BARE_CORNER`, 16px,
+used only when no step carries a curve of its own. It is what the rest of the
+case study rounds a picture to and within two pixels of the 21-over-1292 share
+Issues used to set, so the section keeps the corner it has been showing. A pixel
+count, not a share: a share of a frame running from 92vw to 1072px leaves a phone
+with a 5px corner.
+
+**Checked** on the running page: the three steps resolve to `Home.gif` at
+960x681, `issues-trimmed.gif` at 960x683 and the Metrics still, each clipped to
+16px, both GIFs served unoptimized so they animate rather than arriving as one
+still frame. No failed image requests, no console errors. `tsc`, `eslint`,
+`prettier` and `next build` clean. `npm run previews` not rerun: the project
+cards are shots of the hero, which this does not touch.
