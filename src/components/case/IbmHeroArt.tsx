@@ -1,3 +1,5 @@
+import { heroBoxes, IbmHeroWireframes } from "./wireframe/hero";
+
 /**
  * The hero artwork for the IBM Builder Control Plane case study.
  *
@@ -8,12 +10,13 @@
  * breakpoint; the canvas is the only thing that resizes.
  *
  * ── The product ───────────────────────────────────────────────────────────
- * Not shown on this branch. The hero carried two screenshots of the team's own
- * prototype — the Home control plane as the main plate with the issue
- * investigation panel overlapping in front of it — and they are gone, leaving
- * the field and the grid. What is left of them is `Box` and the empty list the
- * field tests against: fill it and the marks clear a space again. The windows
- * themselves, and the geometry that placed them, are in the branch history.
+ * Three drawn panels — Home as the main plate, Issues overlapping in front of
+ * it, Metrics behind and above — which is the move a builder makes through the
+ * three surfaces. They used to be two screenshots of the team's own prototype;
+ * that is unreleased IBM UI, so the hero now carries wireframes of the same
+ * ideas instead. Nothing in them was traced from a capture and every label is
+ * fictional. Their geometry lives in `wireframe/hero.tsx` beside the drawings,
+ * and this file reads it only to know where not to put marks.
  *
  * ── The background ────────────────────────────────────────────────────────
  * A field of IBM-flavoured marks in the space the two windows leave, over
@@ -67,15 +70,8 @@ const Z = {
 /* The windows                                                                 */
 /* -------------------------------------------------------------------------- */
 
-/**
- * A window's box in canvas units: what the field's collision test reads.
- *
- * Nothing fills this list on the conservative branch, because the two
- * prototype screenshots the hero used to carry are gone. It is kept because it
- * is the whole of what the field needs to know about a window — give it one
- * and the marks clear a space for it again, with no other change in this file.
- */
-type Box = { x: number; y: number; w: number; h: number };
+/* The panels' own geometry is in `wireframe/hero.tsx`; `heroBoxes` turns it
+   into canvas units, which is all the field needs to clear a space for them. */
 
 /* -------------------------------------------------------------------------- */
 /* The field                                                                   */
@@ -128,11 +124,7 @@ interface Slot {
  * when its centre lands inside one.
  */
 const SLOTS: Slot[] = (() => {
-  /* Nothing to avoid on this branch: the two prototype windows the field used
-     to be tested against are gone, so every slot is drawn and the field fills
-     the canvas. Put a window back and give it to this list to get its clear
-     space back with it. */
-  const windows: Box[] = [];
+  const windows = heroBoxes(CANVAS);
   const cellW = CANVAS.w / COLS;
   const cellH = CANVAS.h / ROWS;
   const reach = SIZE / 2 + CLEARANCE;
@@ -358,6 +350,9 @@ export function IbmHeroArt() {
           />
         ))}
       </svg>
+
+      {/* The three panels, over the field that cleared a space for them. */}
+      <IbmHeroWireframes />
     </div>
   );
 }

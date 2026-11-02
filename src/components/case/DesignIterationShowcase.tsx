@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
+import type { ReactNode } from "react";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { Zoomable } from "./Zoomable";
@@ -65,6 +66,20 @@ export interface DesignIteration {
   title: string;
   /** The reasoning. Each string is its own paragraph. */
   description: string[];
+  /**
+   * The drawn wireframe that stands in for this version's screen.
+   *
+   * Where it is set the picture fields below are not read. They are kept on
+   * the type rather than deleted because a version can be given a real capture
+   * again by filling them in; see the case study's `DESIGN_AREAS`.
+   */
+  illustration?: ReactNode;
+  /**
+   * Several drawings for one version, side by side — a version that was a set
+   * of explorations rather than one screen, such as the Metrics card studies,
+   * or one screen's panels drawn close up.
+   */
+  studies?: { id: string; caption?: string; node: ReactNode }[];
   /** An accuracy note under the copy, where one is owed. */
   note?: string;
   /** The version's screen. Leave it out where `shots` carries the pictures. */
@@ -273,6 +288,24 @@ function AreaBlock({
     if (stage.current) stage.current.scrollTop = 0;
   }, [safe]);
 
+  /*
+    The drawn versions can be preview windows with a page scrolled inside
+    them — Home runs to four sections — and a scroll position belongs to the
+    version it was made against. Arriving at V2 four hundred pixels down a
+    page you have not seen the top of is disorienting, and the versions are
+    different lengths anyway. Every switch goes back to the top, instantly:
+    the drawing underneath has changed, so there is nothing for a smooth
+    scroll to be continuous with.
+  */
+  const drawn = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    drawn.current
+      ?.querySelectorAll<HTMLElement>("[data-wire-scroll]")
+      .forEach((el) => {
+        el.scrollTop = 0;
+      });
+  }, [safe]);
+
   return (
     <section
       id={`design-${area.id}`}
@@ -405,6 +438,42 @@ function AreaBlock({
             <p className="ts-body-small-light m-0 w-full">{iteration.note}</p>
           ) : null}
         </motion.div>
+
+        {/*
+          The drawn version, where there is one.
+
+          `WireFigure` sets its own height per breakpoint and every version of
+          an area is given the same one, so switching V1 to V2 does not move
+          the page under the reader's cursor. The caption under it is the whole
+          of what tells a visitor these are drawings; it is deliberately the
+          smallest type on the page, because it is a disclosure rather than a
+          claim about the work.
+        */}
+        {iteration.illustration ? (
+          <figure ref={drawn} className="m-0 w-full">
+            {iteration.illustration}
+          </figure>
+        ) : null}
+
+        {/*
+          Several drawings for one version. Two across from 810 and one below
+          it, each with the name of what it shows: without that they read as
+          the same card four times.
+        */}
+        {iteration.studies?.length ? (
+          <div className="grid w-full grid-cols-1 items-start gap-5 tablet:grid-cols-2">
+            {iteration.studies.map((study) => (
+              <figure key={study.id} className="m-0 flex w-full flex-col gap-2">
+                {study.node}
+                {study.caption ? (
+                  <figcaption className="ts-body-small-light m-0 w-full">
+                    {study.caption}
+                  </figcaption>
+                ) : null}
+              </figure>
+            ))}
+          </div>
+        ) : null}
 
         {screen ? (
           <figure className="relative m-0 w-full">

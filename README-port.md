@@ -4184,3 +4184,507 @@ with a 5px corner.
 still frame. No failed image requests, no console errors. `tsc`, `eslint`,
 `prettier` and `next build` clean. `npm run previews` not rerun: the project
 cards are shots of the hero, which this does not touch.
+
+### Drawn wireframes in place of the prototype captures
+
+The conservative branch took the IBM prototype screenshots off the page and
+left the case study arguing about screens a reader could not see. These put
+something back: eighteen grayscale mid-fidelity wireframes, built as React and
+SVG rather than exported pictures.
+
+**Why elements and not PNGs.** A drawing per version would have been eighteen
+files to keep in step, heavy for what they carry, with unselectable text that
+turns to mush when a phone scales them down. Built as markup each one is a few
+kB, every label stays crisp at any zoom, and — the part that mattered most — a
+composition can thin itself out at a narrow width instead of being shrunk into
+illegibility. The charts are hand-written: bars are flex elements with a
+capped width, because a stretched SVG `rect` fills whatever box it is given and
+a seven-bar chart in a wide card came out as seven slabs.
+
+**The kit.** `wireframe/Wire.tsx` holds the shared pieces — screen chrome with
+a rail and header, tabs, cards, stat tiles, list rows, tables, badges, severity
+dots, a search field, buttons, a split bar, a donut, bars, a line chart,
+sixteen 12px icons — over five greys and white declared once on the frame.
+IBM blue appears only where the product would mark a choice: the open rail
+item, the active tab, a link, the selected row's edge. Severity is told by
+weight, not hue — filled, ringed, hollow — because a grayscale drawing cannot
+paint red and a blue dot would read as "selected".
+
+**The compositions** are in `home.tsx`, `issues.tsx`, `metrics.tsx` and
+`hero.tsx`, and they are deliberately not one layout with different labels:
+Home V1 leads with the fleet and has no shortcuts, V2 puts Quick actions and
+Recent artifacts above a fleet block that has grown charts, and the final one
+has no fleet on it at all. Issues V1 runs an alert list over a ticket table
+with a `Source` column, V2 deletes the table and folds assignment into the
+rows, and the final version is the list beside an investigation panel. Metrics
+V1 is the only drawing that shows two pages at once, because the split between
+them is the thing it is about. V2.5 is four different cards, not four copies of
+one. Every name, figure, ID and timestamp is invented.
+
+**Fitting the frames.** Each area's versions share one frame height per
+breakpoint — 420 / 480 / 520 — so switching a version does not move the page.
+The compositions are built to fill it, and where they would not, the content
+thins rather than the box growing: a phone gets two fleet figures instead of
+four, two quick actions instead of four, no Recent artifacts row on the final
+Home. Measured across 390, 810, 1024 and 1440, nothing inside any of the
+eighteen overflows its frame.
+
+**The hero** carries three labelled panels — Home as the plate, Issues
+overlapping in front, Metrics behind and above — placed as fractions of the
+canvas per the hero composition rule. Their geometry lives beside the drawings
+and `IbmHeroArt` reads it only through `heroBoxes`, so the mark field clears a
+space for them with nothing else to edit.
+
+**Solution Overview is a tab row again.** It became a plain three-column list
+when its pictures were removed, because tabs that choose between nothing are
+not a control. With a drawing behind each step they choose something again, so
+`StickyStepShowcase` puts a drawing in the frame its picture used to occupy and
+the original layout comes back: three steps across the top, the open one in
+blue, one drawing under them. No crossfade on the switch — the three drawings
+are the same height, so the frame does not move and there is nothing for a fade
+to cover. The section is 760px again rather than the 1,950 the stacked version
+ran to.
+
+**Severity is a glyph, not a dot.** Three plain dots read as three weights but
+not as three kinds. `WireDot` draws a filled circle with an exclamation for
+critical, an open triangle for warning, an outlined circle with an `i` for
+information — deliberately not the product's own slashed circle, solid triangle
+and filled square, only the same three things said in another hand. Shape
+rather than fill carries it, so nothing depends on telling two greys apart.
+
+**The Issues step plays itself.** The other drawings are stills; what the Issues
+work is about is a sequence, and a still can only show one moment of it.
+`SolutionIssuesDemo` loops four beats — the execution flow at the top of the
+panel, the panel running down through the trace to the recommended steps, a
+pointer reaching for `Impacted dependencies` and pressing it, then the
+dependency table — and starts again. The scroll distance is measured from the
+content against its viewport rather than guessed, because the panel is a
+different height at every breakpoint. It holds at the first beat for a visitor
+who asked for reduced motion, and it does not run while the section is off
+screen. Not a GIF: a recording would be a megabyte of fixed-size frames whose
+text turns to mush on a phone and would need re-exporting whenever a label
+changed.
+
+**No disclosure line under the drawings.** `Conceptual UI illustration —
+simplified for portfolio presentation.` was removed at Anne's request. The
+`Concept prototype. All names, agents, and performance data are fictional.`
+note stays in both sections, and nothing on the page calls these screenshots or
+claims the final Metrics concept was validated.
+
+### Home, drawn to the narrative rather than to the captures
+
+The first pass at the three Home drawings was too thin: each was one screenful,
+so V1 lost the artifact table and the whole Health block, V2 lost three of its
+four sections, and the iteration stopped being legible — three dashboards that
+differed by a row. They are now drawn section for section against the team's
+own captures, in the captures' order. Nothing is traced and every name, count,
+percentage, owner and timestamp is invented; what is kept is the information
+architecture, which is the only part the case study is arguing about.
+
+- **V1** — Fleet overview (a card per artifact type, each with a count, a
+  trend, a health bar and a three-way severity split), the artifact table
+  (search, type and status filters, Add new, eight columns, six rows), Your
+  most recent, then a second Health block of six cards carrying donuts,
+  breakdowns and a connection table. Four sections, nothing on it a shortcut.
+- **V2** — Quick actions with two pinned cards and three empty slots, Your
+  most recent, then a Fleet overview that has grown a tab per artifact type,
+  seven figures, two breakdown donuts and a usage trend, and the artifact table
+  last with severity counts and pagination. The decision is the order.
+- **Final** — pinned shortcuts with two empty slots beside Latest issues
+  (severity counts, sort control, four rows with artifact and detail), then Your
+  most recent. No fleet block, no artifact table, and `Overview` is `Home`.
+
+**The previews scroll.** V1 is 1,342px tall at a desktop and 2,208px on a
+phone; a fixed frame would either shrink it to a smudge or cut two sections
+off. `WireFigure` gained a `scroll` mode: a fixed window — 440 / 540 / 580 per
+breakpoint, the same for all three versions so the page never moves when a
+reader switches — with the page inside it at its own size. `WireScreen` gained
+`height="natural"` for the same reason, and its rail sticks to the top of the
+window so the chrome stays put while the page runs under it.
+
+A scroll container that nobody can find is no better than a crop, so
+`.wire-scroll` in `globals.css` keeps a thin scrollbar on screen rather than
+leaving it to macOS's overlay, which only appears once the reader has already
+guessed. The box takes `tabIndex`, so arrows, Page Up/Down, Home and End work
+on it; measured, PageDown moves it one window and End reaches the bottom. No
+`overscroll-contain`, so Lenis hands the page back at the ends instead of
+trapping a reader inside a drawing. `DesignIterationShowcase` puts every
+`[data-wire-scroll]` box back to the top when the version changes.
+
+**Checked** at 390, 810, 1024 and 1440: all four sections present in V1 and V2
+and all three in the final, no horizontal overflow at any width, the window
+height identical across the three versions, scroll position reset on switch
+(400 → 0), wheel over a preview moving it 300px and the article 0, and no
+console errors. The fixed-height drawings in Issues and Metrics are unchanged
+and still overflow nothing. Case study copy byte-identical.
+
+### Home, pulled back from the product
+
+The redrawn Home pages went too far the other way. Drawn section for section
+against the captures they had become the product in grey: success rates,
+latency percentiles, token counts, costs, trend chips, health percentages,
+time-range controls, Personal/Team toggles, pagination. That is a
+reconstruction of an unreleased interface, which is the thing this branch
+exists to avoid, and it buried the argument — three dashboards that differed
+by a row.
+
+**The test every element now has to pass:** does it explain what changed
+between V1, V2 and the final version? Quick actions does, because it did not
+exist in V1. Recent artifacts does, because it moved. The monitoring blocks do,
+because they led the page, then grew, then went. A success rate does not. A
+token count does not. A time-range control does not.
+
+So the sections and their order are kept exactly, and everything inside them is
+abstracted:
+
+- **Fleet overview** is five category cards, each a label and a divided bar.
+  No counts, no percentages, no trends.
+- **Artifacts** is four columns — artifact, type, status, last updated — and
+  four rows. The eight-column operational table is gone; what made V1 dense is
+  shown by the table's size and its place on the page.
+- **Health** is six cards, each a heading and an abstract mark — a ring, a run
+  of bars, a divided bar. It still reads as a substantial monitoring area,
+  which is its job in the story.
+- **V2's Fleet overview** keeps its tab row and its doubled size, and its
+  figures are `WireBlankStat`: a label bar and a figure bar with nothing
+  written in either, under one unlabelled ring and one unlabelled bar run.
+- **Latest issues** is severity, title and the artifact it belongs to. The
+  failure rates and diagnostics are gone.
+
+`WireShortcut` and `WireRecent` lost their status dots, owners and run counts;
+`WireTrend`, `WireHealthBar` and `WireDonutStat` were deleted with the detail
+they were drawn for. `WireBlankStat` and `WireShape` took their place.
+
+**Audited on the page:** the rendered text of all three Home drawings contains
+no percentage, latency, token count, cost or success rate. The only numerals
+left are the final version's `2 critical issues`, which the written iteration
+turns on, and relative timestamps like `Modified 5h ago`.
+
+**Checked** at 390, 810, 1024 and 1440: four sections in V1 and V2, three in
+the final, no horizontal overflow, preview window identical across versions
+(440 / 538 / 578), scroll reset on switch, nothing clipped, no console errors.
+
+### Issues, brought to the same standard as Home
+
+The Issues drawings were both structurally wrong and too detailed. V1 showed
+an alert list over a ticket table, when the capture is three stacked sections —
+a row of ticket cards, a ticket list with an investigation panel beside it, and
+impacted assets below. V2 had lost its investigation panel to a full-width
+list. The final version had its execution trace stacked under the diagram
+rather than beside the recommended steps, and all three carried failure rates,
+latency percentiles, timestamps to the second and a credential error.
+
+Redrawn to the written iteration at the fidelity Home now uses:
+
+- **V1** keeps all three sections. The ticket cards are a title, a severity
+  glyph, two placeholder lines and an assign control; `Your tickets` is the
+  two-column correction, a ticket list with one row selected beside the
+  investigation panel; `Impacted assets` is its own block at the foot.
+- **V2** deletes the ticket row and the ticket section, puts `Personal / All`
+  and a sort over one list with assignment on each row, and keeps the panel
+  beside it. `Impacted assets` is still separate, which is what makes the final
+  version's change legible.
+- **Final** adds the ID, the timestamp and the two tabs. Under `Execution
+  flow` the summary sits over the relationship diagram, and the trace runs
+  **beside** the recommended steps. The second tab is drawn below as the panel
+  in that state — not a second copy of the whole screen — so both tab states
+  can be inspected without the interaction the Solution Overview demo has.
+
+`InvestigationPanel` is one component across the three, with the ID and the
+tabs as options, which is how the drawings stay honest about what the final
+version actually added. The diagram keeps its one dashed link and lost its
+lone node marker; `DetailHead` and `TraceStep` moved into
+`SolutionIssuesDemo.tsx`, since Solution Overview answers a different question
+and keeps the timings that make its loop legible.
+
+**Audited on the page:** no failure rate, latency, run count, success rate or
+real error text in any of the three. The only identifier is the fictional
+`ISS-204 · opened today`, which the iteration explicitly turns on.
+
+**Checked** at 390, 810, 1024 and 1440: three sections in V1, two plus impacted
+assets in V2, tabs and the side-by-side trace in the final, no horizontal
+overflow, preview window identical across versions, scroll reset on switch, no
+console errors. Home, Metrics and Solution Overview unchanged — the Solution
+Overview loop still runs its four beats.
+
+### Metrics, brought to the same standard
+
+The Metrics drawings were the last at the old fidelity and two of them were
+structurally wrong. V1's right half was a page of token and cost figures that
+the capture does not show that way; V2 had been replaced with an invented
+Health/Performance dashboard; V2.5 was four tall cards of one shape with a hole
+in each; the final version stacked Overview and Dependencies as continuous
+sections, when the whole idea is that they are alternatives.
+
+- **V1** keeps the two-page comparison and now renders the *actual* Home V1
+  component on the left — `HomeV1Page`, extracted so Home and Metrics cannot
+  drift apart, with a `compact` flag that stops after the artifact table. On
+  the right is the Metrics page the capture shows: pinned metrics over an
+  Analytics pair, one panel for usage and one for cost.
+- **V2** is the same page with a pin left as an empty slot, which is the only
+  change the capture carries. The consolidation the narrative describes is not
+  in that capture, so rather than invent a dashboard for it there is a small
+  labelled inset underneath — `Fleet overview` with tabs by artifact type and
+  four blank figures — set on a tinted band and deliberately quieter than the
+  page above it.
+- **V2.5** is four compact cards, each built around a different kind of
+  information: a trend, a set of relationships, a health roll-up, an inventory.
+  Each carries one of the interaction ideas the round was testing — a selected
+  chart range, an explore link, an action, a hover hint. Top-aligned at their
+  own heights: stretched to fill the preview they grow the hole this round was
+  meant to close.
+- **Final** has real tabs. `MetricsFinal` is a client component with
+  `role="tablist"`, roving `tabIndex` and arrow keys; pressing `Dependencies`
+  swaps the panel and leaves the hierarchy where it is. No pinned metrics
+  anywhere on it, because the round removed them.
+
+`WireFigure` gained `interactive`, which renders `role="group"` instead of
+`role="img"` — a picture role would have hidden the tabs from assistive
+technology. `WireScreen` now lets a natural-height page fill the preview
+window, so a short drawing does not leave a band of white under it.
+
+**Audited on the page:** no figure, percentage, cost, latency or run count in
+any of the four, and no provider, credential or integration name. The pinned
+cards carry a name and an unreadable bar; the V2.5 cards carry labels and bars.
+
+**Checked** at 390, 810, 1024 and 1440: the comparison stays side by side from
+810, V2's inset reads as subordinate, the V2.5 grid is two across, the final
+tabs switch by click and by arrow key, no horizontal overflow, preview window
+identical across the four versions, scroll reset on switch, no console errors.
+Home, Issues and Solution Overview unchanged.
+
+### Two corrections, and two more prototypes that play themselves
+
+**Issues Final had a second panel.** The Impacted dependencies state was drawn
+below the main interface under a heading of its own, which showed the opposite
+of what the version is about: the whole decision is that one panel holds both.
+The duplicate is gone and the tabs inside the panel are real buttons — roles,
+roving `tabIndex`, arrow keys — so pressing one swaps what is in the panel and
+never adds anything under it.
+
+**Metrics Final had tabs it should not have.** `Metrics_V3` shows Overview and
+Dependencies as two sections stacked on the same page, which is the point: a
+builder sees an artifact's own performance and what it is wired to without
+choosing between them. They are stacked sections again, and the tab machinery
+is gone.
+
+**Solution Overview Home and Metrics now play.** The Issues step has looped
+since it was built; the other two were stills of a page, and both of those
+pages are about a move. Home's pinned shortcuts are a builder's to fill, and
+Metrics is the relationship between what you choose on the left and what the
+right-hand page reads.
+
+- **Home** plays the sequence the recording actually shows; see below.
+- **Metrics** moves through three invented artifacts — an agent, a workflow, a
+  tool — 2.5s on the first, a second to reach the next in the tree, 3s to
+  notice that the panel changed, and the same again for the third. Each carries
+  its own bar widths, curve, dependency categories and related artifacts.
+
+Both render the same components the Design Process drawings use — `HomeFinalPage`,
+`ArtifactTree`, `ArtifactPanel` — with one prop different, so Solution Overview
+is that design with an interaction on it rather than a second drawing that can
+drift. `demo.tsx` holds the shared `useBeats`, pointer and crossfade; the Issues
+demo keeps its own copy, because it works and the point of sharing is to stop
+drift rather than introduce some.
+
+**One height for the three.** `WireFigure`'s scrolling preview now takes the
+compact heights when asked for them, so all three Solution Overview drawings are
+380 / 430 / 450 and switching steps does not move the page.
+
+**Checked** at 390, 810 and 1440: Issues Final has one tab panel and its tabs
+swap content in place; Metrics Final has no tablist and shows both sections at
+once; the Home loop runs 2 empty slots → 1 → 2; the Metrics loop runs Order
+assistant → Invoice workflow → Search tool and back, with the tree highlight
+following; all three Solution Overview drawings are the same height; no
+horizontal overflow; the Issues prototype still animates; no console errors.
+
+### Result & Next Steps, and Reflection
+
+Both sections are new; the page ended at Design Process until now. The copy is
+Anne's, verbatim — ten strings, each checked character for character against
+what she sent.
+
+**Result & Next Steps** opens with the one paragraph that says where the work
+got to, including the line that the final artifact-centric Metrics direction
+came after the last round of testing and is not validated. Under it the three
+next steps run as three columns rather than three paragraphs: they are
+parallel, none follows from the one before, and stacked as prose a reader works
+down them looking for an argument that is not there. Side by side the eye takes
+all three in before reading any of them.
+
+`NextSteps` draws them with a hairline between the columns and nothing else —
+no card, no fill, no icon, no number. A card is a surface you can act on and
+these are sentences, and the page has enough drawn boxes in it already. The
+heading takes IBM blue at `ts-body-large-fluid`, which is the size and the
+accent pairing `ResearchInsights` already uses for a block heading under a
+section title; the copy stays `ts-body`. `items-stretch` is what runs the rules
+the full height of the row rather than stopping at the shortest column. Below
+810 the columns stack and the rules go: a vertical hairline between blocks that
+are no longer side by side would be drawing a relationship that is not on
+screen, and the 40px gap separates them.
+
+**Reflection** is three paragraphs of `Paragraphs` and nothing else, at the
+measure and the type every other prose block on the page uses. It is the one
+section about the work rather than the product, and dressing it up would have
+it read as another finding. Anne's note asked for two paragraphs and her copy
+has three; the copy is what was followed, since preserving the wording exactly
+was the first instruction.
+
+The rail gained two entries — `Result & Next Steps` and `Reflection` — which is
+CASE_STUDY_NAV_RULES.md rule 1: the list is built from the sections the page
+actually has. The scope note at the top of the file said outcomes were for a
+later phase; that phase is this one, so the note now says what the page is.
+
+**Checked** at 390, 810 and 1440: the three columns share a row from 810 and
+stack below it, the dividers appear only between columns, the headings are
+`rgb(15, 98, 254)`, Reflection runs three paragraphs at the page's own measure
+(342 / 730 / 951), both rail entries are present, nothing crosses either
+viewport edge, no console errors. The Solution Overview prototypes still run.
+
+### Four fixes across Design Process
+
+**Issues Final carries a fuller list and a longer trace.** `ISSUES` went from
+four to seven; V1 and V2 keep the first four through `EARLY_ISSUES`, because
+those two are making a point about how many *places* a builder has to look and
+a longer list in them would argue about the wrong thing. The execution trace
+runs six generic steps now, each with a fictional time beside it: the times are
+what make it read as a trace rather than a list — they say the steps happened
+in order and roughly how far apart — and none of them measures anything. It
+also evens the panel up: the trace and the recommended steps beside it now end
+at about the same line.
+
+**Metrics V2 lost its inset.** The "Explored in this round · Fleet overview and
+Health consolidated" block is gone, so V2 is the page its capture shows and
+nothing else.
+
+**Metrics V2.5 hugs its cards.** It was sitting in a 580px preview window with
+a quarter of it empty, which drew the four explorations as if they were a page.
+`WireFigure` gained `size="hug"`: no window, no border, no scroll — the figure
+is as tall as what is in it, 377px at a desktop. That does mean the panel
+changes height when a reader switches to or from V2.5, which is the honest
+consequence of the four cards not being a screen.
+
+**The Metrics tree runs deeper.** Seven rows became fourteen — subagents under
+an agent, a second and third agent, a second workflow and tool, a knowledge
+branch — and the panel stretches beside the artifact page rather than stopping
+a third of the way down it. The Solution Overview demo renders the same tree,
+so its pointer was re-measured against the new row positions: the second and
+third artifacts now sit at 59% and 73% of the drawing.
+
+**Checked** at 390, 810 and 1440: seven issues and six timed trace steps in
+Issues Final, no inset in V2, V2.5 377px with no scroll box, fourteen tree rows
+with the panel full height, the Metrics demo still stepping Order assistant →
+Invoice workflow → Search tool and back, no overflow at either edge, no console
+errors, and the Solution Overview drawings unchanged in height.
+
+### The Home loop follows the recording
+
+The first version of it pressed a slot and a shortcut appeared. That skipped
+the part a visitor needs — the shortcut came from somewhere, and the builder
+chose it — and after the Solution Overview drawings were brought to one height
+the pointer no longer landed on the slot at all, so it read as though pressing
+an existing shortcut spawned another one. Pressing a pinned shortcut opens it;
+it does not create anything.
+
+Read off the team's own recording, the order is: press an empty slot, a
+`Create shortcut` panel opens with suggestions, take one, save, and only then
+does the pinned area change. That is what plays now, in five beats — 2.5s on
+the page, 1s pressing the slot, 1.6s with the panel open and the pointer
+reaching a suggestion, 1.3s with it taken and Save pressed, 3s with the
+shortcut pinned.
+
+Three things it needed:
+
+- `WireSlot` gained `active`, so the slot the pointer is on is marked the way
+  the product marks it before a press.
+- `HomeFinalPage` gained `activeSlot`, and its third shortcut — which only
+  Solution Overview ever renders — is now the one the panel suggests rather
+  than another artifact.
+- The drawer is pinned to the top of the preview window and given that
+  window's height, not `inset-y-0`. The page behind it is about 47px taller
+  than the window, and a drawer stretched to the page put Cancel and Save
+  below the fold — the two controls that end the sequence.
+
+The panel holds a title, the three suggestions and the two buttons. The
+recording's also offers a written description and a link field; neither is part
+of what this loop is showing, so neither is drawn.
+
+**Checked** on the running page: the loop runs two pinned shortcuts → panel
+open → three pinned with one slot left → back, the chosen suggestion is ringed
+while Save is visible, the Design Process Home drawing still shows two pinned
+shortcuts and two empty slots, all three Solution Overview drawings are still
+the same height, no overflow at either edge, no console errors.
+
+### Issues V1 and V2 hug; the hero's facts carry the internship
+
+**V1 and V2 take their own height.** Both were sitting in a 578px preview
+window — V1 overflowing it by 76px and V2 with space left under it — when
+neither needs one: they are pages drawn at a readable size and a window only
+added a scrollbar to one and a gap to the other. `size="hug"` on both, and
+`WireScreen` gained `framed` so a natural-height page can draw its own window
+edge; inside a scrolling preview that edge is already there, so the final
+version, which keeps its window, does not ask for it. They now measure 656 and
+557 at a desktop, content exactly.
+
+**The hero.** The title is `Designing the Future Builder Control Plane`. The
+`IBM Software Design Internship · Summer 2026` line under the lede is gone, and
+both facts it carried are in the metadata where the rest of them live:
+`Project type · Design internship` between Client and Duration, and the year on
+`Duration · 6 weeks (Summer 2026)`. Five facts into a two-column grid leaves
+the last cell empty, which is what a list of facts does and is quieter than
+squeezing them to three across.
+
+The project's own name is unchanged — `IBM watsonx Builder Control Plane` is
+what `src/lib/projects.ts` calls it, so the cards on Home and My Projects, the
+browser tab, the OG metadata and the password screen still read that way. Only
+the page's own `h1` is the longer title.
+
+**Checked** at 390, 810 and 1440: the new title renders, the internship line is
+gone, the five facts read in order, Issues V1 and V2 have content equal to
+their height with the window edge still drawn, the final version is unchanged,
+no overflow at either edge, no console errors.
+
+### The hero shows the final designs, and every prototype hugs
+
+**The hero's three panels were out of date.** They had been drawn before the
+Final versions settled, so Home carried a tile row rather than pinned
+shortcuts and issues, Issues showed a tab row over a split that is not what
+the panel does, and Metrics showed a figure column rather than Overview and
+Dependencies. They are redrawn from the three Final illustrations: Home is the
+welcome line with its critical count, pinned shortcuts with their empty slots,
+the latest issues and recent work; Issues is the list beside one investigation
+with the two tabs, the relationship map and the trace, and no second panel;
+Metrics is the tree beside the selected artifact with **Overview over
+Dependencies as stacked sections**, not tabs. The composition, the layering,
+the mark field and the blue accents are untouched.
+
+The relationship map is drawn locally rather than imported from the Issues
+module: that module is a client component and the hero has no reason to become
+one, and at 180px wide the five-node version would be a smudge. Measured at
+390, 810 and 1440, all three panels' content now equals their box exactly —
+nothing is cropped. Below those widths the panels show less rather than
+smaller: at a phone the Metrics panel is 120px wide, which holds the tree and
+nothing else.
+
+**Every Design Process prototype hugs its content.** The scrolling preview
+window is gone from all ten of them — Metrics V1 was the clearest case, 578px
+of frame around 480px of drawing, with the gap sitting under the Analytics
+cards. They are their own heights now, from 351px (Metrics V2 at a desktop) to
+1067px (Home V2 on a phone), and each one's content equals its height exactly.
+`WireScreen` draws its own window edge through `framed` where there is no
+preview box around it to draw one.
+
+Solution Overview keeps its fixed box: its three drawings are one step each of
+the same section, and a visitor switching between them should not have the
+page move. They are still 380 / 430 / 450.
+
+**The hero's facts.** Team moved to the end of the list, which lands it in the
+left column of the third row — directly under My Role and flush with it. Half a
+column is about 470px, which breaks the four names across two lines instead of
+running them to the far edge of the page as one; the longest line in the block
+was beating the title for width.
+
+**Checked** at 390, 810 and 1440: no prototype scrolls or clips, no hero panel
+clips, nothing crosses either viewport edge, the Solution Overview drawings are
+still one height, the Issues and Metrics loops still run, and the build, types
+and lint are clean.

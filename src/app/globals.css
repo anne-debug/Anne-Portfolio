@@ -607,3 +607,33 @@ body {
     animation: none;
   }
 }
+
+/*
+  The scrolling wireframe previews in the IBM case study.
+
+  A scroll container is only discoverable if something says so, and on macOS
+  the overlay scrollbar stays hidden until the reader has already guessed.
+  These previews keep a thin one on screen the whole time: it is the
+  affordance, and against the page's own greys it is quieter than a drawn cue
+  would be.
+*/
+/*
+  Deliberately no `scrollbar-width`. Setting it hands Chromium the standard
+  property, which on macOS draws the overlay scrollbar the system prefers —
+  invisible until the reader is already scrolling, which is no use as the one
+  thing saying a preview has more below it. Styling `::-webkit-scrollbar`
+  instead gets a classic bar that takes its own column and stays on screen.
+  Firefox has no equivalent and keeps its own.
+*/
+.wire-scroll::-webkit-scrollbar {
+  width: 10px;
+}
+.wire-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.wire-scroll::-webkit-scrollbar-thumb {
+  background: var(--color-grey-100);
+  background-clip: content-box;
+  border: 2px solid transparent;
+  border-radius: 5px;
+}

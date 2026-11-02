@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useCallback, useId, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 
 import { Zoomable } from "./Zoomable";
 
@@ -53,6 +54,14 @@ export interface ShowcaseStep {
    */
   imageSrc?: string;
   imageAlt?: string;
+  /**
+   * A drawn wireframe for this step, shown in place of a picture.
+   *
+   * A step with one is laid out as its own block — words then drawing —
+   * rather than as a tab, because three drawings that each need a sentence
+   * beside them are a list, not a slideshow.
+   */
+  illustration?: ReactNode;
   /** The file's own pixels, so the frame can hold one shape for all of them. */
   imageWidth?: number;
   imageHeight?: number;
@@ -216,6 +225,7 @@ export function StickyStepShowcase({
         }
       : null;
   const withPicture = safeSteps.filter((s) => pictureOf(s) !== null);
+  const withDrawing = safeSteps.filter((s) => s.illustration);
 
   /*
     ── One shape for the whole set ─────────────────────────────────────────
@@ -317,7 +327,7 @@ export function StickyStepShowcase({
 
     Give any step an `imageSrc` and the tabbed showcase below comes back.
   */
-  if (withPicture.length === 0) {
+  if (withPicture.length === 0 && withDrawing.length === 0) {
     return (
       <div className={`flex w-full flex-col gap-8 ${className ?? ""}`}>
         <ol className="m-0 grid w-full list-none grid-cols-1 gap-8 p-0 tablet:grid-cols-3 tablet:gap-x-8">
@@ -537,6 +547,20 @@ export function StickyStepShowcase({
           tab row above still carries each step's words, and below 810 the
           active step's copy sits at the top of this panel.
         */}
+        {/*
+          A drawn step, in the frame a picture would have had.
+
+          No `Zoomable` around it and no aspect-ratio box: the drawing sets its
+          own height, every step's is the same, and there is no file to open
+          at full size — it is already at full size. No crossfade either. The
+          frame does not move between steps, so a switch is instant; fading
+          one drawing into another across a fixed box is motion with nothing
+          to cover.
+        */}
+        {!picture && step.illustration ? (
+          <div className="w-full">{step.illustration}</div>
+        ) : null}
+
         {picture ? (
           <Zoomable
             src={picture.src}

@@ -1,6 +1,21 @@
 import Image from "next/image";
 
 import { Reveal } from "@/components/case/CaseExtras";
+import { HomeFinal, HomeV1, HomeV2 } from "@/components/case/wireframe/home";
+import { SolutionHomeDemo } from "@/components/case/wireframe/SolutionHomeDemo";
+import { SolutionIssuesDemo } from "@/components/case/wireframe/SolutionIssuesDemo";
+import {
+  IssuesFinal,
+  IssuesV1,
+  IssuesV2,
+} from "@/components/case/wireframe/issues";
+import {
+  MetricsFinal,
+  MetricsV1,
+  MetricsV2,
+  MetricsV25,
+} from "@/components/case/wireframe/metrics";
+import { SolutionMetricsDemo } from "@/components/case/wireframe/SolutionMetricsDemo";
 import {
   ResearchInsights,
   type ResearchInsight,
@@ -21,6 +36,7 @@ import {
 } from "@/components/case/CaseParts";
 import { CaseShell } from "@/components/case/CaseShell";
 import { IbmHeroArt } from "@/components/case/IbmHeroArt";
+import { NextSteps } from "@/components/case/NextSteps";
 import { ProblemStatement } from "@/components/case/ProblemStatement";
 import { SidebarNav, type SidebarEntry } from "@/components/case/SidebarNav";
 import {
@@ -38,9 +54,8 @@ import { AppearEffect } from "@/lib/framer-effects";
  * who has not passed the gate.
  *
  * ── Scope ─────────────────────────────────────────────────────────────────
- * Hero through Solution Overview. Research, Design Iteration, Final Design and
- * Outcomes come in a later phase, and the rail lists only what the page has —
- * CASE_STUDY_NAV_RULES.md, rule 4.
+ * Hero through Reflection. The rail lists the nine headed sections the page
+ * actually has and nothing else — CASE_STUDY_NAV_RULES.md, rules 1 and 6.
  *
  * ── Copy ──────────────────────────────────────────────────────────────────
  * Every sentence of visible prose on this page is the text Anne supplied,
@@ -99,20 +114,31 @@ const SECTIONS: SidebarEntry[] = [
   { id: "solution-overview", label: "Solution Overview" },
   { id: "research", label: "Research" },
   { id: "design-iteration", label: "Design Process" },
+  { id: "results", label: "Result & Next Steps" },
+  { id: "reflection", label: "Reflection" },
 ];
 
 /**
  * The facts under the title. Client leads: it is the one a reader scanning the
  * page wants first, and it names the product every other section talks about.
  *
- * Four of them, so they fall into a 2x2 block with Team's four names getting a
- * column of their own rather than one long line.
+ * Five of them now. The internship line that used to sit under the lede said
+ * what kind of engagement this was and when; both are facts, so they are in
+ * here as `Project type` and the year on `Duration` rather than as a sentence
+ * the eye skips on its way to the picture.
+ *
+ * Team is last so that it lands in the left column of the third row, directly
+ * under My Role and flush with it. Half a column is about 470px, which breaks
+ * four names across two lines instead of running them to the far edge of the
+ * page as one — the longest line in the block was beating the title for
+ * width.
  */
 const META: [string, string][] = [
   ["Client", "IBM watsonx Orchestrate"],
-  ["Duration", "6 weeks"],
-  ["Team", "Matt Golonka, Eden McPeek, Samika Agarwal, Sahithi Lingampalli"],
+  ["Project type", "Design internship"],
+  ["Duration", "6 weeks (Summer 2026)"],
   ["My Role", "Product Designer & UX Researcher"],
+  ["Team", "Matt Golonka, Eden McPeek, Samika Agarwal, Sahithi Lingampalli"],
 ];
 
 /**
@@ -223,6 +249,7 @@ const SHOWCASE: ShowcaseStep[] = [
     subtitle: "Return to Work",
     description:
       "A starting point for recent work, shortcuts, and items needing attention.",
+    illustration: <SolutionHomeDemo />,
   },
   {
     id: "issues",
@@ -231,6 +258,7 @@ const SHOWCASE: ShowcaseStep[] = [
     subtitle: "Investigate Problems",
     description:
       "An investigation hub connecting issue severity, affected artifacts, execution details, and next steps.",
+    illustration: <SolutionIssuesDemo />,
   },
   {
     id: "metrics",
@@ -239,6 +267,7 @@ const SHOWCASE: ShowcaseStep[] = [
     subtitle: "Understand Performance",
     description:
       "An artifact-centric view of runs, error rates, latency, token use, and related assets.",
+    illustration: <SolutionMetricsDemo />,
   },
 ];
 
@@ -406,6 +435,7 @@ const DESIGN_AREAS: DesignArea[] = [
           "Our initial concept assumed that builders needed an overview of their agents and other artifacts to monitor performance and identify potential issues.",
           "We brought fleet health, aggregate metrics, and artifact information together on the landing page to explore whether a centralized overview could help builders understand the overall state of their work.",
         ],
+        illustration: <HomeV1 />,
       },
       {
         id: "v2",
@@ -416,6 +446,7 @@ const DESIGN_AREAS: DesignArea[] = [
           "We introduced Quick Actions, allowing builders to pin workflows and tools for easier access. We also moved recent artifacts higher on the page to prioritize builders' daily work.",
           "The original Fleet Overview provided only high-level health indicators, offering limited insight into artifact performance. We expanded it with more detailed metrics and visualizations to help builders better understand fleet health and performance.",
         ],
+        illustration: <HomeV2 />,
       },
       {
         id: "final",
@@ -426,6 +457,7 @@ const DESIGN_AREAS: DesignArea[] = [
           "Builders also preferred information about individual artifacts, while the fleet-wide metrics felt redundant with the dedicated Metrics page. We removed the Fleet Overview from the landing page and consolidated performance monitoring under Metrics.",
           "Finally, we renamed Overview to Home to reflect its new purpose as a starting point for daily work. The final design prioritizes pinned shortcuts, recent artifacts, and actionable issues, helping builders quickly return to their work and identify what needs attention.",
         ],
+        illustration: <HomeFinal />,
       },
     ],
   },
@@ -442,6 +474,7 @@ const DESIGN_AREAS: DesignArea[] = [
           "Early research showed that builders needed to identify failures, understand affected artifacts, and investigate problems across interconnected agents and workflows.",
           "We initially explored a centralized view that combined issue monitoring with ticket-style work items. We included assignment functionality to help builders clarify ownership, track problems, and move toward resolution.",
         ],
+        illustration: <IssuesV1 />,
       },
       {
         id: "v2",
@@ -451,6 +484,7 @@ const DESIGN_AREAS: DesignArea[] = [
           "Usability testing revealed that builders were unsure where the tickets originated, such as GitHub, Jira, Monday, or ServiceNow. The separate ticket section also made the page feel overwhelming.",
           "To simplify the experience, we removed the standalone Tickets section and integrated its assignment functionality directly into the issue list. We also renamed Alerts to Issues, shifting the focus from system notifications to investigating and managing problems. This reduced clutter and brought issue investigation and ownership into one place.",
         ],
+        illustration: <IssuesV2 />,
       },
       {
         id: "final",
@@ -461,6 +495,7 @@ const DESIGN_AREAS: DesignArea[] = [
           "We combined them into a unified experience and introduced tabs to organize the supporting information, without overwhelming builders. We also added issue IDs and timestamps to provide more context during investigation.",
           "The final design brings issue details, execution information, and affected artifacts closer together, helping builders follow a clearer path from identifying a problem to investigating its impact.",
         ],
+        illustration: <IssuesFinal />,
       },
     ],
   },
@@ -477,6 +512,7 @@ const DESIGN_AREAS: DesignArea[] = [
           "Our initial design separated metrics based on their purpose. We placed artifact health and operational metrics across the Overview page, while a dedicated Metrics page focused on broader usage and business performance, such as token consumption, KPIs, and cost.",
           "This reflected our early assumption that builders would primarily monitor artifact performance through Overview, while more detailed reporting could support users with administrative responsibilities.",
         ],
+        illustration: <MetricsV1 />,
       },
       {
         id: "v2",
@@ -486,6 +522,7 @@ const DESIGN_AREAS: DesignArea[] = [
           'Feedback revealed that metrics felt scattered and repetitive across the experience. Builders found the amount of information overwhelming and expressed interest in organizing metrics through tabs. Additionally, the label "Health" did not clearly communicate what the section contained.',
           "To reduce fragmentation and redundancy, we merged Fleet Overview and Health into a single tabbed Fleet Overview, allowing builders to explore metrics by artifact type.",
         ],
+        illustration: <MetricsV2 />,
       },
       {
         id: "v2-5",
@@ -497,6 +534,7 @@ const DESIGN_AREAS: DesignArea[] = [
           "Most importantly, builders wanted to drill down into individual artifacts to understand their performance, rather than relying solely on fleet-level summaries.",
           "Based on this feedback, we explored organizing artifact-specific metrics into different categories of cards, combining performance statistics with actionable insights.",
         ],
+        illustration: <MetricsV25 />,
       },
       {
         id: "final",
@@ -510,6 +548,7 @@ const DESIGN_AREAS: DesignArea[] = [
           "We removed pinned metrics because it was unclear whether they should apply across all artifacts or only to the selected artifact. Feedback suggested that builders valued customization, but pinning individual metrics was not necessarily the best way to support that need.",
           "This final concept has not yet been usability tested. Future testing would need to validate artifact relationships, metric organization, and the usefulness of interactions and drilldowns.",
         ],
+        illustration: <MetricsFinal />,
       },
     ],
   },
@@ -642,9 +681,9 @@ export function CaseStudy() {
         Stacked rather than the two-column header Metro and BudgetCart use.
         Beside the words, the artwork gets 64% of a 951px column — about 609px
         — and a browser window drawn 609px wide is a thumbnail. The words here
-        are also heavier than those pages carry: a subtitle, an internship line
-        and four team names. Giving each the full column lets the facts sit
-        two across and the product read as a product.
+        are also heavier than those pages carry: a subtitle and five facts,
+        one of them four team names. Giving each the full column lets the
+        facts sit two across and the product read as a product.
       */}
       <section className="relative flex w-full flex-col items-start gap-10">
         <div className="flex w-full flex-col items-start gap-5">
@@ -652,7 +691,7 @@ export function CaseStudy() {
 
           <div className="flex w-full flex-col gap-5">
             <h1 className="ts-heading-2 w-full text-left text-grey-200">
-              Builder Control Plane
+              Designing the Future Builder Control Plane
             </h1>
             {/*
               `normal-case` undoes the `text-transform: capitalize` that Framer
@@ -664,9 +703,6 @@ export function CaseStudy() {
             <p className="ts-body-large-fluid max-w-[760px] text-left normal-case">
               Designing a centralized starting point for builders to navigate,
               monitor, and troubleshoot their agentic work.
-            </p>
-            <p className="ts-body-small-light text-left">
-              IBM Software Design Internship · Summer 2026
             </p>
           </div>
         </div>
@@ -1036,6 +1072,59 @@ export function CaseStudy() {
               />
             </Reveal>
           </div>
+        </CaseSection>
+
+        {/* ---- Result & Next Steps -------------------------------------- */}
+        {/*
+          One paragraph of where the work got to, then the three things that
+          would follow it. The paragraph says plainly that the final Metrics
+          direction came after the last round of testing and is not validated;
+          nothing in the columns under it claims otherwise.
+        */}
+        <CaseSection id="results" title="Result & Next Steps" gap={10}>
+          <div className="flex w-full flex-col gap-[50px]">
+            <Paragraphs
+              items={[
+                "We developed three connected design concepts for Home, Issues, and Metrics, informed by builder research and iterative feedback. The final artifact-centric Metrics design was developed after the last round of testing, so its specific interactions and metric terminology still require validation.",
+              ]}
+            />
+            <Reveal className="w-full">
+              <NextSteps
+                accent={IBM_BLUE}
+                items={[
+                  {
+                    title: "Clarify terminology and metrics",
+                    body: "Address unclear labels and undefined metrics through clearer naming, contextual tooltips, and consistent terminology across the experience.",
+                  },
+                  {
+                    title: "Refine personalization",
+                    body: "Continue exploring customizable widgets, pinned items, and layout controls while providing useful defaults so builders can get started without feeling overwhelmed.",
+                  },
+                  {
+                    title: "Validate usability and feasibility",
+                    body: "Use these research-informed concepts as a starting point for discussions with product and engineering teams about implementation feasibility, particularly around workflow visibility, artifact relationships, and builder-focused dashboard capabilities.",
+                  },
+                ]}
+              />
+            </Reveal>
+          </div>
+        </CaseSection>
+
+        {/* ---- Reflection ---------------------------------------------- */}
+        {/*
+          Prose and nothing else, at the measure and the type every other
+          paragraph on the page uses. It is the one section that is about the
+          work rather than the product, and dressing it up would make it read
+          as another finding.
+        */}
+        <CaseSection id="reflection" title="Reflection" gap={10}>
+          <Paragraphs
+            items={[
+              "One of the biggest challenges I faced was understanding what users actually needed. During testing, users would sometimes say a feature looked helpful, but that didn't necessarily mean it was important to their daily workflow. I learned to ask more specific follow-up questions about when and why they would use a feature, so I could better distinguish essential needs from nice-to-have ideas.",
+              "Metrics was particularly challenging because builders cared about different types of information, and some also had administrative responsibilities. We spent a lot of time exploring how to organize metrics in a way that supported different needs without overwhelming users.",
+              "Our original project scope also included the Admin Control Plane and Artifact Inventory, so our early research brought together feedback from different roles. However, we later realized that these roles often overlap, as one person might be both a builder and an admin. This taught me to look for shared patterns across users, understand what information mattered most to their actual workflows, and use those insights to prioritize our design decisions.",
+            ]}
+          />
         </CaseSection>
       </div>
     </CaseShell>
