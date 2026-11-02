@@ -163,7 +163,7 @@ export function IbmControlPlaneArt({
         {/* watsonx, at the size of a product mark rather than a favicon. The
             supplied file, scaled and placed; nothing drawn over or around it. */}
         <image
-          href="/images/ibm/watsonx-mark.a98aad79.png"
+          href="/images/ibm/card/watsonx-mark.a98aad79.png"
           x="62"
           y="54"
           width="116"
@@ -189,14 +189,14 @@ export function IbmControlPlaneArt({
           dots — a thousand stray pixels on the figure alone.
         */}
         <image
-          href="/images/ibm/code-screen.4b644606.png"
+          href="/images/ibm/card/code-screen.4b644606.png"
           x="90"
           y="233"
           width="80"
           height="108"
         />
         <image
-          href="/images/ibm/builder.07937f0d.png"
+          href="/images/ibm/card/builder.07937f0d.png"
           x="150"
           y="286"
           width="160"
@@ -206,7 +206,7 @@ export function IbmControlPlaneArt({
         {/* One more surface from the same illustration, so the builder is not
             the only thing the control plane is reaching past. */}
         <image
-          href="/images/ibm/phone.2ca97da3.png"
+          href="/images/ibm/card/phone.2ca97da3.png"
           x="296"
           y="612"
           width="128"
@@ -219,7 +219,7 @@ export function IbmControlPlaneArt({
             the top of this file. */}
         <ellipse cx="175" cy="733" rx="56" ry="9" fill={NAVY} opacity="0.07" />
         <image
-          href="/images/ibm/bob.5b28425e.png"
+          href="/images/ibm/card/bob.5b28425e.png"
           x="112"
           y="540"
           width="126"
@@ -415,7 +415,7 @@ export function IbmControlPlaneArt({
             product mark leads, the company signs. Its corner is unchanged —
             the extra size is taken inward, not out of the margin. */}
         <image
-          href="/images/ibm/ibm-logo.85026a1f.png"
+          href="/images/ibm/card/ibm-logo.85026a1f.png"
           x="902"
           y="687"
           width="156"

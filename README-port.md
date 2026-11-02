@@ -2555,3 +2555,1506 @@ One placement note worth keeping. The foreground notification first sat at
 y 596, which put its foot at 716, and the IBM signature — fixed at 687 to match
 the Builder card — printed straight across it. The signature's position is the
 constant of the pair, so the notification moved to 548 rather than the logo.
+
+## The Builder Control Plane case study, hero through Solution Overview
+
+The scaffold in `ibm-watsonx-builder-control-plane/CaseStudy.tsx` is now written
+as far as Solution Overview. Research, Design Iteration, Final Design and
+Outcomes are still to come, and the rail lists six entries rather than eleven
+because `CASE_STUDY_NAV_RULES.md` rule 4 says a page gets no entry for a
+section it does not have. The two sub-blocks that exist — Five key builder
+needs, and My design ownership — keep their ids for deep links and earn no
+rail entry of their own.
+
+### Recovering clean screens out of the playback deck
+
+The design playback supplies twelve slides, and ten of them are spotlight
+slides: the whole 1920x1080 frame is covered with 60% black and a hole is left
+over whichever region the slide is talking about, with a white callout card
+somewhere else on top. Only two frames are clean, the issue investigation panel
+and the board of metric views.
+
+A spotlight slide is still recoverable, because the overlay is flat. White
+backgrounds read 102 everywhere they are covered, 102/255 is exactly 0.4, so
+the original is the slide multiplied by 2.5. That gets a whole screen back from
+one slide at the cost of quantisation — only 103 distinct levels survive — and
+it leaves the callout card sitting on top as a white slab.
+
+So the three Home slides were combined instead. Per pixel, the median of the
+three brightened frames throws away both the callout (white in one slide, real
+in two) and the clipped spotlight (blown out in one, real in two), which leaves
+a clean, evenly recovered screen. The crisp spotlight regions were then pasted
+back over it at full resolution: the shortcut cards from one slide, the issues
+panel from another, the three recent-artifact cards from the third.
+
+Two bands needed hand-picking after that, and the reason is worth writing down.
+The deck does not only dim the regions it is not talking about — on the slide
+about recent projects, the "Your most recent" label is redrawn in **white**, and
+on the slide about shortcuts the two empty "Create shortcut" tiles are redrawn
+in white as well. A median across three slides cannot help when the pixel is
+wrong in one slide and hidden behind a callout in another. Each band therefore
+comes from a slide that was neither spotlighting it nor covering it:
+
+| Band | Source | Why |
+| --- | --- | --- |
+| Empty shortcut tiles | slide 48 | 47 whitens them, 46 has a callout over them |
+| "Your most recent" label | slide 47 | 48 whitens it, 46 has a callout over it |
+| That row under the issues panel | slide 46 | 47's callout covers it |
+
+Metrics came out of a single slide plus two patches, because its three slides
+show different tree states and a median would ghost one into another. The tree
+panel's own header is the one disagreement: the search slide renders it at 57
+where the other two render 23, so that strip is taken from the tree slide.
+
+The arithmetic worth keeping: a gap of 245 between two white cards is not a
+seam left by the compositing. The real page background is #F4F4F4, 244 — the
+cards are white and the page behind them is not.
+
+The script lives in the scratchpad, not the repo. It is a one-off against
+twelve specific files, and the six PNGs it produced are the artefact worth
+keeping.
+
+### The hero
+
+Three directions were tried. A row of three equal windows gave each one a third
+of the column and made all three unreadable. A single flat screenshot read
+clearly and said nothing about the thing the project is about. The one built is
+the third: Home as the main plate, because it is the starting point the project
+proposes, with the issue investigation panel overlapping in front of it, because
+that is the move a builder makes from the landing page into a failure.
+
+It is a `CLAUDE.md` hero composition — one canvas with a fixed 1200x700 ratio,
+every piece placed in percentages of it, nothing rearranged at a breakpoint.
+The corner radius and the elevation are written in `cqw` against the canvas's
+own container, so a 12px radius at full size stays proportional at a phone's
+third of it rather than turning into a collar.
+
+The header is stacked rather than the two-column `CaseHeader` Metro and
+BudgetCart use. Beside the words, the artwork gets 64% of a 951px column, about
+609px, and a browser window drawn 609px wide is a thumbnail. The words are also
+heavier here — a subtitle, an internship line and four team names.
+
+Behind the windows is Carbon's twelve-column rule field, and the one saturated
+colour on the page is IBM's interactive blue `#0F62FE`, used in the hero motif
+and the artifact diagram and nowhere else. The portfolio's own type, spacing,
+tokens and components carry everything around them; Carbon is not introduced as
+a dependency and nothing global is restyled.
+
+### One type override
+
+`ts-body-large-fluid` carries `text-transform: capitalize`, which Framer baked
+into every Body Large class and which the whole portfolio inherits. It is
+harmless on a four-word lede. On this subtitle — a full sentence with three
+commas — CSS capitalises "A", "For", "To" and "And" too, and it reads as a bug.
+The hero lede carries `normal-case` and keeps the class for its size and
+colour. Metro and BudgetCart still capitalise theirs; if that is wrong it is
+wrong in `globals.css`, not here.
+
+### Asset organisation, and one thing to decide
+
+`public/images/ibm/` now has `home/`, `issues/`, `metrics/` for the six
+recovered screens, `references/` for the twelve playback slides exactly as
+supplied, and `card/` for the thumbnail art that used to sit loose at the root.
+`IbmControlPlaneArt` and `IbmNotificationsArt` were repointed at `card/`;
+nothing else referenced those files. Originals are preserved and no source
+image was overwritten.
+
+The thing to decide: the earlier note in this file says `capture-previews`
+skips both IBM projects because "a screenshot of either would publish protected
+content to a guessable URL." Everything under `public/` is served without the
+password gate, so the six screenshots now sit at exactly such URLs. The route is
+gated and `noindex` and nothing links to the files, but an unlinked URL is not
+an access control. Either that is acceptable, or the assets move behind a route
+that calls `hasAccess()` — which on Vercel also needs `outputFileTracingIncludes`
+so the files reach the deployment, and `unoptimized` images so the browser's
+cookie is the one that fetches them.
+
+### The copy is Anne's, verbatim
+
+The brief allowed the supplied text to be refined "to improve clarity, reduce
+repetition, and fit the page layout", and the first pass took that licence:
+sentences were tightened, paragraphs merged, headings set in the portfolio's
+sentence case, the bullet list in Project Context folded into prose, and a few
+connecting lines written outright. Anne then asked for her own words back.
+
+So every sentence of visible prose on the page is now her text, character for
+character. That includes the five need titles in their original title case, the
+section and sub-section headings as her IA names them — Project Overview,
+Project Context, The Problem, Design Challenge, My Role, Solution Overview, and
+inside them What is watsonx Orchestrate?, Five Key Builder Needs, How Might We,
+My Design Ownership — and the three feature names with their em dashes. The
+heading case is not a deviation from the portfolio: Metro already sets "My
+Role", "Solution Overview" and "Making Metro Points Visible, Clear and
+Actionable" the same way.
+
+Four strings on the page are not hers, and all four are there for a reason a
+reader never sees as prose:
+
+- the three `alt` texts, which describe the screenshots for a screen reader
+- the figure caption marking every screen as fictional sample data
+
+The team names are her four, joined with commas rather than set as a bullet
+list, which is the "compact format consistent with my existing portfolio" the
+brief asks for. The hero metadata is the three fields she lists — Duration,
+Team, My Role — and nothing else; an earlier pass had added a fourth, Product.
+
+Two structural consequences of going verbatim:
+
+- Project Context regains the real bullet list of five artifact types, set with
+  the portfolio's own `StarPointList` in two columns.
+- Solution Overview's "These are connected destinations that builders can
+  access as needed." sits **after** the three previews, where her document puts
+  it, rather than opening the section as a lede. It is the line that stops the
+  three reading as a fixed sequence, so its placement is worth a second look if
+  the section ever gets reordered.
+
+`IbmArtifactDiagram` was rebuilt to match her example exactly: Agent with
+Tools, Knowledge Base and Other Agents; Workflow with Agents and Tools. The
+earlier version had five children under Agent (it added MCP servers), renamed
+the second parent "Agentic workflow", and carried a one-line gloss under each
+parent that was written here rather than supplied. All of that is gone, and the
+caption is her sentence.
+
+A note for whoever edits this page next: the header comment in `CaseStudy.tsx`
+says the prose is verbatim and asks that it stay that way. A line that reads
+long or repeats is a question for Anne, not an edit to make in the file.
+
+### The hero background: an IBM mark field
+
+Anne asked for more IBM in the hero background and pointed at a teammate's
+portfolio, which tiles a dark frame edge to edge with outline icons — IBM
+logotypes, speech bubbles, bees, eyes — a handful of them picked out in blue,
+fading to black with a solid blue band at the foot. The brief was to take the
+idea, not the design.
+
+What is here instead:
+
+- **A vocabulary from this project, not stock tech iconography.** Eight marks:
+  the eight-bar signature, then the artifact types a builder actually works
+  with in watsonx Orchestrate — agent, agentic workflow, tool, knowledge base,
+  MCP server — and the two things the Control Plane exists for, an issue and a
+  metric. Those are the same nouns the Project Context section lists, so the
+  hero states the page's subject before a word of it is read. The reference's
+  bees and eyes belong to its author's own identity; borrowing them would say
+  nothing here.
+- **The signature is weighted.** It fills three of the ten slots in the pool
+  rather than one of eight. It is the only mark that is IBM rather than merely
+  technical, and a field where it recurs reads as IBM's; one where it turns up
+  as often as a database icon reads as a generic stack of product glyphs.
+  Uniform bars in a square, not the logotype, which is a trademark.
+- **Marks sit only in negative space.** Every candidate slot is tested against
+  both window boxes plus a clearance margin and dropped on a collision, so the
+  field frames the product rather than crowding it. Move a window and the
+  field re-flows with no coordinate list to maintain.
+- **Some neighbours are joined.** A quarter of the adjacent pairs get a short
+  connector, trimmed back so it stops before each mark instead of running
+  under it. That turns the field from a wall of loose icons into a sparse
+  network, which is the project's actual subject. It is also the clearest break
+  from the reference, where nothing connects to anything.
+- **Light, not dark.** The reference is a dark site. This page is cream, so the
+  marks are a warm light grey (`#D7D3CB`) with a few in IBM blue at reduced
+  opacity, over Carbon's twelve-column grid. No gradient, no blue band, no
+  colour the portfolio does not already carry.
+- **Depth.** Grey marks take one of five opacities from their own seed. At a
+  single flat value the field read as wallpaper.
+
+Placement is derived from the row and column indices rather than randomised, so
+the server and the client draw the same field and nothing needs a seed stored.
+
+The canvas grew from 1200x700 to 1200x780 and the two windows were inset — Home
+from 72% to 65% of the width — to open the margin the field lives in. That costs
+Home about 65px of drawn width at desktop (685px to 620px); it is a hero, the
+screens are captioned and `Zoomable` further down the page, and the trade buys
+the background its room. Strokes stay `non-scaling-stroke`, which is what keeps
+a 40-unit mark legible when the canvas is a phone's 358px rather than 951px.
+
+### Project Context: one real screenshot instead of two drawn diagrams
+
+The section used to run a bullet list of artifact types and then
+`IbmArtifactDiagram`, a pair of hand-drawn trees for Agent and Workflow. Anne
+replaced all of it with a capture of the shipping Workflow Builder, and the
+swap is the right one: a reader who has never opened an agent platform learns
+more from one look at the real canvas — nodes, a branch with two labelled
+paths, a tool call, a nested sub-flow — than from a diagram of the same idea,
+and it puts no invented UI on the page.
+
+`src/components/case/IbmArtifactDiagram.tsx` was deleted with it. It was never
+committed, so it is not recoverable from git; the shape it drew is written out
+in the entry above if it is ever wanted back.
+
+The section is now intro, picture, caption, close. No card, no background, no
+second diagram.
+
+#### The crop
+
+`public/images/ibm/product/` holds both files:
+
+| File | Size | What it is |
+| --- | --- | --- |
+| `workflow-builder-full.b15da434.png` | 3296x1824 | the capture as supplied, byte for byte |
+| `workflow-builder.cf4ce454.png` | 2160x1717 | the crop the page uses |
+
+The crop was taken off a column and row profile of the capture rather than by
+eye: columns were scored by the fraction of pixels differing from the canvas
+background, which put the graph's right edge near x=2110 and showed the minimap
+sitting alone past x=2800. Four things came off:
+
+- the window chrome at the top, which the capture clips mid-row and which reads
+  as a mistake rather than as context
+- the minimap, bottom right
+- the **Stop Screen Recording** bar, which overlaps the canvas at the foot of
+  the frame and would have published the fact that this was screen-recorded
+- the empty canvas between the graph and those two
+
+What stayed: the Flow nodes panel in full, the whole graph including the green
+sub-flow, and the `Travel approval flow / Edit details` toolbar, which is the
+cheapest way to show this is a builder tool. The bottom edge of the sub-flow's
+dashed border is lost by about 17px, which is the price of clearing the
+recording bar; the graph visibly continues below the fold anyway.
+
+Nothing is scaled: `width` and `height` on the `Image` are the file's own
+pixels, so the aspect ratio cannot drift.
+
+#### The label
+
+The screenshot carries an `Existing watsonx Orchestrate interface` pill above
+its caption, in the same component as the ownership tags in Solution Overview.
+It is load-bearing rather than decorative. Every other screenshot on the page
+is the team's prototype; this one is the product as it already shipped, and a
+reader who mixed the two would credit Anne with work that is not hers.
+
+#### Still unused
+
+`public/images/ibm/Design System/` holds six artifact icons shipped by IBM —
+`Agent`, `Workflow`, `Tools`, `Knowledge`, `Models`, `Connections`. Nothing
+references them yet. They are the real marks for the artifact types the deleted
+diagram drew by hand, so they are worth reaching for before drawing anything
+like it again. The folder keeps its supplied name, spaces and capitals and all,
+because renaming it would be a change to source assets nobody asked for.
+
+### Four corrections to the Builder Control Plane page
+
+**Client leads the metadata.** `Client: IBM watsonx Orchestrate` is now the
+first of four facts under the title, ahead of Duration, Team and My Role. Four
+again, so the block falls back into 2x2 and Team's names keep a column.
+
+**The heading scale follows Metro.** The page was setting its h3s at
+`ts-heading-5`, the Sub-block rung. Metro runs `ts-heading-3` for h2 and
+`ts-heading-6` for every h3 under it, with no `ts-heading-5` anywhere, and this
+page now does the same. Three consequences worth knowing:
+
+- `SubHeading` grew a `size` prop — `"sub-block"` (unchanged, still the
+  default) and `"sub-heading"` (the Metro rung). Jubo and the Notifications
+  case study take the default and are untouched; only this page opts in. Under
+  `"sub-heading"` the lede drops from `ts-heading-6` to `ts-body`, because the
+  title is now at the size the lede used to be.
+- The problem statement stopped being a `<p>` at `ts-heading-5` and became an
+  `<h3>` at `ts-heading-6`, which is exactly how Metro sets its own.
+- The h4s — the five need titles and the two ownership areas — were at
+  `ts-heading-6`, which would now collide with their own h3. They drop to
+  `ts-body font-semibold`, which is what `StarPointList` already gives a titled
+  point and therefore what the portfolio means by that rung.
+
+**The rail takes IBM blue.** `SidebarNav` grew an `accent` prop defaulting to
+`var(--color-orange)`; it reaches the markup as a `--rail-accent` custom
+property so the hover and active states stay ordinary classes. This page passes
+`#0F62FE`, which colours the active entry, the hover, and the floating button's
+ring and glyph below 1200. Verified that Metro's rail still computes
+`rgb(255, 89, 0)`. The site's own nav pill is untouched and stays orange: it
+belongs to the site, not to the case study.
+
+**The dark hairline on the Workflow Builder screenshot is gone.** The crop
+started at row 38, and rows 38 and 39 are the last two of the dark window
+chrome — at 2160px wide they drew a near-black line across the top of the
+picture that ran straight past the rounded corners and read as a stray frame
+stroke. The cut is now row 40, the first row that measures pure white, and the
+file is `workflow-builder.f039db18.png` at 2160x1715. The `rounded-[10px]`
+and the `border-grey-100` hairline are unchanged and correct; magnified 4x the
+corner is now one continuous curve. Checked against a profile of the source
+rather than by eye, and re-checked that the foot of the crop still clears the
+screen-recording bar, which starts at row 1760 against a cut at 1754.
+
+### Spacing brought onto Metro's
+
+The page felt disconnected under its section titles. Measuring both pages in
+the browser rather than reading the classes showed why: Metro puts **10px**
+between an `h2` and the first thing under it in twelve of its fifteen sections,
+and this page was putting **40px** (20px on Overview).
+
+What changed, all of it values Metro already uses:
+
+| | Metro | IBM before | IBM now |
+| --- | --- | --- | --- |
+| `h2` to first content | 10 | 40 (20 on Overview) | 10 |
+| section to section | 90 | 90 | 90 |
+| hero to rule | 90 | 90 | 90 |
+| rule to first section | 90 | **50** | 90 |
+| blocks inside a section | 70 / 40 | 70 / 50 / 40 | 70 / 40 |
+| bare `h3` to its copy | 10 | **20** | 10 |
+| statement `h3` to its copy | 20 | 20 | 20 |
+| figure to caption | 10 | 10 | 10 |
+| More Projects `h2` | 40 | 40 | 40 |
+
+Four edits did it:
+
+1. Every `CaseSection` takes `gap={10}`. The component's own default stays 20,
+   so Jubo and the Notifications case study are untouched.
+2. `bodyGap` went 50 to 90, Metro's value, and the hero lost the `pb-10` that
+   was making up the difference before the rule. Hero to rule stays 90 and rule
+   to the body is now 90 as well, where it had been 50.
+3. Project Context's sub-heading block went `gap-5` to `gap-2.5`. A bare `h3`
+   with no lede should hug its own copy at 10px, which is what Metro does; 20px
+   is the figure for an `h3` that is a *statement* paired with the `h2`, and the
+   Problem section — which has exactly that shape — keeps it.
+4. The Problem section's two blocks went 50px to 70px, which is what Metro puts
+   between the two blocks of its own Problem section. The page now uses two
+   block gaps, 70 and 40, instead of three.
+
+No new token, no override, no media query: the h2 gap is a flat 10 at 1440, 810
+and 390, measured. Typography and hierarchy are untouched — this was spacing
+only. Metro was not modified; its rail still measures 90px section gaps and
+`rgb(255, 89, 0)`.
+
+### Labels out, interactions in
+
+**Removed.** Six pill labels, all of which repeated something the page already
+said: the `Existing watsonx Orchestrate interface` pill over the Workflow
+Builder caption, two `Primary design responsibility` badges on the ownership
+cards, and the three ownership tags in Solution Overview. The `OwnershipTag`
+component is gone with them. A sweep of the rendered article for pill-shaped
+elements now returns an empty list.
+
+The attribution those pills carried is not lost, which was the thing to check
+before deleting them. My Role still states in its lede which surfaces were the
+team's and which were Anne's, and the Metrics card still closes with "I
+collaborated with the team to develop and refine the design." The caption under
+the Workflow Builder still names it as the Workflow Builder — the shipping
+product, not the Builder Control Plane the rest of the page is about — so the
+line the pill drew is still drawn, once instead of twice.
+
+Kept: the `Enterprise AI · UX Design` badge and the internship line in the
+hero, and the two ownership cards themselves. The cards earn their borders —
+they hold the one claim on the page that has to be read precisely.
+
+**Added**, all of it out of what the portfolio already owns:
+
+| | Reused from |
+| --- | --- |
+| Section content fading up on scroll | `Reveal`, already used by Ryze and BudgetCart |
+| Five Key Builder Needs, staggered 0.08s | `AppearEffect` + the `index * 0.1` stagger `MoreProjects` uses |
+| Screenshot frame answering the pointer | the `.invite` rules in `globals.css`: 0.2s ease, accent border, 6% wash |
+| Picture creeping to 1.02 under the pointer | `MoreProjects`, which runs `duration-500 group-hover:scale-[1.03]` |
+| Click to expand | `Zoomable`, which the page already used |
+
+No new dependency and no new timing: every entrance is the
+`spring-duration 0.6s 0` the rest of the portfolio animates on, and every
+hover is 0.2s ease.
+
+**Two decisions worth recording.**
+
+The brief listed the ownership cards as hover candidates and, two paragraphs
+later, said static informational cards should not look clickable. Those pull
+against each other, and the second wins: the cards take a border and a 3% wash
+on hover and nothing else. No lift, no shadow, no cursor change — a lift is the
+single cue that makes a surface read as pressable, and these cards do nothing
+when clicked. Verified: `transform` stays `none`, `box-shadow` stays `none`,
+`cursor` stays `auto`.
+
+The screenshot hover had to not move the page. The scale sits on the `<img>`
+and the radius and `overflow-hidden` sit on a wrapper, so the growth is clipped
+by the frame and the figure's box never changes. That also moved the border off
+the `<img>` onto its own element, which is what keeps the corner one clean
+curve.
+
+**Checked rather than assumed**, all in the browser:
+
+- screenshot hover moves the border grey to IBM blue and the picture to 1.02,
+  with the bounding box byte-identical before and after
+- ownership card hover does not lift, shadow or change the cursor
+- Tab reaches the screenshot, Enter opens it, Escape closes it
+- under `prefers-reduced-motion` the copy renders at opacity 1 and the picture
+  does not scale — Tailwind's `motion-reduce:` on the image, `useReducedMotion`
+  inside `AppearEffect`
+- on an emulated iPhone, a tap opens the viewer and leaves no hover stuck on
+  afterwards; Tailwind v4 compiles `hover:` inside `@media (hover: hover)`,
+  which is the same guard `globals.css` writes by hand
+- cumulative layout shift over a full scroll of the page: **0.0000**
+- no element crosses either viewport edge at any of the thirteen widths
+
+Taipei Metro was not modified.
+
+### Solution Overview as a step showcase
+
+Three screenshots stacked down the column became a two-column walkthrough:
+the three areas on the left, the screen for whichever one is selected on the
+right. `src/components/case/StickyStepShowcase.tsx`, driven entirely by a
+`steps` prop — it knows nothing about Home, Issues or Metrics.
+
+The change is not only shorter. Three headings stacked down a page read as
+chapters, and the one thing the brief insists on is that these are *not* a
+sequence: "Do not present Home → Issues → Metrics as a mandatory linear
+workflow." A tab list says siblings. A reader can open Metrics first and the
+layout does not argue. It also buys back about two screens of scrolling and
+each picture is larger than when all three shared the column.
+
+**The reference.** `showCase.mov` is H.264 in a QuickTime container, which
+Playwright's bundled Chromium cannot decode and its bundled ffmpeg (a stripped
+build for recording only) cannot read. Frames came out of it by transcoding
+with macOS's `avconvert` to `.m4v` and seeking a real Chrome through it. It
+shows a marketing page with a large product screenshot beside a column of
+steps, the screenshot swapping as the steps change — which is the shape the
+written spec already described in more detail than the video could.
+
+The video has been moved from `public/animation_reference/` to
+`reference/animation/`. Anything under `public/` is served, so it was a 3MB
+file sitting at a live URL and shipping with every deploy, for a working
+reference nothing on the site links to.
+
+**Screenshots**, all three already in the tree and all three 1292x919, which
+is what lets one frame hold every step without letterboxing:
+
+| Step | File | Why |
+| --- | --- | --- |
+| Home | `home/control-plane-home.106ced35.png` | the Home tab |
+| Issues | `issues/issue-investigation.6d140d03.png` | severity, artifact relationships, execution trace and recommended next steps — the four things the copy names |
+| Metrics | `metrics/metrics-artifact-view.ff753f0f.png` | checked by opening it: it is the artifact-centric screen and carries **both** the hierarchical tree and the search field, which are the two things Anne proposed. `metric-views.c1859996.png` is the board of view options, not this. |
+
+**Animation.** The marker is one element with a `layoutId`, so Motion moves it
+between steps instead of fading one out and another in. The spring is the
+spec's: stiffness 320, damping 28, mass 0.8.
+
+The picture swap deviates from the spec's numbers, deliberately.
+`AnimatePresence mode="wait"` runs exit and enter in series, so the spec's
+`duration: 0.35` for both would have taken 700ms — against its own acceptance
+criterion of "approximately 300-400ms". The outgoing frame is the one nobody
+looks at, so it takes 0.15s and the incoming one keeps 0.3s: 450ms end to end,
+same `[0.16, 1, 0.3, 1]` easing and the same ±8px / 0.99 offsets. The frame is
+white rather than transparent so the beat between them reads as a blink rather
+than a hole in the page.
+
+**Layout stability.** The frame carries an `aspectRatio` and the pictures are
+laid in with `fill` + `object-contain`, so its height is identical before,
+during and after a swap. Only opacity and transform animate. Measured: the
+frame is 424.9px at 1440 before and after switching steps, and cumulative
+layout shift over a full visit on an emulated iPhone is **0.0000**.
+
+**The phone needed a different answer.** Three descriptions stacked above the
+picture pushed it about 650px down the page, so tapping a step changed
+something nobody could see. Below 810 the description moves out of its step
+and into the panel, directly above the picture. It is rendered in both places
+with `display: none` on one, and `display: none` is out of the accessibility
+tree as well as off the screen, so exactly one copy is offered at any width.
+
+**Accessibility**, all verified in the browser rather than asserted:
+
+- `role="tablist"` / `tab` / `tabpanel`, `aria-selected`, `aria-controls` and
+  `aria-labelledby` wired to ids from `useId`, so two showcases on one page
+  could not collide
+- roving tabindex: the selected tab is the only stop, then arrows
+- Up/Down and Left/Right both move, Home and End jump, every one of them
+  `preventDefault`ed — measured that `scrollY` is unchanged after a run
+- focus follows selection, and focus rings take the accent
+- `prefers-reduced-motion` drops the marker's spring to zero duration and the
+  swap to opacity alone, no y and no scale
+- touch targets measure 61px against the 44px floor; tapping switches steps
+  and leaves no hover stuck on
+- the active screenshot still opens full size through `Zoomable`, Escape to
+  close, which is the lightbox the page already had
+
+No dependency was added: `motion` v13 was already here, and `lucide-react` was
+not needed because the component has no icons. There is no `cn()` in this
+project, so class names are composed the way the rest of the codebase does it.
+
+Auto-play is not built. `select()` is the only place a step changes, so adding
+a timer later is an effect that calls it and a clear in the handlers that
+already exist.
+
+### Making the Solution Overview screenshots readable
+
+Three changes, with the screenshot width as the measure of all of them. It was
+586px — 65% of a 951px article, for a 1292px screen of dense enterprise
+dashboard. It is now 951px, or **1072px with the rail folded away**: +83%.
+
+**1. The steps moved above the picture.** They are three short lines and did
+not need a column of their own. `StickyStepShowcase` now lays them across the
+top — three up from 810, stacked below — with the picture beneath at the full
+width of the article. The switching, the gliding marker, the crossfade, the
+ARIA and the keyboard handling are all unchanged.
+
+The marker and the rule moved from the left of each step to underneath it.
+Above, the rule sat immediately below the section title and read as an
+underline of it; underneath, it separates the row from the screenshot and the
+marker underlines the selected step, which is also where Carbon puts a tab's
+indicator.
+
+**2. The rail folds.** `CaseShell` gained `collapsibleSidebar`, off by default,
+and the row became a client component, `CaseRow`, because both halves have to
+agree about the fold at the same moment: the rail narrows from 119px to 28px
+and the gap beside it closes from 50px to 20px, or the article would gain the
+rail's width and lose it again to empty space. `SidebarNav` reads the same
+state through context — context rather than a prop because the rail arrives at
+`CaseRow` as an already-built node handed down from a server component, and a
+node cannot be given new props.
+
+The control keeps its 28px when the list goes, which is the only way back. It
+carries `aria-expanded` and `aria-controls`, an accurate label that swaps
+between "Hide section list" and "Show section list", and a focus ring in the
+page's accent.
+
+Below 1200 nothing changed, by design. The brief asked for this at 1024, but
+1200 is where this portfolio's rail stops being a column at all — under it the
+rail already floats as a button over the page, and there is no column to fold.
+Folding was wired to the same breakpoint the rail itself uses.
+
+Verified that Metro, BudgetCart and Jubo still measure a 951px article, a 50px
+gap and zero fold controls.
+
+**3. Two real bugs in the lightbox.** Found by trying to click the close
+button in a test rather than by reading the markup:
+
+- The picture was a `fill` image inside a `h-full w-full` div, a later sibling
+  of the close button with no stacking context between them, so it painted
+  over the button. **The X was visible and unclickable** on every page that
+  uses `Zoomable` — this one, Metro and BudgetCart. The button now carries
+  `z-[1]`.
+- That same div also swallowed clicks in the empty space beside a letterboxed
+  picture, so "click away from the image to close" did nothing across most of
+  the window. The picture now sizes to its own box rather than sitting in a
+  full-window one, so a click beside it reaches the backdrop.
+
+Both are fixes to shared behaviour and improve the other two case studies.
+
+A third change is opt-in: `panOnDesktop` opens a picture at its own pixels and
+pans, instead of fitting it to the window. Metro and BudgetCart keep fitting —
+a flow diagram 2800px wide is opened to be seen whole. A product screenshot is
+the other case, opened to read the small type in it, and fitting 1292x919 into
+an 820px-tall window threw away a tenth of the resolution the file has. The
+IBM screenshots pass it; the lightbox now draws them at 1:1, centred, panning
+vertically.
+
+One measurement trap worth recording: `naturalWidth` on an image served from a
+`srcset` with `w` descriptors is reported *divided by the density the browser
+chose*, so a correctly-served 1292px file reads back as 869 at dpr 1 and 434 at
+dpr 3. Fetching the optimizer URL directly is what settles it — `w=1920` and
+`w=3840` both return the full 1292x919.
+
+**Validation.** `tsc`, `eslint`, `prettier` and `next build` clean. No element
+crosses either viewport edge at any of the thirteen widths. Folding moves the
+article from 951 to 1072 at both 1440 and 1280, with the rail's right edge at
+188 against an article starting at 208 — 20px clear, no overlap. Cumulative
+layout shift across a full scroll, two step switches and a fold: **0.0006**,
+of which the step switches contribute 0.0000. On an emulated iPhone the fold
+control is absent, the existing floating menu is untouched, and tapping a step
+still switches the picture.
+
+#### The step label, in three rows
+
+The step was `01 **Home** — Return to Work` on one line with the copy beneath.
+It is now:
+
+```
+01  Home                 <- number and title, both in the accent when selected
+    Return to Work
+    A starting point for recent work, shortcuts, and items needing attention.
+```
+
+The dash is gone and the subtitle has a row of its own. In a column a third of
+the page wide the one-line form ran to two lines anyway, and the dash was
+landing at the end of a line about as often as it sat between the two words it
+was meant to join.
+
+The number hangs in its own flex column so the title, the subtitle and the copy
+all start on one left edge with the number beside the first of them. Selected,
+the number and the title take the accent together — they are one label — and
+the subtitle drops to `grey-200`. Unselected, all three are `light-grey`.
+
+Worth knowing for any future label built this way: splitting a label across
+flex children does **not** damage its accessible name. Chrome blockifies flex
+items and inserts the separators, so the tab still announces as
+`01 Home Return to Work A starting point for recent work…` — checked through
+CDP's `Accessibility.getFullAXTree`, not inferred from `textContent`, which
+does run the spans together and would have suggested otherwise.
+
+### The double border on the prototype screenshots
+
+The screenshots were showing two corners: a dark rounded one and, a few pixels
+outside it, a grey arc with a white sliver between. The cause was in the
+assets, not only in the CSS.
+
+**What the files actually hold.** Each recovered screen is the prototype window
+filling its frame, with the window's own rounded corners baked in. The three
+differ, because they were recovered off slides at different scales:
+
+| File | Baked radius | Outside the curve |
+| --- | --- | --- |
+| `issue-investigation` | 12px | already transparent |
+| `control-plane-home` | ~16px | **opaque white** |
+| `metrics-artifact-view` | ~25px | **opaque white** |
+| `product/workflow-builder` | none | n/a — a flat crop of the app viewport |
+
+So two of them carried a radius that could not be seen, because white was
+filling the outside of it. Drawing a `rounded-[10px] border` container around
+that put a second corner outside the first, and the white in between is what
+made it read as a frame.
+
+**The fix, in both places.**
+
+1. The containers lost their border, radius, background, shadow and
+   `overflow-hidden`. In the showcase a box remains, but only to hold the
+   aspect ratio — which is what keeps the column from moving when the picture
+   changes — and to position the two frames of the crossfade. In Project
+   Context the wrapper is gone entirely; the `Image` is now `Zoomable`'s only
+   child.
+2. `control-plane-home` and `metrics-artifact-view` were re-cut with their
+   alpha following the window's own curve, so the baked radius is finally the
+   radius you see. Each file's radius was measured off its own ink boundary
+   rather than assumed, and the mask also trims the stray white row the
+   recovery left above the chrome. New hashes: `af87ef1c` and `cd140067`.
+
+The pre-mask files are still in the tree. `control-plane-home.106ced35.png` is
+not spare — `IbmHeroArt` still uses it, and should: the hero plate is a
+deliberate composition with a ring, a radius and elevation, and an image with
+transparent corners inside a clipped rounded box would fight it. Two
+presentations, two assets.
+
+**What went with the frame.** The scale-on-hover on the Project Context
+screenshot is gone. It only looked right because the box clipped it, and the
+box is what had to go; scaling an unclipped picture would have had it grow over
+the caption beneath. `Zoomable` still makes the picture a button with
+`cursor-zoom-in`, so the lightbox is as reachable as it was.
+
+**Checked after.** A 3x capture of each rendered corner shows one curve and no
+arc outside it. Computed styles on both containers read
+`border 0 / radius 0 / no shadow`. Tab switching, the frame's height across a
+switch (676.4px either side), the lightbox and its three ways out all behave as
+before; CLS over a full visit is 0.0006, and nothing crosses either viewport
+edge at any width.
+
+**For the screenshots still to come:** present them bare. If a screen is a
+window with rounded corners, cut its alpha to that curve and draw nothing
+around it. A container is for holding an aspect ratio, not for framing a
+picture that already has an edge of its own.
+
+### One corner across Home, Issues and Metrics
+
+Replacing the Home still with a recording made a difference visible that had
+been there all along: the three screens in the Solution Overview did not share
+a corner. They had never been compared side by side at the same size.
+
+Measured off each file's own alpha rather than assumed:
+
+| Step | File | Pixels | Corner carried |
+| --- | --- | --- | --- |
+| Home | `control-plane-home.51c2ce92.gif` | 960x681 | none — square, no alpha anywhere |
+| Issues | `issue-investigation.6d140d03.png` | 1292x919 | 16px |
+| Metrics | `metrics-artifact-view.cd140067.png` | 1292x919 | 25px |
+
+Three files, three corners, all drawn at the same width on the page — so three
+visibly different curves. The recording could not simply be masked to match:
+GIF has one transparent colour rather than an alpha channel, so a curve cut
+into it comes out jagged.
+
+**The rule.** A clip can only take more away; it cannot put back a corner a
+file has already cut. So the corner the set can share is the widest of them,
+and every step is clipped to that. `StickyStepShowcase` derives it: each step
+declares `imageRadius`, the curve its file carries in its own pixels, and the
+largest wins.
+
+Two details make it hold.
+
+1. **A share of the width, not a pixel count.** The frame runs from 92vw on a
+   phone to 1072px with the rail folded. A fixed radius would be the window's
+   curve at one width and wrong at every other, while a baked-in corner scales
+   with the picture. The clip is written as a percentage pair —
+   `1.3158% / 1.8498%` — because `border-radius` reads a lone percentage
+   against width for the horizontal radius and against height for the
+   vertical, which on a 1.4:1 box draws an ellipse. The second figure is the
+   same share re-expressed against the box's height.
+2. **`CLIP_MARGIN`, one pixel.** Clipped to exactly the widest curve, the file
+   that set it is still bounded by its own alpha and keeps whatever its mask
+   carries, while its neighbours get a clean geometric arc. Measured on the
+   page that read as one step a pixel and a half rounder than the other two.
+   Landing the clip just outside the curve puts all three under one rule.
+
+**Where the clip goes.** Not on the frame. The frame holds one aspect ratio so
+the column cannot move during a swap, and it now takes the *tallest* step
+rather than the first, so every step fits inside its height instead of one of
+them overflowing. Inside it each step gets a clip box of its own shape,
+centred — so the curve lands on the picture's real edges, and a step of another
+shape is letterboxed rather than having a corner cut out of thin air beside the
+one it was meant to round. Home, at 960x681 against a 1292x919 frame, sits
+with 0.92px of air above and below at a desktop.
+
+`Zoomable` takes the same corner through `cornerRadius`, so opening a picture
+does not hand back the file's own instead. The prop is optional and unset on
+Metro and BudgetCart, which still present their files exactly as they are.
+
+**The white line.** Chasing the Metrics mask turned up the real defect
+underneath. Its first row is pure white — the edge of the window it was grabbed
+from — and against the near-black IBM header beneath it that row drew a light
+hairline across the top of the picture. On the page it measured brightness 180
+where Home and Issues read 21. The mask had not removed it, only made it
+transparent, which renders just as light. The row is now trimmed:
+`metrics-artifact-view-trimmed.75c939b4.png`, 1292x918, cut from the untouched
+`ff753f0f`. With the showcase clipping every step there was nothing left for
+the mask to do, so the masked copy is no longer used.
+
+Removing it also lowered the shared corner. Metrics' 25px mask had been setting
+it at roughly 19px on a desktop; with Issues' 16px the only curve left, the set
+now sits at about 12px, which is nearer the `rounded-[10px]` the rest of the
+site uses.
+
+**Checked after.** Corners read back off the rendered pixels at both
+top-left and bottom-right, against a background colour the screenshots cannot
+imitate — these captures are near-white in exactly the corner being measured,
+so comparing against the page colour cannot tell a clipped corner from content.
+Six corners across the three steps: 11.6, 11.8, 11.8, 12.0, 11.8, 12.0px at
+1440, a spread of 0.4px; 2.7-3.9px at 390, which is one rendered pixel. Top
+edge 20-23 on all three. Frame height identical across all twelve widths and
+sampled every 60ms through a swap with motion enabled — 676.44px, never moves.
+The recording still animates inside its clip box and in the lightbox. No
+element crosses either viewport edge at 390, 430, 500, 600, 700, 768, 810, 900,
+1024, 1100, 1280 or 1440. Metro and BudgetCart lightboxes still compute
+`border-radius: 0px`.
+
+**For the screenshots still to come:** measure the corner the file carries and
+declare it as `imageRadius`; do not guess it, and do not style around it. If a
+capture has a stray row along an edge, trim the row rather than masking over
+it — a transparent row renders as light as a white one.
+
+### The Solution Overview on a phone
+
+Stacked, the three steps put their number, title, subtitle and a line or two of
+copy one above the other, and the picture they describe started below all of
+it — past the fold on a 390px screen. The picture is the section; the words are
+there to say which one you are looking at.
+
+**One list, two shapes.** From 810 nothing has changed: a grid of three, each
+carrying all four lines. Below 810 the copy comes out of the buttons and the
+three become a row of plain labels — `Home`, `Issues`, `Metrics` — with the
+active step's subtitle and copy under the row instead, where only one of them
+is in the way at a time. It stays one `role="tablist"` with one roving
+tabindex; what changes is which parts of each button are drawn. The parts that
+are not use `hidden tablet:block`, so they leave the accessibility tree with
+the layout and a phone reader hears `Home`, not `01 Home Return to Work A
+starting point for...`.
+
+The labels are `flex-1 basis-0`, so the three divide the column evenly rather
+than sizing to their own words. That keeps the rule under them continuous,
+gives all three the same target, and holds the row to one line: 90.7px each at
+320, 127.3px at 430. `min-h-11` brings the buttons to the 44px touch target,
+which 16px of label and its padding did not reach on their own.
+
+**The copy block cannot move the picture.** All three descriptions render into
+one grid cell, with the inactive two held by `invisible` and `aria-hidden`, so
+the block is always as tall as the longest. Rendering only the active one had
+the picture rise and fall by a line of text on every switch — the same jump the
+frame below is built to avoid. Measured: the block is 87.2px at 320 and 390 and
+66.4px at 430, the same for all three steps, and the picture's top does not
+move.
+
+**Expand.** On a desktop the picture says it can be opened through
+`cursor-zoom-in` and the pointer that reads it. A touch screen has neither, so
+the only way to find the lightbox was to guess the picture was tappable. Below
+810 there is now a labelled control under it. It is a `span`, not a button:
+`Zoomable` already wraps all of this in one, and a button inside a button is
+invalid and does not survive parsing. It labels that control rather than being
+one, and the whole picture stays tappable.
+
+**Pinch and pan.** `Zoomable` gained `pinchZoom`, off by default. On it, a
+touch screen gets the picture fitted to the window, pinched to zoom to 5x,
+dragged to pan and double-tapped to go in and back out; off, the old behaviour
+stands — the file at its own pixels in a scroll container. The old one panned
+but could not zoom: a 1292px screenshot arrived on a 390px phone at three and a
+half times the width of the window with no way to see the whole of it and no
+way to go closer. Fitting first and handing the zoom over is the other way
+round.
+
+The gestures are written out rather than left to the browser because they have
+to be. A scroll container needs `touch-action` to allow panning, and once the
+browser owns the touch it keeps the second finger too, so the pinch never
+arrives. Under `touch-action: none` both are available. The pinch holds
+whatever is under the fingers in place — `m - (m - T) * s'/s`, with the
+midpoint measured from the box's centre — and the offsets are clamped to half
+of whatever hangs outside the window, so the picture cannot be flicked off the
+screen.
+
+It is opt-in because Metro and BudgetCart would otherwise change character.
+Fitted-and-zoom and natural-size-and-pan are two different ways to read a
+picture, not a fix and a bug, and switching those pages over is a decision
+about them.
+
+**A bug the gestures turned up.** `setPointerCapture` throws when the browser
+has no active pointer with that id — a touch that ended between the event being
+queued and the handler running, and anything synthesising events. It used to
+run before the pointer was recorded, so the throw aborted the handler and the
+finger existed for the browser and not for us: every following move was
+ignored and the gesture was dead. The pointer is now recorded first and the
+capture is wrapped. Losing the capture degrades the gesture; it no longer ends
+it.
+
+**What went.** The picture's name — "Home Page" over the Home step, and so on.
+With the step's own label in the tab row above it, and its subtitle and copy
+between the two on a phone, it was the third time the same word appeared on the
+way down. This is the one change that reaches the desktop as well, where it was
+the second. The accuracy note stays; it says what the prototype is, which
+nothing else on the page does.
+
+**Checked.** At 320, 390 and 430: tabs on one row, 47.8px tall; labels
+`Home` / `Issues` / `Metrics`; frame height identical across the three steps;
+copy block identical across the three steps; the picture takes 85-89% of the
+viewport; no element crosses either edge and the document has no overhang; the
+recording animates inline and in the lightbox; the opened picture arrives
+fitted with `touch-action: none`; a synthetic pinch takes it to 5x and a drag
+moves it; the 44px close button and Escape both close it. Fourteen widths from
+320 to 1440 are clean and stable. At 1440 the tablist is still a three-column
+grid of 295.7x135 buttons, the phone copy block and the Expand control are
+`display: none`, the frame is 951x676.44 across all three steps, and the
+lightbox still opens at the file's own 1292x918 without the touch stage.
+Metro and BudgetCart still open their phone lightbox in the scroll container,
+with `touch-action: pan-x pan-y`, no pinch stage and no corner imposed.
+
+**One for the harness, not the page:** Playwright locators pierce shadow DOM,
+so `[role="dialog"]` also matches the Next dev overlay and a close looks like a
+failure. Count dialogs with `document.querySelectorAll` inside `page.evaluate`.
+
+### Research
+
+The section after Solution Overview: who the work was for, how it was studied,
+and what came back. Three blocks under one `h2`, in that order, because each
+answers a question the one before it raises.
+
+**Where it sits in the hierarchy.** `h2` Research at `ts-heading-3` (55px),
+`h3` for the three blocks at `ts-heading-6` (24px), `h4` for each insight's
+finding at `ts-body-large-fluid` (20px). One `h1` on the page, still the
+project title. The spacing is The Problem's, measured rather than guessed:
+90px between sections, 10px from the section title to its content, 70px
+between blocks inside it. `Research` takes a line in the rail; Target User,
+Research Methods and Key Research Insights carry ids for linking but no rail
+entry, which is the rule the page already follows — an id is for linking, a
+phase is what earns a line.
+
+**Research Methods** is `ResearchSnapshot`. The counts used to be the kind of
+thing that lives inside a sentence and gets skimmed; set as figures in IBM blue
+they are the first thing in the block, which is what a research report does
+with them. No card, no fill, no shadow.
+
+**One rule, and it divides something.** Each figure first sat under a hairline
+of its own, which put two rules through the block a few lines apart — grey
+above the number, the blue breakdown bar below it — and the grey one read as a
+second bar rather than as a grouping. The figures are 55px of IBM blue and do
+not need a rule to be found. The only rule left is under the pair, between the
+figures and the prose about them, which is the one boundary in the block worth
+drawing; it is the same hairline My Role uses between its two halves. With the
+rules went their 20px of padding, so the gap from the objective line down to
+the figures is 24px rather than 52px.
+
+The scope note is set in `light-grey` so it reads as the aside it is, while the
+explanation above it stays `dark-charcoal`. Not `grey-150`, the small-label
+colour: at 16px on this background that is 3.0:1 and short of readable.
+`light-grey` measures 5.50:1, which is secondary and still passes AA for body
+text.
+
+The figures keep `ts-heading-3` for its 32-to-55px ramp but take the family
+back to DM Sans inline, the way Metro, the resume and Selected Work override a
+face. The class carries Instrument, the serif the page titles are set in, and a
+serif numeral above a DM Sans label read as a quotation mark rather than as a
+figure belonging to the words under it.
+
+The bar is not the data. Every count is written underneath in numerals and
+words, and the bar is `aria-hidden`: it exists to make eight-in-ten and
+twelve-in-thirteen comparable at a glance, and nothing is lost by not seeing
+it, not telling the two colours apart, or having it never move. The two colours
+are the page's own — IBM blue and `--color-ability-blue`. Counts of one read as
+one: `ResearchStatPart` carries the singular and the component pluralises, so
+the survey says `1 Admin`.
+
+**Key Research Insights** is `ResearchInsights`: three blocks one under the
+other, each the full width of the column. Not three cards in a row — the
+findings carry two paragraphs apiece and a third of a column cannot hold them —
+and not cards at all, since a border with a fill makes static prose look like
+something to click.
+
+The prose runs to `max-w-[760px]` while the rules stay the full 951px. At 16px
+the whole column is about 115 characters to the line, past where an eye finds
+the start of the next one reliably, and these are the longest paragraphs on the
+page. Full-width rules against a narrower measure is the pairing the reference
+sheets use, and it leaves the page's content width alone.
+
+The theme takes the accent along with the number before it: `01 Navigation` is
+one label, and colouring half of it had the theme read as a caption on the
+number rather than as part of it. "Design Implication" stays grey — it names a
+different kind of thing.
+
+Each implication keeps body type but takes a 2px accent rule down its left
+edge, because the join between what was found and what was done about it is the
+point of the section, and that join is invisible when both are body copy in the
+same stack.
+
+**Animation.** One `Reveal` per insight rather than one around the three: they
+are a screen apart by the time they are read, so each arrives on its own as it
+is scrolled to — the stagger, without a stagger having to be timed. The bars
+sweep once from the left, as one sweep for the whole bar rather than a width
+animation per segment, which would show proportions that were never the data on
+the way to the ones that are. The implication rules draw top to bottom. All of
+it is `viewport={{ once: true }}`, and all of it collapses to `duration: 0`
+under `prefers-reduced-motion`. No counters: a number that counts up implies
+research data that changes.
+
+**Target User** holds two sentences and the persona slide, and deliberately no
+more — the slide carries the role, responsibilities, needs and pain points, and
+setting the same material as copy beside it would have the reader read it twice
+and the page claim it twice. Betty is a persona standing for the role, not
+somebody who was interviewed, and nothing on the page says otherwise.
+
+The slide is not in the repo yet. `TargetUser` takes it as an optional prop:
+given one it is two columns from 810 and a stack below, with the slide opening
+through `Zoomable` (`pinchZoom`, so the small type in it can be read on a
+phone); without one it is the copy at a readable measure rather than an empty
+column beside it. The two-column branch was checked against a throwaway
+stand-in at a slide's 16:9 and then removed — nothing invented was left in the
+tree.
+
+**Checked.** Heading sizes 55 / 24 / 20 against body 16, one `h1`. Section
+spacing identical to The Problem at 90 / 10 / 70px. The rail gains Research and
+jumps to it clear of the pinned nav. Bars measure 80.0% / 20.0% and 92.3% /
+7.7%, which is 8-in-10 and 12-in-13. Both methods, three themes, three
+implications and the three arrows in insight 01 all present. Statistics side by
+side from 810 and stacked below it, in two 451.5px columns, with exactly one
+horizontal rule left in the Research Methods block. No element crosses either edge and the
+document has no overhang at 320, 390, 430, 600, 768, 810, 1024, 1200, 1280 or
+1440. The bars run 0 to 1 over 0.6s with motion on, land in one frame under
+`reduce`, and stay drawn after scrolling away and back. All three implication
+rules draw during an ordinary scroll.
+
+**Two things left open.** The Betty slide has not been supplied, so Target User
+is currently copy only. And the counts: the brief says ten semi-structured
+interviews, while the research page supplied as a visual reference shows eight,
+with a participant table of eight and a usability-testing phase of seven that
+the brief does not mention. The brief is the source of truth and the page says
+ten, but the two do not agree and only Anne can say which is right.
+
+**A warning that is not this section's:** `animate gap from "normal" to "40"`
+appears in the console on every case-study page, Metro and BudgetCart and Ryze
+included. It predates this work.
+
+### Design Process & Iteration
+
+Three areas, three versions each, as they were actually drawn. The section
+after Research, and the one that says what the research changed.
+
+**Two levels, which is the playback deck's own shape.** Across the top the
+areas — Home, Issues, Metrics — with a marker that glides between them. Down
+the left that area's versions, only the open one showing its reasoning. On the
+right the screenshot for whichever version is open. The two controls are
+independent, and each area remembers which version was last open, so coming
+back to one finds it as it was left rather than reset to Version 1; the reader
+was comparing, and throwing that away makes them do it again.
+
+**Collapsed rather than three paragraphs.** The versions are alternatives to
+each other. Printed one under the other in full they read as three things that
+happened; collapsed to their titles with one open they read as three answers to
+the same question, which is what they were. It also keeps the left column near
+the height of the picture beside it instead of running twice as long.
+
+**The two levels are told apart by form, not just by position.** Both started
+as text on a divider with a blue mark, which made two different kinds of
+navigation look like one kind done twice. The areas keep that treatment, being
+the primary control. The versions became a stepper: a numbered circle per
+version — `01`, `02`, then a check for the last one, which is where the area
+ended up — joined by a hairline running down through them. The horizontal
+rules between versions are gone; the only line left in that column runs
+vertically and joins the steps rather than separating them, which is the
+opposite job. The marker that moves is one disc per area carrying a
+`layoutId`, so Motion slides it from circle to circle instead of one filling
+while another empties; `-inset-px` puts it over the border underneath, which
+cannot be animated with it.
+
+The connector is drawn from the foot of each marker to the foot of its row, so
+it grows and shrinks as the description opens above it rather than being a
+fixed length that has to be kept in step. The copy is indented `pl-12` — the
+32px marker and the 16px beside it — so it starts on the title's left edge
+rather than under the circle.
+
+**Why the stage has a fixed height.** These captures are not one shape — they
+run from 0.61 to 1.41 wide-over-tall, because the early versions are full-page
+scrolls of a dense dashboard and the final ones are shorter and more focused.
+The shape changing is part of what the section shows. One aspect ratio would
+either be as tall as the tallest, leaving a landscape capture floating in a
+half-empty frame, or as wide as the widest, with the tall ones spilling out.
+**The frame takes the active picture's own proportions** and holds exactly the
+picture, no more. A fixed box could not: whichever height was picked, some of
+the nine sat in it with a band of nothing above or beside them, and a frame
+drawn round that band is a box with a picture floating in it rather than a
+framed picture. This is a deliberate reversal of the fixed stage that came
+before it — the frame now reshapes between versions, which the `layout` prop
+animates over 0.4s, and snaps under reduced motion.
+
+It runs the full width of its column. A cap on how tall a full-page capture
+could get used to hold the tall ones back from that edge and leave them
+centred, their right edge somewhere short of the Metrics tab and in a
+different place for each version; without it every version's right edge lands
+on the same line and each picture is as large as the column allows.
+
+Measured across all nine, the slack inside the frame is 0 to 1px — the picture
+fills it — and every one is larger than under the fixed stage it replaced:
+Home's Version 1 went 295x480, then 428x697, now 640x1042. The frame's top
+edge never moves, so reshaping changes the height below it and nothing above.
+The tall captures are genuinely tall at this size: Home's Version 1 is a
+1045px block, which is what a full-page scroll of a dense dashboard measures
+when it is shown whole and not shrunk.
+
+The frame carries the 12px corner and `overflow-hidden`, and nothing else —
+no border, no fill, no shadow. It had a 1px `grey-100` border for a while; it
+read as a grey outline down the right and bottom, where the captures are
+light, and was invisible along the top and left, where their dark chrome runs
+to the edge. Checked up the whole ancestor chain afterwards: every element
+from the `img` to the section reports border 0, shadow none, transparent
+background, and `outline-style: none` — the only outline widths in there
+belong to focus rules that draw nothing until focused.
+
+**No blank frame between versions.** The swap used to run under
+`AnimatePresence mode="wait"`, which finishes the exit before it starts the
+enter. Measured on a strip of the frame, that left it holding nothing but the
+page behind it — 100% background for about 200ms, five consecutive samples —
+and since the incoming picture was a freshly mounted `img`, the gap lasted
+until it had been fetched and decoded rather than for a fixed time. One image
+node was destroyed and another created on every switch.
+
+All of the active area's pictures are laid in on top of each other now, and
+switching changes only their opacity over 0.25s. Nothing mounts, unmounts or
+reloads: measured again, zero image nodes added or removed per switch, three
+mounted, and no frame anywhere in the transition is uniform page background.
+A picture is decoded long before it is chosen, because it has been sitting in
+the frame at zero opacity — which is the preloading, without a preloader.
+Nine clicks at 45ms apart produce no blank frames and settle with one step
+open and the right picture showing.
+
+The frame's proportions are animated as a number on `aspectRatio` rather than
+through Motion's `layout`. A layout animation reshapes a box by scaling it,
+and that scale lands on the picture inside and squeezes it for the length of
+the animation; animating the ratio changes the height with no transform
+anywhere near the content. The picture itself no longer animates scale or
+position at all — only opacity.
+
+**The columns answer to the tabs above them.** The three tabs are equal
+thirds of the row — 317px each in a 951px column, 243px at 810 — and those
+thirds are the boundary the two columns below have to respect: the timeline
+stays inside the first, the picture runs to the right edge of the third.
+
+So the split is a share, 30/70, not a fixed width. A fixed timeline wide
+enough to read at a desktop crossed into the Issues tab at 810; 30% is inside
+the first third at every size, by 32px at a desktop and 24px at 810. The gap
+is 24px, the narrowest that still reads as two columns, so what it gives up
+goes to the picture. Measured at 810, 1024, 1280 and 1440, on all three
+versions: the timeline's right edge never passes the Home tab's, and the
+frame's right edge lands on the Metrics tab's to the pixel.
+
+**The section cannot be made wider than the column.** `CaseShell` caps `main`
+at 1200px at every viewport, and the article is 951px of it — 119px rail,
+90px gap, 40px padding, measured. There is 40px of slack to the canvas edge
+and nothing beyond it. A 1280px container needs `canvasWidth` raised, which
+widens the hero, every other section and MoreProjects; breaking this one
+section out of the column instead would misalign its left edge against every
+other section on the page. The width gain here comes from the split and from
+the frame fitting the picture, not from the container.
+
+**Two columns from 810, not from 1200**, even though a tablet is usually where
+this would stack. The rail only takes layout space from 1200, so the column is
+1119px wide at 1199 and 951px at 1200. Splitting at 1200 would have the picture
+run the full 1119px on the narrower window and then shrink to 620px on the
+wider one — the responsive behaviour backwards. Two columns the whole way up
+keeps it monotonic; the narrowest case, 730px at 810, gives the reasoning
+248px.
+
+**One rhythm down the column.** The last step used to drop the 28px that
+followed every other one, which made it the only step whose spacing changed
+with which step was open — the column read differently depending on where you
+were in it. Every step carries it now. Measured in all three states: the gap
+from button to copy and the padding under the copy are identical, the copy
+never leaves its own step, and the frame's top does not move.
+
+**Animation**, borrowed from the Ripplix accordion and not its styling. The
+panel opens and closes on `height: auto` over 0.35s inside `overflow-hidden`,
+and because the closing and opening panels run together the column's own height
+barely moves — measured 122px to 103px across the swap rather than collapsing
+to nothing and back. The picture swaps under `AnimatePresence mode="wait"`,
+0.16s out and 0.4s in, so exactly one image is ever mounted. The area marker
+and the version marker are `layoutId` elements, so they glide.
+
+Under `prefers-reduced-motion` the panel transition is `duration: 0`, not a
+short fade. With height un-animated, any exit duration at all leaves both
+panels at full height at once and the column jumps by the height of one of
+them and back — measured at 124px for 120ms before this was fixed.
+
+**No auto-advance.** The Ripplix component cycles on an 11s timer; here the
+reader is comparing screenshots and reading the reasoning beside them, and
+having it move under them is the opposite of useful. Not built rather than
+built and disabled: `selectVersion` is the single place a version changes, so a
+timer would be an effect calling it and a clear in the handlers that exist.
+
+**The files.** Used where they already sit, under each area's own `Iteration`
+folder, rather than copied into a new one — same bytes, one place, no
+duplicates. `V3` on disk is the Final column; they were named before the third
+version turned out to be the last. These are the only IBM assets not carrying a
+content hash, which is the price of not duplicating them.
+
+| | Version 1 | Version 2 | Final |
+| --- | --- | --- | --- |
+| Home | `home/Iteration/Home_V1.png` | `Home_V2.png` | `Home_V3.png` |
+| Issues | `issues/Iteration/Issues_V1.png` | `Issues_V2.jpg` | `Issues_V3.png` |
+| Metrics | `metrics/Iteration/Metrics_V1.png` | `Metrics_V2.png` | `Metrics_V3.png` |
+
+Nine more files sit in those folders unused — `ErrorDetailPanel_V1/V2`,
+`Execution flow`, `Impacted dependencies`, `Issues_V3_Expanded`, `Connections`,
+`Network`, `Pinned Metrics`, `Runtime`, `Tools`. They are detail shots of the
+final designs, which is the Features section, and that is not this section.
+
+**Checked.** All nine combinations: each shows its own title and its own file,
+exactly one step open, alt text on every picture. Heading levels run
+`h2` then `h3` with nothing skipped, and the page still has one `h1`. Section
+spacing is the page's own — 90px between sections, 10px from the title to its
+content. The rail gains `Design Process` and jumps to the section at 110px,
+clear of the pinned nav. Area tabs take arrow keys, Home and End, with focus
+following selection and a visible ring; the accordion buttons are ordinary
+tab stops and open on Enter, each panel a `region` labelled by its button. The
+lightbox opens, closes on Escape, and has a 44px close button. Touch targets
+are 49px for the area tabs and 48px or more for the steps. Two columns from
+810, stacked below, no overflow at either edge and no document overhang at 320,
+360, 390, 430, 500, 600, 700, 768, 810, 900, 1024, 1100, 1280 or 1440. Nothing
+in Solution Overview moved. `tsc`, `eslint`, `prettier` and `next build` clean.
+
+**One line removed from the Metrics final.** It read "This final Metrics
+direction had not yet undergone dedicated usability validation." Anne took it
+out. Nothing left in the section claims the direction was validated, and
+`note` stays on `DesignIteration` if a qualification is wanted on any version
+later. The section's own introduction still says the work was refined "through
+iterative prototyping and usability feedback", which is true of the project as
+a whole and now covers Metrics by implication rather than by exception — worth
+knowing if that distinction ever needs to be exact again.
+
+**The border came off, and the flash had a cause.** Two things were wrong with
+the frame. The `border border-grey-100` asked for in the layout round read as an
+outline down the right and bottom only, which is where these captures are light;
+along the top and left the dark IBM chrome runs to the edge and swallows it. It
+is gone, and the whole chain from the `img` up to the section now reports border
+0, shadow none and a transparent background. The 12px corners and the clipping
+stay.
+
+The flash on a version switch was `AnimatePresence mode="wait"`, which finishes
+the exit before it starts the enter. A strip of the frame sampled through one
+switch was 100% page background for five consecutive samples, about 200ms, and
+the DOM showed one `img` destroyed and another created each time — so the gap
+lasted as long as the new file took to fetch and decode, not for a fixed
+duration. All three of the active area's pictures are now stacked in the frame
+and only their opacity changes, over 250ms. Nothing mounts, unmounts or reloads;
+a picture is decoded long before it is chosen, which is the preloading without a
+preloader. Nine clicks 45ms apart produce no blank frame and settle with one
+step open, three layers at 0/0/1 and the right file showing. The frame's
+proportions animate as a number on `aspectRatio` rather than through Motion's
+`layout`, because a layout animation reshapes a box by scaling it and that scale
+lands on the picture inside.
+
+**Home and Issues copy replaced.** Anne supplied the final wording for all six
+Home and Issues versions and asked for it verbatim — no rewriting, no trimming.
+Each paragraph is its own string in `description`, so Home Version 2 and Final
+and Issues Final now run three paragraphs where they ran one. Two titles changed
+with the copy: Issues Version 2 is `Simplifying Issue Management`, previously
+`Connecting Issues to Context`, and the Issues final is `Connecting Issues with
+Affected Artifacts`, previously `Focused Issue Investigation`. Metrics is
+untouched, and so is every component — this was a change of data only.
+
+**Checked.** All nine combinations read back character for character against the
+supplied text, with exactly one step open each. The longer descriptions change
+nothing about the frame: the timeline still ends inside the Home tab (534 against
+the tab's 566 at 1280) and the frame is still flush with the Metrics tab's right
+edge at 810, 1024, 1280 and 1440. No overflow at either edge at 390, 430, 810,
+1024, 1280 or 1440, and no console errors. `tsc`, `eslint`, `prettier` and
+`next build` clean.
+
+### Design Process & Iteration, restructured
+
+The tabs are gone. Home, Issues and Metrics are three blocks down the page,
+each with its own row of versions, its own screenshot and its reasoning under
+it. Anne asked for it and the two reasons are good ones: a tab hides what is
+behind it, so a reader who never pressed `Issues` never learned that Alerts
+became Issues or why the Tickets panel went away — decisions sitting behind a
+control that looks optional — and the reasoning was living in a 30% column
+about 280px wide, roughly forty characters to the line, which turned a
+three-line paragraph into seven.
+
+**The shape now.** Section title, the section's one introduction, then three
+`section`s at 70px with the page's hairline between them. Each is a numbered
+`h3` at the size Research gives its blocks (`ts-heading-6`), a body-sized line
+saying where the area travelled, a compact row of version buttons, the
+screenshot, and under it the version's title at `ts-body-large-fluid` with its
+paragraphs at the 760px measure Research uses for its longest prose. The
+numbers are `aria-hidden`, so the heading is read as "Home" rather than "oh
+one Home"; the order is in the DOM already.
+
+**The version row is `w-fit`, not three equal thirds.** A full-width row of
+three was exactly what the area tabs were, and making the versions look like
+the thing that was just removed would say they were the same kind of control.
+They are 167px of buttons on a short rule with the marker riding it, left
+aligned under the subtitle — 232px when Metrics takes its fourth version,
+which still fits the 272px column at 320.
+
+**Each block owns its version.** `AreaBlock` holds its own `useState`, so
+choosing Final in Home leaves Issues and Metrics on V1; every block starts at
+V1 on load. The labels are `V1`, `V2`, `Final` — the data's `version` field
+now carries the short form, since the selector is the only place it is drawn.
+
+**The frame.** Full column width instead of two thirds of it, with the picture
+taking its own proportions and a maximum height per breakpoint: 1300 at a
+desktop, 1150 at a tablet, none on a phone. Only Home V1 needs it at a desktop
+— 2160x3517 would be 1549px tall at the column's 951 — and the cap holds it to
+798px wide where the two-column layout gave it 642. The other eight run the
+column's full 951. A tablet's column is the widest on the site, 1119px at
+1199, so the cap does more work there; a phone's is narrow enough that heights
+follow from it. Where the cap bites the picture is centred and the frame is
+wider than it, which is invisible because nothing is drawn around it.
+
+The crossfade is unchanged and for the same reason: every version of an area
+is mounted in the frame at once and only opacity moves, so nothing mounts,
+reloads or flashes. Only the copy below is keyed on the version, and keying
+text costs nothing.
+
+**The prototype disclaimer is now one line at the foot of the section** rather
+than a caption under the stage. There are three stages now, and the sentence
+would have been printed three times.
+
+**Metrics V2.5.** The slot is declared in `DESIGN_AREAS` as a comment where
+the object goes, not as a placeholder: an invented title or a screenshot
+borrowed from another version would be a claim about work that has not been
+written up. The component takes however many versions an area has. Four was
+checked by temporarily adding one: the buttons stay on one row at 320, 390,
+810 and 1440, each at 44px, the fourth drives the frame, and the frame carries
+four stacked layers. The probe was removed afterwards.
+
+**Checked.** All nine titles and all nine description blocks read back out of
+the live page character for character — Home and Issues against Anne's
+approved wording, Metrics against what was already there. Every version shows
+its own file: Home V1/V2/V3, Issues V1/V2.jpg/V3, Metrics V1/V2/V3. Choosing a
+version in one block leaves the other two as they were. Arrow keys wrap, Home
+and End jump to the ends, focus follows selection and the page does not scroll
+under it; roving `tabindex`, each list labelled, each tab pointing at its
+block's panel, the panel labelled by the selected tab, and `alt` only on the
+picture actually being shown. The lightbox opens the right file with a 44px
+close button and shuts on Escape. Switching from Issues V1 to Final samples
+0 blank frames in both motion modes, and the frame's document position and the
+page's scroll are identical before and after. Nine clicks 45ms apart settle
+with one tab selected, three layers at 0/0/1 and the right file. No element
+crosses either viewport edge at 320, 390, 430, 600, 768, 810, 1024, 1199, 1280
+or 1440, and the subtitles wrap rather than clip at 320. One `h1`, no heading
+level skipped, the rail unchanged and still landing the section at 113px.
+`tsc`, `eslint`, `prettier` and `next build` clean, no console errors.
+
+### Reasoning first, screenshot as a preview
+
+The stacked layout put the whole screenshot between the version buttons and
+the reasoning, so reaching the next thing Anne had to say meant scrolling a
+dashboard and a half. The order inside each block is now heading, subtitle,
+version buttons, version title, description, screenshot — and the screenshot
+is a preview rather than the whole picture.
+
+**The preview is clipped, not scaled.** The frame takes the full width of the
+column and 500px of height at a desktop, 440 at a tablet, 360 on a phone. The
+picture is laid in at the frame's width with its height left to follow and
+pinned to the top; whatever falls past the cap is clipped by the frame. No
+file is touched and nothing is resized — the lightbox opens the original, at
+its own size on a desktop and pinchable on a phone.
+
+**Width and automatic height, not `fill` with `object-cover`.** Cover fits
+whichever edge is tighter, and the frame spends 300ms between one picture's
+proportions and the next on every switch. A landscape capture arriving into a
+frame still as tall as the portrait one would be scaled up to fill that height
+and lose about 160px off its sides for the length of the animation. A width
+with `h-auto` cannot do that: the picture is the frame's width throughout,
+whatever the frame is doing around it.
+
+**The cue.** A clipped picture has to say so. `cursor-zoom-in` tells a desktop
+reader the picture opens but not that there is more of it, and a touch screen
+has neither. A pill sits at the bottom right of the frame — the expand arrows
+the Solution Overview already uses, `View full screenshot`, on the page's own
+background at 95% with the page's hairline round it. `aria-hidden`, because
+`Zoomable`'s button is already named `Enlarge: <alt>`; it is a label on the
+control, not a control, and a button inside a button would not survive
+parsing. It is set in `text-light-grey` rather than the grey the small label
+class carries: 5.5:1 against the page where the token gives 3.0:1, and it sits
+over screenshots whose own background it cannot be sure of.
+
+**What this does to layout shift.** From 810 up every one of the nine
+overruns its cap, so the frame is exactly 500 (or 440) tall whichever version
+is showing and switching moves nothing below it. What does move is the
+screenshot itself, by as much as the descriptions differ in length — 52px
+between a two-paragraph version and a three-paragraph one. The browser's
+scroll anchoring absorbs it: measured through a switch, the frame stayed at
+the same offset in the window while the document scroll took up the
+difference. On a phone the column is narrow enough that four of the nine fit
+under the cap, and there the frame is the picture's own height.
+
+**Checked.** The description precedes the screenshot in all nine, at 760px
+with 30px between the two, and all nine titles and descriptions still read
+back character for character. The frame is 951x500 at 1440, 944x440 at 1024,
+730x440 at 810 and at most 360 tall on a phone, with the picture at the
+frame's full width every time and the cue inside the frame at every width,
+175px wide, which fits the 272px column at 320. No element crosses either
+viewport edge at 320, 390, 810, 1024, 1199 or 1440. Switching samples zero
+blank frames in both motion modes and the frame's height is unchanged across
+it. Keyboard, ARIA wiring and the lightbox are as they were: arrow keys wrap,
+Home and End jump, focus follows selection, each list labelled, `alt` only on
+the picture being shown, the lightbox opening the right file with a 44px close
+button and shutting on Escape. `tsc`, `eslint`, `prettier` and `next build`
+clean.
+
+### The preview scrolls, and the lightbox opens whole
+
+Two things were wrong with the viewer. The preview was clipped with no way to
+see what was under the cut but the lightbox, and the lightbox opened at the
+file's own pixels: Home V1 is 2160x3517, so clicking it put a reader somewhere
+inside an image three times the height of their window with the scrollbar as
+the only way out. The screenshot Anne sent showed a table row filling the
+screen.
+
+**The preview is a scroll container.** Same box, same cap, same picture at the
+column's full width — `overflow-y: auto` and it scrolls in place. The frame's
+`aspect-ratio` already gives the box the picture's full height and the cap
+takes back everything past 500px, so the overflow is exactly the part that was
+being clipped.
+
+Three things had to be true for that to work:
+
+- **The layers had to be held to the stage.** An absolutely positioned child
+  still counts towards a scroll container's extent, so with the three versions
+  stacked, the tallest one set how far every one of them scrolled — Home Final
+  ran out at its own foot and then kept going through 870px of nothing. Each
+  layer is now `inset-0` with its overflow hidden, so it stops where the stage
+  does, and the stage is the shown picture's own shape. Measured: the scroll
+  extent equals the visible picture's height for all nine, to the pixel.
+- **Lenis had to let go of the wheel.** `smoothWheel` takes every wheel event
+  on the window and turns it into page scroll, so the wheel over a screenshot
+  scrolled the article. `allowNestedScroll: true` hands the wheel to a nested
+  scroller — but only while that scroller can still move the way the wheel
+  asked, which it decides by reading the element's scroll position and its
+  `overscroll-behavior`. So no `overscroll-contain` here: at the bottom of the
+  picture the page takes over again instead of trapping the reader in 500px of
+  screenshot. Measured: 300 of wheel moves the picture 300 and the page 0; at
+  the end, the next wheel moves the page 487.
+- **The scroll position belongs to the version.** Every switch returns to the
+  top, instantly — the picture underneath has changed, so there is nothing for
+  a smooth scroll to be continuous with. A `ResizeObserver` and one delayed
+  measurement keep the "more below" state honest while the frame is still
+  animating and the pictures are still decoding.
+
+**The cue is now two.** The expand pill stays, and a fade at the foot of the
+frame appears while there is more below and goes as the end is reached. Both
+sit outside the scroller and over it, so they hold still while the picture
+runs past, with `pointer-events: none` so the click and the wheel reach the
+picture underneath.
+
+**The lightbox fits first.** `panOnDesktop` is gone from this section, replaced
+by a new `fitZoom` on `Zoomable`: one behaviour at every width — the whole
+picture fitted to the window, then zoomed and panned from there. Fitting first
+answers "what am I looking at" before "what does that say", and the zoom is
+still there for the second question. The old `TouchStage`, which already did
+exactly this on a phone, is now `ZoomStage` and serves both; what it gained is
+
+- a wheel and trackpad zoom about the cursor, on a native non-passive listener
+  because React registers `wheel` at the root as passive and a `preventDefault`
+  from `onWheel` would do nothing;
+- a row of controls under the picture — minus, the current percentage, plus —
+  for a reader who does not know a picture can be pinched or double-clicked,
+  and for a mouse whose notched wheel is a coarse way to find 140%;
+- `grab` and `grabbing` cursors once there is something to pan.
+
+`pinchZoom` and `panOnDesktop` are untouched, so Solution Overview, the
+persona slide and Metro open exactly as they did.
+
+**Checked.** The lightbox opens Home V1 at 504x820 inside a 1440x900 window
+and 358x583 inside a 390x844 one — whole, centred, 100% both times — zooms to
+140% on two presses, pans on a drag, comes back to 100% on the wheel and sits
+centred again; double-click goes to 250% and back. The close button and Escape
+both shut it, the page behind cannot be scrolled over the picture or over the
+backdrop, and reopening after a version switch opens that version's file. The
+asset is the original: the optimizer is asked for the largest variant and
+returns the file's own 2160x3517 (a headless browser reports a downsampled
+`naturalWidth` for an image this large, which is the decoder's memory budget,
+not what was served).
+
+The preview scrolls on the wheel, the trackpad and a touch swipe — 197px on a
+synthetic swipe on an iPhone 13, with the page unmoved — the extent matches
+the picture for all nine versions, the frame stays 500px tall, the fade is on
+at the top and off at the bottom, and a switch returns to the top. The
+`01`/`02`/`03` before each area title is now the heading's own 24px rather
+than a 14px label beside it, in IBM blue, still hidden from the heading's
+accessible name. `tsc`, `eslint`, `prettier` and `next build` clean, no
+console errors.
+
+**The fade came off, and the number went black.** The gradient at the foot of
+the frame washed the bottom of every screenshot into the page; the cut edge of
+a dashboard says plainly enough that there is more of it, and the expand pill
+says where the rest is. With it went the `more` state, the scroll handler and
+the `ResizeObserver` that kept it honest — the scroll container now needs only
+the reset to the top on a version change. The `01`/`02`/`03` before each area
+title takes the heading's own colour as well as its size: in blue it read as a
+label on the heading rather than as part of it.
+
+**One edge, and the unselected versions further back.** The reasoning ran at
+the 760px measure Research uses, which left it stopping 190px short of the
+screenshot beneath it; Anne asked for the two to share an edge, so the copy
+takes the column. Measured, the text and the frame start and end on the same
+pixel at 390, 810, 1024 and 1440. At a desktop that is 951px, about 115
+characters to the line — longer than the measure the rest of the page keeps,
+which is the trade for one edge, and a version's reasoning is two or three
+paragraphs rather than a page of prose. The unselected version buttons move
+from `light-grey` to `grey-150`: three states of one control, only one of them
+current, so the other two step back further than body copy does.
+
+### Metrics: four versions, and a version shown by four pictures
+
+Anne sent the final Metrics copy and it runs to four versions rather than
+three — V1, V2, V2.5 and the final — so the slot left open for V2.5 in the
+restructure is filled. The wording is hers, verbatim, including the last
+paragraph of the final version, which says the concept has not been usability
+tested and what future testing would have to validate. The button stays
+`Final` rather than `V3`, her choice, so all three areas end the same way.
+
+**V2.5 is four pictures, not one.** `Runtime`, `Network`, `Connections` and
+`Tools` — the metric cards the copy describes, each about 1114x640 — were
+sitting unused in the Iteration folder. They are four separate studies, and
+showing them as one picture would mean making a montage that never existed.
+`DesignIteration` gained `shots`, a list of pictures that replaces the single
+screen where it is set, and the showcase lays them out two across from 810 and
+one below it. Each opens on its own in the lightbox.
+
+That split the figure in two: `screenOf` turns an iteration into the one
+screen it is shown by, or nothing where `shots` carries the pictures, and the
+crossfade stack is built from the iterations that have one. A version shown by
+studies is not in that stack — it has its own grid, and nothing in the frame
+to fade to.
+
+**No expand cue on the studies.** Nothing is clipped at 466x266, so there is
+nothing for a cue to say "there is more" about, and the badge had to sit on
+the card's own content: it covered the end of a credential expiry in
+`Connections` and a degraded tool in `Tools`. The pill stays on the full
+screenshots, which are clipped and which teach the behaviour earlier in the
+section.
+
+**Two alt texts rewritten.** The Metrics V1 and V2 alts described fleet-wide
+performance across every artifact; the files actually show the Metrics tab of
+the Overview page — pinned figures for conversations, token usage, unique
+users, estimated cost and task completion over an analytics block of top token
+consumers, a token trend and a cost forecast. V2 is the same with two empty
+`Create pin` slots. The pictures were always these; the alts had been written
+against the older copy. The final's alt was already accurate and is unchanged.
+
+**Checked.** All four versions read back character for character against what
+Anne sent, each with its own screenshots: V1 `Metrics_V1`, V2 `Metrics_V2`,
+V2.5 the four cards in order, the final `Metrics_V3`. Home and Issues are
+untouched — all six still exact. The selector carries four buttons on one row
+at 390, 810 and 1440, arrow keys wrap through all four and Home and End reach
+the ends. The grid is one column at 390 and two at 810 and 1440, with no
+overflow at either edge. A study opens fitted and centred in the lightbox at
+1034x600 inside a 1440x900 window, with the zoom controls and its own alt text
+as the dialog's name. `tsc`, `eslint`, `prettier` and `next build` clean, no
+console errors.

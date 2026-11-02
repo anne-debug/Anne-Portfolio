@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { moreProjects } from "@/lib/projects";
+import { CaseRow } from "./CaseRow";
 import { MoreProjects } from "./MoreProjects";
 import { SmoothScroll } from "./SmoothScroll";
 
@@ -34,6 +35,12 @@ export function CaseShell({
   gapToMore = 0,
   /** Bottom padding beneath the More Projects strip. */
   moreBottom = 120,
+  /**
+   * Lets the reader fold the rail away and give its width to the article.
+   * Off by default, so every page that does not ask for it renders exactly
+   * the markup it rendered before the control existed.
+   */
+  collapsibleSidebar = false,
 }: {
   children: ReactNode;
   /** This page's slug. The closing strip is the projects that follow it. */
@@ -49,6 +56,7 @@ export function CaseShell({
   bodyPadX?: number;
   gapToMore?: number;
   moreBottom?: number;
+  collapsibleSidebar?: boolean;
 }) {
   return (
     <>
@@ -65,24 +73,16 @@ export function CaseShell({
         {/* The rail is a column beside the article at every width. Below
             Framer's desktop breakpoint it is narrow until it is opened, and
             widening it is what moves the article across. */}
-        <div
-          className="flex w-full items-start gap-4 px-6 desktop:justify-center desktop:gap-[50px] tablet:gap-6 tablet:px-[max(24px,var(--body-pad-x))] desktop:px-[var(--body-pad-x)]"
-          style={
-            {
-              paddingTop: bodyPad,
-              paddingBottom: bodyPad,
-              "--body-pad-x": `${bodyPadX}px`,
-            } as React.CSSProperties
-          }
+        <CaseRow
+          sidebar={sidebar}
+          collapsible={collapsibleSidebar}
+          bodyWidth={bodyWidth}
+          bodyGap={bodyGap}
+          bodyPad={bodyPad}
+          bodyPadX={bodyPadX}
         >
-          {sidebar}
-          <article
-            className="flex w-full min-w-0 flex-col items-start"
-            style={{ maxWidth: bodyWidth, gap: bodyGap }}
-          >
-            {children}
-          </article>
-        </div>
+          {children}
+        </CaseRow>
 
         <div
           className="flex w-full flex-col px-6 tablet:px-[max(24px,var(--body-pad-x))] desktop:px-[var(--body-pad-x)]"

@@ -128,7 +128,7 @@ export function IbmNotificationsArt({
 
         {/* watsonx, the supplied file, placed and scaled and nothing else. */}
         <image
-          href="/images/ibm/watsonx-mark.a98aad79.png"
+          href="/images/ibm/card/watsonx-mark.a98aad79.png"
           x="62"
           y="54"
           width="116"
@@ -250,7 +250,7 @@ export function IbmNotificationsArt({
 
         {/* The signature, last and quietest, smaller than watsonx above. */}
         <image
-          href="/images/ibm/ibm-logo.85026a1f.png"
+          href="/images/ibm/card/ibm-logo.85026a1f.png"
           x="902"
           y="687"
           width="156"

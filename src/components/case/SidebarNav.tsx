@@ -7,8 +7,11 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  type CSSProperties,
 } from "react";
 import { createPortal } from "react-dom";
+
+import { useRailCollapse } from "./CaseRow";
 
 /**
  * Framer component "FloatingSidebarMenu": the table of contents for the longer
@@ -28,7 +31,11 @@ import { createPortal } from "react-dom";
  * the reader can keep scrolling with the list open, and a tap on the button, on
  * the page, or on an entry puts it away.
  *
- * The entry for the section on screen is highlighted in orange.
+ * The entry for the section on screen is highlighted in the accent colour,
+ * which is the portfolio's orange unless a page passes its own. A case study
+ * built around another brand's product sets it to that brand's colour so the
+ * rail belongs to the page it is navigating; the site's own nav pill keeps the
+ * portfolio orange either way, because it belongs to the site, not the page.
  */
 
 export interface SidebarEntry {
@@ -39,18 +46,33 @@ export interface SidebarEntry {
 /** Framer's own feel for this: short, and eased out. */
 const SLIDE = { duration: 0.24, ease: [0.22, 1, 0.36, 1] } as const;
 
+/** The desktop list's id, so the fold control can point `aria-controls` at it. */
+const LIST_ID = "case-section-rail";
+
 /** Room left above a section so the pinned page nav does not cover its heading. */
 const ANCHOR_OFFSET = 110;
 /** A little past the transition, so the last reflow is caught too. */
 const SETTLE_MS = 340;
 
-export function SidebarNav({ entries }: { entries: SidebarEntry[] }) {
+export function SidebarNav({
+  entries,
+  accent = "var(--color-orange)",
+}: {
+  entries: SidebarEntry[];
+  /** Any CSS colour. Reaches the markup as `--rail-accent`, so the hover and
+      active states can be ordinary classes rather than inline styles. */
+  accent?: string;
+}) {
   /** The portal needs a document, so it waits for hydration. */
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
     () => false,
   );
+  /* Shared with `CaseRow`, which closes the gap beside this column at the
+     same moment the column narrows. Off on every page that has not asked for
+     the control. */
+  const rail = useRailCollapse();
   const [active, setActive] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const article = useRef<HTMLElement | null>(null);
@@ -92,7 +114,8 @@ export function SidebarNav({ entries }: { entries: SidebarEntry[] }) {
         const lenis = window.__lenis;
         if (lenis) lenis.animatedScroll = lenis.targetScroll = to;
       }
-      if (performance.now() - started < SETTLE_MS) frame = requestAnimationFrame(hold);
+      if (performance.now() - started < SETTLE_MS)
+        frame = requestAnimationFrame(hold);
     };
     frame = requestAnimationFrame(hold);
     return () => cancelAnimationFrame(frame);
@@ -120,7 +143,9 @@ export function SidebarNav({ entries }: { entries: SidebarEntry[] }) {
       (records) => {
         const visible = records
           .filter((r) => r.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+          .sort(
+            (a, b) => a.boundingClientRect.top - b.boundingClientRect.top,
+          )[0];
         if (visible) setActive(visible.target.id);
       },
       { rootMargin: "-20% 0px -70% 0px", threshold: 0 },
@@ -159,7 +184,8 @@ export function SidebarNav({ entries }: { entries: SidebarEntry[] }) {
     // Worked out here rather than handed to the smooth-scroll library as an
     // offset, because the two disagree on which way that offset points.
     const scroll = () => {
-      const top = el.getBoundingClientRect().top + window.scrollY - ANCHOR_OFFSET;
+      const top =
+        el.getBoundingClientRect().top + window.scrollY - ANCHOR_OFFSET;
       const lenis = window.__lenis;
       if (lenis) lenis.scrollTo(top);
       else window.scrollTo({ top, behavior: "smooth" });
@@ -170,7 +196,8 @@ export function SidebarNav({ entries }: { entries: SidebarEntry[] }) {
     // leaves the heading short of where it was aimed. One correction pass once
     // the page has stopped puts it right.
     window.setTimeout(() => {
-      if (Math.abs(el.getBoundingClientRect().top - ANCHOR_OFFSET) > 8) scroll();
+      if (Math.abs(el.getBoundingClientRect().top - ANCHOR_OFFSET) > 8)
+        scroll();
     }, 800);
 
     window.history.pushState(null, "", `#${id}`);
@@ -189,8 +216,8 @@ export function SidebarNav({ entries }: { entries: SidebarEntry[] }) {
       aria-current={active === entry.id ? "true" : undefined}
       className={`ts-body-small block py-1.5 transition-colors ${
         active === entry.id
-          ? "font-semibold text-orange"
-          : "text-dark-charcoal hover:text-orange"
+          ? "font-semibold text-[var(--rail-accent)]"
+          : "text-dark-charcoal hover:text-[var(--rail-accent)]"
       }`}
     >
       {entry.label}
@@ -214,8 +241,68 @@ export function SidebarNav({ entries }: { entries: SidebarEntry[] }) {
           and comes to rest where that row ends, which is above the More
           Projects strip rather than over it. It keeps the 119px the article's
           position is measured from, and the list inside is free to be wider. */}
-      <div className="hidden w-[119px] shrink-0 desktop:sticky desktop:top-[150px] desktop:block">
-        <nav aria-label="Sections" className="w-[150px]">
+      {/*
+        1200 and up: the list, open, in its own column.
+
+        The column is sticky rather than fixed to the window, so the row it
+        sits in bounds it: it travels with the reader through the case study
+        and comes to rest where that row ends, which is above the More
+        Projects strip rather than over it. It keeps the 119px the article's
+        position is measured from, and the list inside is free to be wider.
+
+        Folded away it keeps 28px — enough for the control and nothing else —
+        and `CaseRow` closes the 50px beside it to 20px at the same time. The
+        article is `w-full` under a cap, so it simply takes what is freed:
+        951px open, 1072px folded. The control never leaves with the list,
+        which is the only way back.
+      */}
+      <div
+        className={`hidden shrink-0 transition-[width] duration-300 ease-out motion-reduce:transition-none desktop:sticky desktop:top-[150px] desktop:block ${
+          rail.enabled && rail.collapsed ? "w-[28px]" : "w-[119px]"
+        }`}
+        style={{ "--rail-accent": accent } as CSSProperties}
+      >
+        {rail.enabled ? (
+          <button
+            type="button"
+            onClick={rail.toggle}
+            aria-expanded={!rail.collapsed}
+            aria-controls={LIST_ID}
+            aria-label={
+              rail.collapsed ? "Show section list" : "Hide section list"
+            }
+            className="mb-4 flex size-7 items-center justify-center rounded-full border border-grey-100 bg-white text-light-grey transition-colors duration-200 ease-out hover:border-[var(--rail-accent)] hover:text-[var(--rail-accent)] focus-visible:outline-2 focus-visible:outline-offset-2"
+            style={{ outlineColor: "var(--rail-accent)" }}
+          >
+            {/* Two chevrons facing the way the list will go. */}
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 16 16"
+              fill="none"
+              aria-hidden
+              className={rail.collapsed ? "" : "rotate-180"}
+            >
+              <path
+                d="M6 3l4 5-4 5"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        ) : null}
+
+        <nav
+          id={LIST_ID}
+          aria-label="Sections"
+          className={`w-[150px] transition-opacity duration-200 ease-out motion-reduce:transition-none ${
+            rail.enabled && rail.collapsed
+              ? "pointer-events-none invisible opacity-0"
+              : "opacity-100"
+          }`}
+        >
           {list()}
         </nav>
       </div>
@@ -228,16 +315,29 @@ export function SidebarNav({ entries }: { entries: SidebarEntry[] }) {
           the site's own nav pill is outside it. */}
       {mounted
         ? createPortal(
-            <div className="desktop:hidden">
+            <div
+              className="desktop:hidden"
+              style={{ "--rail-accent": accent } as CSSProperties}
+            >
               <button
                 type="button"
                 onClick={() => toggle(!open)}
                 aria-expanded={open}
                 aria-controls="case-sections"
                 aria-label={open ? "Close section menu" : "Open section menu"}
-                className="fixed top-[88px] left-4 z-[60] flex size-10 items-center justify-center rounded-full border border-orange/60 bg-chestnut-bg text-orange shadow-[0_2px_10px_rgba(0,0,0,0.06)] tablet:left-6"
+                className="fixed top-[88px] left-4 z-[60] flex size-10 items-center justify-center rounded-full border bg-chestnut-bg text-[var(--rail-accent)] shadow-[0_2px_10px_rgba(0,0,0,0.06)] tablet:left-6"
+                style={{
+                  borderColor:
+                    "color-mix(in srgb, var(--rail-accent) 60%, transparent)",
+                }}
               >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden
+                >
                   <path
                     d="M4 6h12M4 10h12M4 14h12"
                     stroke="currentColor"

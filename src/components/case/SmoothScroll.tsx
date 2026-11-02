@@ -23,7 +23,9 @@ declare global {
 }
 export function SmoothScroll() {
   useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     if (reduce) return;
 
     const lenis = new Lenis({
@@ -31,6 +33,18 @@ export function SmoothScroll() {
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       syncTouch: false,
+      /*
+        Let a scrollable element inside the page keep the wheel.
+        `smoothWheel` takes every wheel event on the window and turns it into
+        page scroll, so the screenshot previews in Design Process scrolled the
+        article instead of themselves. Lenis yields only while the inner
+        element can still move the way the wheel asked — it reads the
+        element's scroll position and its `overscroll-behavior` — so reaching
+        the bottom of a picture hands the page back rather than trapping the
+        reader in it. Off by default in the library; nothing else in a case
+        study scrolls inside itself while this is running.
+      */
+      allowNestedScroll: true,
     });
 
     window.__lenis = lenis;

@@ -355,11 +355,41 @@ export function CaseSection({
  * the line under them in italics, which Metro keeps for captions and not for
  * headings.
  */
-export function SubHeading({ title, lede }: { title: string; lede?: string }) {
+export function SubHeading({
+  title,
+  lede,
+  size = "sub-block",
+}: {
+  title: string;
+  lede?: string;
+  /**
+   * Which rung of the scale in CASE_STUDY_DESIGN_SYSTEM.md this heading takes.
+   *
+   * `sub-block` is the default this component shipped with: Sub-block title
+   * over a Sub-heading lede. `sub-heading` is the step down, and is what Metro
+   * uses — its h2 is `ts-heading-3` and every h3 under it is `ts-heading-6`,
+   * with no `ts-heading-5` anywhere on the page. A page picks one and keeps to
+   * it; mixing them inside a page is what makes a hierarchy stop reading as
+   * one.
+   */
+  size?: "sub-block" | "sub-heading";
+}) {
+  const tight = size === "sub-heading";
   return (
     <div className="flex w-full flex-col gap-2.5">
-      <h3 className="ts-heading-5 w-full text-left">{title}</h3>
-      {lede ? <p className="ts-heading-6 w-full text-left">{lede}</p> : null}
+      <h3
+        className={`w-full text-left ${tight ? "ts-heading-6" : "ts-heading-5"}`}
+      >
+        {title}
+      </h3>
+      {lede ? (
+        /* The lede has to sit under its own title. At `sub-block` that is the
+           Sub-heading size; at `sub-heading` the title is already there, so the
+           lede drops to body, which is what Metro runs under its h3s. */
+        <p className={`w-full text-left ${tight ? "ts-body" : "ts-heading-6"}`}>
+          {lede}
+        </p>
+      ) : null}
     </div>
   );
 }
