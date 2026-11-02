@@ -209,21 +209,11 @@ const OWNERSHIP: { area: string; body: string }[] = [
  * in sequence — the closing line under the showcase says so, and the control
  * is a tab list precisely so any one of them can be reached first.
  *
- * Home and Issues are screen recordings at 960x681 and 960x683; Metrics is a
- * still at 1292x918. They do not share a shape, so the showcase holds the
- * tallest of them across a swap and letterboxes the rest, which is what keeps
- * the page still.
- *
- * `imageRadius` is the corner each file already carries, measured off its own
- * alpha, not a styling choice — the showcase clips every step to the largest
- * of them so the set reads as one. All three are square now, the two GIFs
- * because the format has no alpha to draw a curve with, so the corner the set
- * shares is the showcase's own fallback rather than any file's. A new
- * screenshot needs its own measurement here; see `StickyStepShowcase`.
- *
- * Metrics points at `metrics-artifact-view` rather than `metric-views`: it is
- * the artifact-centric screen, and it carries both the hierarchical tree and
- * the search field, which are the two things Anne proposed.
+ * No pictures on this branch. Each step carried a capture of the prototype —
+ * two screen recordings and a still — and `ShowcaseStep` still accepts them,
+ * so restoring one is a matter of putting `imageSrc` and its dimensions back.
+ * With none set the showcase drops its picture frame and the three steps are
+ * read as copy; see `StickyStepShowcase`.
  */
 const SHOWCASE: ShowcaseStep[] = [
   {
@@ -233,19 +223,6 @@ const SHOWCASE: ShowcaseStep[] = [
     subtitle: "Return to Work",
     description:
       "A starting point for recent work, shortcuts, and items needing attention.",
-    /* A screen recording rather than a still, so Home shows the page being
-       used. 960x681, 177 frames, looping. The still it replaces is kept
-       beside it, and `IbmHeroArt` still uses the un-masked one. Anne renamed
-       the file to `Home.gif`; nothing about the recording changed. */
-    imageSrc: "/images/ibm/home/Home.gif",
-    imageAlt:
-      "A recording of the Home tab of the Builder Control Plane: a greeting with a count of critical issues, pinned shortcuts, a list of the latest issues ordered by urgency, and a row of the builder's most recently modified artifacts.",
-    imageWidth: 960,
-    imageHeight: 681,
-    /* Square. A GIF has one transparent colour rather than an alpha channel,
-       so the recording could not carry the window's curve even if it had been
-       exported with one. The showcase clips it instead. */
-    imageRadius: 0,
   },
   {
     id: "issues",
@@ -254,22 +231,6 @@ const SHOWCASE: ShowcaseStep[] = [
     subtitle: "Investigate Problems",
     description:
       "An investigation hub connecting issue severity, affected artifacts, execution details, and next steps.",
-    /* A recording, like Home: Issues is a path through a problem rather than
-       one screen, and the still could only ever show the end of it.
-
-       960x683, 292 frames at 40ms, looping. Trimmed from `issues.gif`, whose
-       last 25 frames carry the macOS screen-recording controls — the stop
-       button, `Options`, `Capture` — across the bottom left. The cut is a
-       byte-level truncation of the frame blocks, so every frame that is kept
-       is the original's, untouched; the original stays beside it. */
-    imageSrc: "/images/ibm/issues/issues-trimmed.gif",
-    imageAlt:
-      "A recording of the Issues tab of the Builder Control Plane: the issue list with nothing selected, then an agent failure opened beside it — the artifact relationship graph and timestamped execution trace under Execution flow, and a table of the affected assets under Impacted dependencies.",
-    imageWidth: 960,
-    imageHeight: 683,
-    /* Square, like Home: a GIF has one transparent colour rather than an alpha
-       channel, so it carries no curve for the showcase to measure. */
-    imageRadius: 0,
   },
   {
     id: "metrics",
@@ -278,30 +239,6 @@ const SHOWCASE: ShowcaseStep[] = [
     subtitle: "Understand Performance",
     description:
       "An artifact-centric view of runs, error rates, latency, token use, and related assets.",
-    /* The capture with one row taken off its top edge, and nothing else done
-       to it.
-
-       It used to point at a copy whose corners had been cut to the window's
-       curve as alpha. The showcase clips every step to one corner now, so
-       that mask had nothing left to do — and chasing it turned up the real
-       defect underneath, in the capture itself: its first row is pure white,
-       the edge of the window it was grabbed from. Against the near-black
-       header beneath it that row drew a light hairline right across the top
-       of the picture, and only this screen had one. Measured on the page it
-       read 180 against 21 for the other two, masked or not.
-
-       Trimmed from `ff753f0f`, which is kept untouched beside it. 918 rows
-       rather than 919, so this screen is a hair wider in proportion than
-       Issues and the frame letterboxes it by about half a pixel. */
-    imageSrc: "/images/ibm/metrics/metrics-artifact-view-trimmed.75c939b4.png",
-    imageAlt:
-      "The Metrics tab: a searchable hierarchical tree of agents, subagents and workflows beside an overview of one agent's runs per week, error rate, average response time and token spend.",
-    imageWidth: 1292,
-    imageHeight: 918,
-    /* Square: this is the untouched capture. With Issues now a recording,
-       no step carries a curve of its own, and the corner the three of them
-       share comes from the showcase's fallback. */
-    imageRadius: 0,
   },
 ];
 
@@ -440,16 +377,12 @@ const RESEARCH_INSIGHT_LIST: ResearchInsight[] = [
 /**
  * Three areas, three versions each, as they were actually drawn.
  *
- * The files are the team's own Figma exports, used where they already sit
- * under each area's `Iteration` folder rather than copied into a new one —
- * same bytes, one place. Their own pixels are recorded here so the stage can
- * lay each one in without guessing, and because they are genuinely different
- * shapes: 0.61 to 1.41 wide-over-tall, since the early versions are full-page
- * scrolls of a dense dashboard and the final ones are shorter. That the shape
- * changes is part of what the section shows.
- *
- * `V3` on disk is the Final column here; the files were named before the
- * third version turned out to be the last one.
+ * No screenshots on this branch. Each version carried a capture of the
+ * prototype and the Metrics V2.5 round carried four; the files are all still
+ * under each area's `Iteration` folder, and `DesignIteration` still accepts
+ * `imageSrc`, `shots` and `details`, so a version gets its picture back by
+ * being given one. With none set the showcase renders the version's title and
+ * reasoning and no frame.
  *
  * Copy is Anne's, kept as supplied — Home and Issues are her approved final
  * wording, Metrics is still the earlier draft and is being rewritten.
@@ -473,11 +406,6 @@ const DESIGN_AREAS: DesignArea[] = [
           "Our initial concept assumed that builders needed an overview of their agents and other artifacts to monitor performance and identify potential issues.",
           "We brought fleet health, aggregate metrics, and artifact information together on the landing page to explore whether a centralized overview could help builders understand the overall state of their work.",
         ],
-        imageSrc: "/images/ibm/home/Iteration/Home_V1.png",
-        imageAlt:
-          "The first Home concept: a fleet overview counting agents, workflows, tools, knowledge bases and connections, above a table of every artifact and a health breakdown.",
-        imageWidth: 2160,
-        imageHeight: 3517,
       },
       {
         id: "v2",
@@ -488,11 +416,6 @@ const DESIGN_AREAS: DesignArea[] = [
           "We introduced Quick Actions, allowing builders to pin workflows and tools for easier access. We also moved recent artifacts higher on the page to prioritize builders' daily work.",
           "The original Fleet Overview provided only high-level health indicators, offering limited insight into artifact performance. We expanded it with more detailed metrics and visualizations to help builders better understand fleet health and performance.",
         ],
-        imageSrc: "/images/ibm/home/Iteration/Home_V2.png",
-        imageAlt:
-          "The second Home concept: quick actions and recently modified artifacts moved above the fleet overview, which keeps its charts further down the page.",
-        imageWidth: 2160,
-        imageHeight: 2723,
       },
       {
         id: "final",
@@ -503,11 +426,6 @@ const DESIGN_AREAS: DesignArea[] = [
           "Builders also preferred information about individual artifacts, while the fleet-wide metrics felt redundant with the dedicated Metrics page. We removed the Fleet Overview from the landing page and consolidated performance monitoring under Metrics.",
           "Finally, we renamed Overview to Home to reflect its new purpose as a starting point for daily work. The final design prioritizes pinned shortcuts, recent artifacts, and actionable issues, helping builders quickly return to their work and identify what needs attention.",
         ],
-        imageSrc: "/images/ibm/home/Iteration/Home_V3.png",
-        imageAlt:
-          "The final Home concept: a greeting with a count of critical issues, pinned shortcuts beside the latest issues ordered by urgency, and a row of the builder's most recently modified artifacts.",
-        imageWidth: 2880,
-        imageHeight: 2048,
       },
     ],
   },
@@ -524,11 +442,6 @@ const DESIGN_AREAS: DesignArea[] = [
           "Early research showed that builders needed to identify failures, understand affected artifacts, and investigate problems across interconnected agents and workflows.",
           "We initially explored a centralized view that combined issue monitoring with ticket-style work items. We included assignment functionality to help builders clarify ownership, track problems, and move toward resolution.",
         ],
-        imageSrc: "/images/ibm/issues/Iteration/Issues_V1.png",
-        imageAlt:
-          "The first Issues concept: a ticket list alongside issue details and the artifacts each one affects, all on a single dense screen.",
-        imageWidth: 2160,
-        imageHeight: 2589,
       },
       {
         id: "v2",
@@ -538,11 +451,6 @@ const DESIGN_AREAS: DesignArea[] = [
           "Usability testing revealed that builders were unsure where the tickets originated, such as GitHub, Jira, Monday, or ServiceNow. The separate ticket section also made the page feel overwhelming.",
           "To simplify the experience, we removed the standalone Tickets section and integrated its assignment functionality directly into the issue list. We also renamed Alerts to Issues, shifting the focus from system notifications to investigating and managing problems. This reduced clutter and brought issue investigation and ownership into one place.",
         ],
-        imageSrc: "/images/ibm/issues/Iteration/Issues_V2.jpg",
-        imageAlt:
-          "The second Issues concept: choosing an issue opens its investigation detail beside the list, so the problem and the artifacts it touches are read together.",
-        imageWidth: 2160,
-        imageHeight: 2141,
       },
       {
         id: "final",
@@ -552,27 +460,6 @@ const DESIGN_AREAS: DesignArea[] = [
           "Testing showed that Issues and Impacted Assets felt disconnected, making it harder for builders to understand how problems related to affected artifacts.",
           "We combined them into a unified experience and introduced tabs to organize the supporting information, without overwhelming builders. We also added issue IDs and timestamps to provide more context during investigation.",
           "The final design brings issue details, execution information, and affected artifacts closer together, helping builders follow a clearer path from identifying a problem to investigating its impact.",
-        ],
-        imageSrc: "/images/ibm/issues/Iteration/Issues_V3_Expanded.png",
-        imageAlt:
-          "The final Issues concept with an issue opened: the list on the left and, beside it, the investigation panel holding the failing artifact's relationships, its execution trace, and the recommended next steps, under Execution flow and Impacted dependencies tabs.",
-        imageWidth: 2160,
-        imageHeight: 1536,
-        details: [
-          {
-            src: "/images/ibm/issues/Iteration/Execution flow-trimmed.png",
-            alt: "The Execution flow tab close up: a written account of why the agent failed, the artifact relationship graph with its health legend, and an execution trace whose steps turn red at the failing tool call, beside the recommended next steps.",
-            width: 1678,
-            height: 2030,
-            caption: "Execution flow",
-          },
-          {
-            src: "/images/ibm/issues/Iteration/Impacted dependencies-trimmed.png",
-            alt: "The Impacted dependencies tab close up: a count of affected assets split into critical, at risk and informational, over a table giving each asset's type, alerts, users, tokens, success rate and average latency.",
-            width: 1678,
-            height: 1202,
-            caption: "Impacted dependencies",
-          },
         ],
       },
     ],
@@ -590,11 +477,6 @@ const DESIGN_AREAS: DesignArea[] = [
           "Our initial design separated metrics based on their purpose. We placed artifact health and operational metrics across the Overview page, while a dedicated Metrics page focused on broader usage and business performance, such as token consumption, KPIs, and cost.",
           "This reflected our early assumption that builders would primarily monitor artifact performance through Overview, while more detailed reporting could support users with administrative responsibilities.",
         ],
-        imageSrc: "/images/ibm/metrics/Iteration/Metrics_V1.png",
-        imageAlt:
-          "The first Metrics concept: the Metrics tab of the Overview page, with five pinned figures — conversations, token usage, unique daily users, estimated cost and task completion rate — above an analytics block of top token consumers, a token trend and a cost forecast against budget.",
-        imageWidth: 2160,
-        imageHeight: 1620,
       },
       {
         id: "v2",
@@ -604,11 +486,6 @@ const DESIGN_AREAS: DesignArea[] = [
           'Feedback revealed that metrics felt scattered and repetitive across the experience. Builders found the amount of information overwhelming and expressed interest in organizing metrics through tabs. Additionally, the label "Health" did not clearly communicate what the section contained.',
           "To reduce fragmentation and redundancy, we merged Fleet Overview and Health into a single tabbed Fleet Overview, allowing builders to explore metrics by artifact type.",
         ],
-        imageSrc: "/images/ibm/metrics/Iteration/Metrics_V2.png",
-        imageAlt:
-          "The second Metrics concept: the same pinned row, now three figures and two empty Create pin slots, above the analytics block of top token consumers, token trend and cost forecast.",
-        imageWidth: 2363,
-        imageHeight: 1772,
       },
       {
         id: "v2-5",
@@ -619,36 +496,6 @@ const DESIGN_AREAS: DesignArea[] = [
           "Builders showed particular interest in actionable metrics and expressed a preference for dynamic visualizations, contextual tooltips, and actions embedded directly within the metrics.",
           "Most importantly, builders wanted to drill down into individual artifacts to understand their performance, rather than relying solely on fleet-level summaries.",
           "Based on this feedback, we explored organizing artifact-specific metrics into different categories of cards, combining performance statistics with actionable insights.",
-        ],
-        /* Four studies rather than one screen; see `shots` on
-           `DesignIteration`. They are the card categories the copy above
-           describes, and they are shown as the four separate explorations
-           they were. */
-        shots: [
-          {
-            src: "/images/ibm/metrics/Iteration/Runtime.png",
-            alt: "A Runtime metric card: total runs, success rate and average response time, each against its change, over a usage trend charted through the day.",
-            width: 1114,
-            height: 636,
-          },
-          {
-            src: "/images/ibm/metrics/Iteration/Network.png",
-            alt: "A Network metric card: counts of subagents and workflows with an average response time, over individual response times per subagent and workflow, excluding dependencies.",
-            width: 1114,
-            height: 630,
-          },
-          {
-            src: "/images/ibm/metrics/Iteration/Connections.png",
-            alt: "A Connections metric card: counts of MCPs and tools with an average response time, over a credential expiry list flagging connections due to expire.",
-            width: 1114,
-            height: 646,
-          },
-          {
-            src: "/images/ibm/metrics/Iteration/Tools.png",
-            alt: "A Tools metric card: tools counted by kind — OpenAPI, Python, MCP and other — over a list of the ones currently degraded.",
-            width: 1184,
-            height: 694,
-          },
         ],
       },
       {
@@ -663,11 +510,6 @@ const DESIGN_AREAS: DesignArea[] = [
           "We removed pinned metrics because it was unclear whether they should apply across all artifacts or only to the selected artifact. Feedback suggested that builders valued customization, but pinning individual metrics was not necessarily the best way to support that need.",
           "This final concept has not yet been usability tested. Future testing would need to validate artifact relationships, metric organization, and the usefulness of interactions and drilldowns.",
         ],
-        imageSrc: "/images/ibm/metrics/Iteration/Metrics_V3.png",
-        imageAlt:
-          "The final Metrics concept: a searchable hierarchical tree of agents, subagents and workflows beside one artifact's runs, error rate, response time and token spend.",
-        imageWidth: 2160,
-        imageHeight: 2271,
       },
     ],
   },

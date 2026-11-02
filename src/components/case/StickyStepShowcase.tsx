@@ -45,11 +45,17 @@ export interface ShowcaseStep {
   title: string;
   subtitle?: string;
   description: string;
-  imageSrc: string;
-  imageAlt: string;
+  /**
+   * The step's picture. Optional, and the four go together: a step missing
+   * any of them is rendered as copy alone, and a set where no step has one
+   * drops the picture frame entirely. That is what the conservative branch of
+   * the IBM case study does; see `SHOWCASE` there.
+   */
+  imageSrc?: string;
+  imageAlt?: string;
   /** The file's own pixels, so the frame can hold one shape for all of them. */
-  imageWidth: number;
-  imageHeight: number;
+  imageWidth?: number;
+  imageHeight?: number;
   /**
    * The corner radius the file already carries, in its own pixels — the
    * window curve a screenshot was cut to, as alpha. Omitted or 0 for a file
@@ -195,6 +201,23 @@ export function StickyStepShowcase({
   const step = safeSteps[index];
 
   /*
+    A step shows a picture only with all four of its image fields set, so a
+    half-filled step cannot reach the frame and ask it to hold a shape that
+    cannot be computed. With no step carrying one the frame goes and the words
+    are the section.
+  */
+  const pictureOf = (s: ShowcaseStep) =>
+    s.imageSrc && s.imageAlt !== undefined && s.imageWidth && s.imageHeight
+      ? {
+          src: s.imageSrc,
+          alt: s.imageAlt,
+          width: s.imageWidth,
+          height: s.imageHeight,
+        }
+      : null;
+  const withPicture = safeSteps.filter((s) => pictureOf(s) !== null);
+
+  /*
     ── One shape for the whole set ─────────────────────────────────────────
     The frame takes one shape and keeps it for every step, so the column
     cannot move when the picture changes.
@@ -209,10 +232,17 @@ export function StickyStepShowcase({
     than the frame, so a wider one is letterboxed by a line or two top and
     bottom rather than being the one that overflows.
   */
-  const tallest = safeSteps.reduce((a, b) =>
-    b.imageWidth / b.imageHeight < a.imageWidth / a.imageHeight ? b : a,
+  const tallest = withPicture.reduce<ShowcaseStep | null>(
+    (a, b) =>
+      a === null ||
+      b.imageWidth! / b.imageHeight! < a.imageWidth! / a.imageHeight!
+        ? b
+        : a,
+    null,
   );
-  const frameShape = `${tallest.imageWidth} / ${tallest.imageHeight}`;
+  const frameShape = tallest
+    ? `${tallest.imageWidth} / ${tallest.imageHeight}`
+    : undefined;
 
   /*
     ── One corner for the whole set ────────────────────────────────────────
@@ -244,8 +274,8 @@ export function StickyStepShowcase({
   */
   const cornerShare = Math.max(
     0,
-    ...safeSteps.map((s) =>
-      s.imageRadius ? (s.imageRadius + CLIP_MARGIN) / s.imageWidth : 0,
+    ...withPicture.map((s) =>
+      s.imageRadius ? (s.imageRadius + CLIP_MARGIN) / s.imageWidth! : 0,
     ),
   );
   /*
@@ -255,17 +285,72 @@ export function StickyStepShowcase({
     re-expressed against the box's own height, so the corner comes out
     circular at any size.
   */
-  const corner = (s: ShowcaseStep) =>
+  const corner = (pic: { width: number; height: number }) =>
     cornerShare === 0
       ? `${BARE_CORNER}px`
       : `${(cornerShare * 100).toFixed(4)}% / ${(
           cornerShare *
           100 *
-          (s.imageWidth / s.imageHeight)
+          (pic.width / pic.height)
         ).toFixed(4)}%`;
+  /** The active step's picture, or nothing where it has none. */
+  const picture = pictureOf(step);
   const single = safeSteps.length === 1;
   const tabId = (i: number) => `${uid}-tab-${safeSteps[i].id}`;
   const panelId = (i: number) => `${uid}-panel-${safeSteps[i].id}`;
+
+  /*
+    ── No pictures: no controls either ─────────────────────────────────────
+    The tab row exists to choose which picture the frame holds. With no
+    pictures in the set it chose nothing: above 810 all three steps' words are
+    on screen at once, so pressing a tab only moved a coloured underline, and
+    the row was still announcing itself to a screen reader as a tab list with
+    three panels. A reader would have been hunting for what their press had
+    changed.
+
+    So the three are set out as what they are — a list of the three
+    destinations, read straight down or across. Same words, same order, same
+    three-column shape above 810; no tablist, no roving tabindex, no marker,
+    no panel. A rule above each rather than under them: with nothing below the
+    row to divide it from, a rule under the three read as an underline hanging
+    off the last line of copy.
+
+    Give any step an `imageSrc` and the tabbed showcase below comes back.
+  */
+  if (withPicture.length === 0) {
+    return (
+      <div className={`flex w-full flex-col gap-8 ${className ?? ""}`}>
+        <ol className="m-0 grid w-full list-none grid-cols-1 gap-8 p-0 tablet:grid-cols-3 tablet:gap-x-8">
+          {safeSteps.map((s) => (
+            <li
+              key={s.id}
+              className="flex min-w-0 flex-col gap-2 border-t border-grey-100 pt-4"
+            >
+              <span className="mb-0.5 flex items-baseline gap-3">
+                {s.number ? (
+                  <span
+                    className="ts-body font-semibold"
+                    style={{ color: accent }}
+                  >
+                    {s.number}
+                  </span>
+                ) : null}
+                <span className="ts-body font-semibold">{s.title}</span>
+              </span>
+              {s.subtitle ? (
+                <p className="ts-body m-0 font-semibold">{s.subtitle}</p>
+              ) : null}
+              <p className="ts-body m-0">{s.description}</p>
+            </li>
+          ))}
+        </ol>
+
+        {/* The accuracy note still belongs to the set, and left rather than
+            centred: there is no picture for it to sit under any more. */}
+        {note ? <p className="ts-body-small-light m-0 w-full">{note}</p> : null}
+      </div>
+    );
+  }
 
   return (
     <div className={`flex w-full flex-col gap-8 ${className ?? ""}`}>
@@ -446,122 +531,132 @@ export function StickyStepShowcase({
           ))}
         </div>
 
-        <Zoomable
-          src={step.imageSrc}
-          alt={step.imageAlt}
-          width={step.imageWidth}
-          height={step.imageHeight}
-          cornerRadius={corner(step)}
-          panOnDesktop
-          pinchZoom
-        >
-          <div
-            /*
-              A box and nothing else: it holds the aspect ratio so the column
-              cannot move when the picture changes, and it positions the two
-              frames of the crossfade. No border, no background, no padding
-              and no shadow — the double frame this used to show was a
-              container drawn around a picture that already had a corner of
-              its own, and nothing is drawn around it now.
-            */
-            className="relative w-full"
-            style={{ aspectRatio: frameShape }}
+        {/*
+          The picture, where the set has one. With no step carrying an
+          `imageSrc` there is no frame at all rather than an empty box: the
+          tab row above still carries each step's words, and below 810 the
+          active step's copy sits at the top of this panel.
+        */}
+        {picture ? (
+          <Zoomable
+            src={picture.src}
+            alt={picture.alt}
+            width={picture.width}
+            height={picture.height}
+            cornerRadius={corner(picture)}
+            panOnDesktop
+            pinchZoom
           >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={step.id}
-                /* `justify-center` is what letterboxes a step whose shape is
-                   not the frame's: its clip box sits in the middle of the
-                   frame rather than against the top of it. */
-                className="absolute inset-0 flex flex-col justify-center"
-                initial={
-                  reduceMotion
-                    ? { opacity: 0 }
-                    : { opacity: 0, y: 8, scale: 0.99 }
-                }
-                animate={
-                  reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }
-                }
-                /* The leaving frame carries its own, shorter timing: Motion
-                   reads `transition` off the `exit` target when one is there,
-                   which is the only way to give the two directions different
-                   durations on a single element. */
-                exit={
-                  reduceMotion
-                    ? { opacity: 0, transition: { duration: 0.12 } }
-                    : {
-                        opacity: 0,
-                        y: -8,
-                        scale: 0.99,
-                        transition: EXIT_TRANSITION,
-                      }
-                }
-                transition={
-                  reduceMotion ? { duration: 0.12 } : ENTER_TRANSITION
-                }
-              >
-                {/*
-                  The clip. It takes the step's *own* shape, not the frame's,
-                  so its edges are the picture's edges and the corner above
-                  lands exactly on them. Sizing it to the frame instead would
-                  put the curve a pixel or two off the picture on any step
-                  that is letterboxed — a corner cut out of thin air beside
-                  the one it was meant to round.
-                */}
-                <div
-                  className="relative w-full overflow-hidden"
-                  style={{
-                    aspectRatio: `${step.imageWidth} / ${step.imageHeight}`,
-                    borderRadius: corner(step),
-                  }}
+            <div
+              /*
+                A box and nothing else: it holds the aspect ratio so the column
+                cannot move when the picture changes, and it positions the two
+                frames of the crossfade. No border, no background, no padding
+                and no shadow — the double frame this used to show was a
+                container drawn around a picture that already had a corner of
+                its own, and nothing is drawn around it now.
+              */
+              className="relative w-full"
+              style={{ aspectRatio: frameShape }}
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={step.id}
+                  /* `justify-center` is what letterboxes a step whose shape is
+                     not the frame's: its clip box sits in the middle of the
+                     frame rather than against the top of it. */
+                  className="absolute inset-0 flex flex-col justify-center"
+                  initial={
+                    reduceMotion
+                      ? { opacity: 0 }
+                      : { opacity: 0, y: 8, scale: 0.99 }
+                  }
+                  animate={
+                    reduceMotion
+                      ? { opacity: 1 }
+                      : { opacity: 1, y: 0, scale: 1 }
+                  }
+                  /* The leaving frame carries its own, shorter timing: Motion
+                     reads `transition` off the `exit` target when one is there,
+                     which is the only way to give the two directions different
+                     durations on a single element. */
+                  exit={
+                    reduceMotion
+                      ? { opacity: 0, transition: { duration: 0.12 } }
+                      : {
+                          opacity: 0,
+                          y: -8,
+                          scale: 0.99,
+                          transition: EXIT_TRANSITION,
+                        }
+                  }
+                  transition={
+                    reduceMotion ? { duration: 0.12 } : ENTER_TRANSITION
+                  }
                 >
-                  <Image
-                    src={step.imageSrc}
-                    alt={step.imageAlt}
-                    fill
-                    sizes="(width < 810px) 92vw, (width < 1200px) 95vw, 1072px"
-                    /* An animation has to reach the browser as the file it is:
-                       the optimizer would hand back a single still frame and
-                       the recording would simply stop. */
-                    unoptimized={/\.gif$/i.test(step.imageSrc)}
-                    /* The clip is already the picture's shape, so this changes
-                       nothing today. It is the guard that keeps a mis-measured
-                       `imageWidth` showing a letterboxed picture rather than a
-                       stretched one. */
-                    className="object-contain"
-                  />
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
+                  {/*
+                    The clip. It takes the step's *own* shape, not the frame's,
+                    so its edges are the picture's edges and the corner above
+                    lands exactly on them. Sizing it to the frame instead would
+                    put the curve a pixel or two off the picture on any step
+                    that is letterboxed — a corner cut out of thin air beside
+                    the one it was meant to round.
+                  */}
+                  <div
+                    className="relative w-full overflow-hidden"
+                    style={{
+                      aspectRatio: `${picture.width} / ${picture.height}`,
+                      borderRadius: corner(picture),
+                    }}
+                  >
+                    <Image
+                      src={picture.src}
+                      alt={picture.alt}
+                      fill
+                      sizes="(width < 810px) 92vw, (width < 1200px) 95vw, 1072px"
+                      /* An animation has to reach the browser as the file it is:
+                         the optimizer would hand back a single still frame and
+                         the recording would simply stop. */
+                      unoptimized={/\.gif$/i.test(picture.src)}
+                      /* The clip is already the picture's shape, so this changes
+                         nothing today. It is the guard that keeps a mis-measured
+                         `imageWidth` showing a letterboxed picture rather than a
+                         stretched one. */
+                      className="object-contain"
+                    />
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
-          {/*
-            Below 810 only. On a desktop the picture says it can be opened
-            through `cursor-zoom-in` and the pointer that reads it; a touch
-            screen has neither, so the only way to find the lightbox was to
-            guess that the picture was tappable.
+            {/*
+              Below 810 only. On a desktop the picture says it can be opened
+              through `cursor-zoom-in` and the pointer that reads it; a touch
+              screen has neither, so the only way to find the lightbox was to
+              guess that the picture was tappable.
 
-            A `span`, not a button: `Zoomable` already wraps all of this in
-            one, and a button inside a button is invalid and does not survive
-            parsing. It is a label on the control rather than a control of its
-            own, and the whole picture stays tappable with it.
-          */}
-          <span
-            aria-hidden
-            className="ts-body-small-light mt-2.5 flex items-center justify-center gap-1.5 rounded-full border border-grey-100 px-3 py-2 tablet:hidden"
-          >
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
-              <path
-                d="M8.4 1.4h4.2v4.2M12.6 1.4 8.1 5.9M5.6 12.6H1.4V8.4M1.4 12.6l4.5-4.5"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Expand
-          </span>
-        </Zoomable>
+              A `span`, not a button: `Zoomable` already wraps all of this in
+              one, and a button inside a button is invalid and does not survive
+              parsing. It is a label on the control rather than a control of its
+              own, and the whole picture stays tappable with it.
+            */}
+            <span
+              aria-hidden
+              className="ts-body-small-light mt-2.5 flex items-center justify-center gap-1.5 rounded-full border border-grey-100 px-3 py-2 tablet:hidden"
+            >
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                <path
+                  d="M8.4 1.4h4.2v4.2M12.6 1.4 8.1 5.9M5.6 12.6H1.4V8.4M1.4 12.6l4.5-4.5"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              Expand
+            </span>
+          </Zoomable>
+        ) : null}
 
         {/*
           The accuracy note, and nothing else.

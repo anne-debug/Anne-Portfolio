@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 /**
  * The hero artwork for the IBM Builder Control Plane case study.
  *
@@ -10,17 +8,12 @@ import Image from "next/image";
  * breakpoint; the canvas is the only thing that resizes.
  *
  * ── The product ───────────────────────────────────────────────────────────
- * Three directions were considered for the windows. A row of three equal ones
- * (Home, Issues, Metrics) gave each a third of the column and made all three
- * illegible. A single flat screenshot read clearly but said nothing about the
- * thing the project is about — that these surfaces are connected. The one
- * built here is the third: Home as the main plate, because it is the starting
- * point the project proposes, with the issue investigation panel overlapping
- * in front of it, because that is the move a builder makes from the landing
- * page into a failure.
- *
- * Every pixel in the two screenshots is the team's own prototype. Nothing has
- * been redrawn, and no UI has been invented.
+ * Not shown on this branch. The hero carried two screenshots of the team's own
+ * prototype — the Home control plane as the main plate with the issue
+ * investigation panel overlapping in front of it — and they are gone, leaving
+ * the field and the grid. What is left of them is `Box` and the empty list the
+ * field tests against: fill it and the marks clear a space again. The windows
+ * themselves, and the geometry that placed them, are in the branch history.
  *
  * ── The background ────────────────────────────────────────────────────────
  * A field of IBM-flavoured marks in the space the two windows leave, over
@@ -75,35 +68,14 @@ const Z = {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Each window as a fraction of the canvas. `ratio` is the screenshot's own
- * width over height, which is what sets the height from the width — the two
- * are never given a height directly, so they cannot be distorted.
+ * A window's box in canvas units: what the field's collision test reads.
+ *
+ * Nothing fills this list on the conservative branch, because the two
+ * prototype screenshots the hero used to carry are gone. It is kept because it
+ * is the whole of what the field needs to know about a window — give it one
+ * and the marks clear a space for it again, with no other change in this file.
  */
-const HOME = { x: 0.08, y: 0.145, w: 0.65, ratio: 1292 / 919 };
-const PANEL = { x: 0.6, y: 0.27, w: 0.32, ratio: 727 / 880 };
-
-type Window = typeof HOME;
-
-/** A window's box in canvas units, which is what the collision test needs. */
-function box(win: Window) {
-  const w = win.w * CANVAS.w;
-  return {
-    x: win.x * CANVAS.w,
-    y: win.y * CANVAS.h,
-    w,
-    h: w / win.ratio,
-  };
-}
-
-/** The same box as CSS percentages, which is what the composition rule wants. */
-function place(win: Window) {
-  return {
-    left: `${win.x * 100}%`,
-    top: `${win.y * 100}%`,
-    width: `${win.w * 100}%`,
-    aspectRatio: `${win.ratio}`,
-  };
-}
+type Box = { x: number; y: number; w: number; h: number };
 
 /* -------------------------------------------------------------------------- */
 /* The field                                                                   */
@@ -156,7 +128,11 @@ interface Slot {
  * when its centre lands inside one.
  */
 const SLOTS: Slot[] = (() => {
-  const windows = [box(HOME), box(PANEL)];
+  /* Nothing to avoid on this branch: the two prototype windows the field used
+     to be tested against are gone, so every slot is drawn and the field fills
+     the canvas. Put a window back and give it to this list to get its clear
+     space back with it. */
+  const windows: Box[] = [];
   const cellW = CANVAS.w / COLS;
   const cellH = CANVAS.h / ROWS;
   const reach = SIZE / 2 + CLEARANCE;
@@ -382,50 +358,6 @@ export function IbmHeroArt() {
           />
         ))}
       </svg>
-
-      {/*
-        The Home control plane, the main plate: the starting point the project
-        proposes, and the surface the other two are reached from.
-      */}
-      <div
-        className={`absolute overflow-hidden rounded-[1cqw] ring-1 ring-grey-100 ${Z.home}`}
-        style={{
-          ...place(HOME),
-          boxShadow: "0 1.5cqw 4cqw rgba(16, 22, 26, 0.12)",
-        }}
-      >
-        <Image
-          src="/images/ibm/home/control-plane-home.106ced35.png"
-          alt="The Builder Control Plane home page: pinned shortcuts, a list of the latest issues, and the builder's most recent artifacts."
-          fill
-          sizes="(width < 810px) 60vw, 620px"
-          className="object-cover object-top"
-          priority
-        />
-      </div>
-
-      {/*
-        The issue investigation panel, in front and a little lower, the way it
-        opens over the dashboard in the prototype itself. Home runs to 73% and
-        the panel starts at 60%, so an eighth of the canvas is genuine overlap
-        and the two read as one depth rather than two pictures side by side.
-      */}
-      <div
-        className={`absolute overflow-hidden rounded-[1cqw] ring-1 ring-grey-100 ${Z.panel}`}
-        style={{
-          ...place(PANEL),
-          boxShadow: "0 2cqw 5cqw rgba(16, 22, 26, 0.18)",
-        }}
-      >
-        <Image
-          src="/images/ibm/issues/issue-panel.6f87c056.png"
-          alt="The issue investigation panel: an agent's execution flow, the artifacts it touches, and a step-by-step execution trace ending in a failed tool call."
-          fill
-          sizes="(width < 810px) 30vw, 305px"
-          className="object-cover object-top"
-          priority
-        />
-      </div>
     </div>
   );
 }
