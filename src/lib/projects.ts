@@ -55,7 +55,6 @@ export const PROJECTS: Project[] = [
        renders no chips rather than guessed ones. */
     tools: [],
     locked: true,
-    status: "In progress",
   },
   {
     slug: "ibm-watsonx-orchestrate-notification-experience",
@@ -68,6 +67,7 @@ export const PROJECTS: Project[] = [
        renders no chips rather than guessed ones. */
     tools: [],
     locked: true,
+    status: "In progress",
   },
   {
     slug: "taipei-metro-app",
