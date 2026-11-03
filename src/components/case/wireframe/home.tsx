@@ -355,88 +355,126 @@ export function HomeV2() {
       scroll
       alt="Wireframe of the second Home concept: Quick actions with two shortcut cards and three empty slots, then the builder's most recent work, then an expanded Fleet overview with a tab per artifact type and a panel of unlabelled figures and charts, and a simple artifact table last."
     >
-      <WireScreen height="natural">
-        <Header
-          lead="Good afternoon, Alex"
-          note="Your agentic fleet needs attention."
-        />
-        <WireTabs items={["Overview", "Issues", "Metrics"]} active={0} />
+      <HomeV2Page />
+    </WireFigure>
+  );
+}
 
-        <WireSection
-          title="Quick actions"
-          action={<Action label="Edit shortcuts" icon="pin" />}
+/**
+ * V2's page on its own, without the preview window around it.
+ *
+ * Metrics V2 puts it beside the Metrics page, because what that round did was
+ * take the fleet metrics off this page and consolidate them over there. It
+ * renders this component rather than a copy of it, and `compact` keeps only
+ * what that argument needs — the greeting, one row of shortcuts and the fleet
+ * block — because the recent work and the artifact table below would leave a
+ * column standing twice the height of the page it is being compared with.
+ */
+export function HomeV2Page({
+  compact,
+  framed,
+}: {
+  compact?: boolean;
+  /** Draw the window's edge: for a page that is not inside a preview box. */
+  framed?: boolean;
+}) {
+  return (
+    <WireScreen height="natural" framed={framed}>
+      <Header
+        lead="Good afternoon, Alex"
+        note="Your agentic fleet needs attention."
+      />
+      <WireTabs items={["Overview", "Issues", "Metrics"]} active={0} />
+
+      <WireSection
+        title="Quick actions"
+        action={<Action label="Edit shortcuts" icon="pin" />}
+      >
+        {/* Five across is right in a full column and wrong in half of one:
+            beside the Metrics page the cards would be 70px wide and every
+            label would break. Compact keeps two cards and one slot, which is
+            as much as that argument needs. */}
+        <div
+          className={`grid gap-1.5 tablet:gap-2 ${compact ? "grid-cols-1 tablet:grid-cols-3" : "grid-cols-2 tablet:grid-cols-5"}`}
         >
-          <div className="grid grid-cols-2 gap-1.5 tablet:grid-cols-5 tablet:gap-2">
-            <WireShortcut
-              title="Order triage"
-              icon="flow"
-              body="A workflow you pinned."
-              action="View workflow"
+          <WireShortcut
+            title="Order triage"
+            icon="flow"
+            body="A workflow you pinned."
+            action="View workflow"
+          />
+          <WireShortcut
+            title="Trace explorer"
+            icon="chart"
+            body="A tool you pinned."
+            action="View traces"
+          />
+          <WireSlot />
+          {compact ? null : (
+            <>
+              <WireSlot className="hidden tablet:flex" />
+              <WireSlot className="hidden tablet:flex" />
+            </>
+          )}
+        </div>
+      </WireSection>
+
+      {/* Compact also drops this. Beside the Metrics page the argument is
+          Home's fleet block and where it went; the builder's recent work is
+          three more cards of height that take no part in it. */}
+      {compact ? null : <MostRecent />}
+
+      <WireSection title="Fleet overview">
+        <WirePanel>
+          <div
+            className="border-b px-2 pt-2"
+            style={{ borderColor: "var(--wf-line)" }}
+          >
+            <WireTabs
+              items={[
+                "Agents",
+                "Workflows",
+                "Tools",
+                "Knowledge",
+                "Connections",
+                "Models",
+              ]}
+              active={0}
+              className="!border-b-0"
             />
-            <WireShortcut
-              title="Trace explorer"
-              icon="chart"
-              body="A tool you pinned."
-              action="View traces"
-            />
-            <WireSlot />
-            <WireSlot className="hidden tablet:flex" />
-            <WireSlot className="hidden tablet:flex" />
           </div>
-        </WireSection>
 
-        <MostRecent />
-
-        <WireSection title="Fleet overview">
-          <WirePanel>
-            <div
-              className="border-b px-2 pt-2"
-              style={{ borderColor: "var(--wf-line)" }}
-            >
-              <WireTabs
-                items={[
-                  "Agents",
-                  "Workflows",
-                  "Tools",
-                  "Knowledge",
-                  "Connections",
-                  "Models",
-                ]}
-                active={0}
-                className="!border-b-0"
-              />
-            </div>
-
-            {/* Six figures and two charts, none of them saying what they
+          {/* Six figures and two charts, none of them saying what they
                 measure: the point is that the block doubled in size. */}
-            <div className="grid grid-cols-2 gap-1.5 p-2 tablet:grid-cols-3 tablet:gap-2 desktop:grid-cols-6">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <WireBlankStat
-                  key={i}
-                  className={i > 2 ? "hidden tablet:flex" : ""}
-                />
-              ))}
-            </div>
+          <div className="grid grid-cols-2 gap-1.5 p-2 tablet:grid-cols-3 tablet:gap-2 desktop:grid-cols-6">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <WireBlankStat
+                key={i}
+                className={i > 2 ? "hidden tablet:flex" : ""}
+              />
+            ))}
+          </div>
 
-            <div
-              className="grid grid-cols-1 gap-2 border-t p-2 tablet:grid-cols-[0.7fr_1.3fr]"
-              style={{ borderColor: "var(--wf-line)" }}
-            >
-              <div className="flex items-center justify-center py-1">
-                <WireShape kind="ring" className="!size-12" />
-              </div>
-              <div className="flex min-w-0 items-end py-1">
-                <WireShape kind="bars" className="!h-12" />
-              </div>
+          <div
+            className="grid grid-cols-1 gap-2 border-t p-2 tablet:grid-cols-[0.7fr_1.3fr]"
+            style={{ borderColor: "var(--wf-line)" }}
+          >
+            <div className="flex items-center justify-center py-1">
+              <WireShape kind="ring" className="!size-12" />
             </div>
-          </WirePanel>
-        </WireSection>
+            <div className="flex min-w-0 items-end py-1">
+              <WireShape kind="bars" className="!h-12" />
+            </div>
+          </div>
+        </WirePanel>
+      </WireSection>
 
+      {compact ? null : (
         <WireSection title="Artifacts">
           <ArtifactTable />
         </WireSection>
-      </WireScreen>
-    </WireFigure>
+      )}
+    </WireScreen>
   );
 }
 

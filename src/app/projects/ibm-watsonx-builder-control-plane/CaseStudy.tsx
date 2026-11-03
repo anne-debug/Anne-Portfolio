@@ -733,10 +733,27 @@ export function CaseStudy() {
                 "I worked with a team of five designers to explore a new Builder Control Plane for IBM watsonx Orchestrate, a dedicated landing experience for builders creating and maintaining agents, workflows, tools, and other AI artifacts.",
                 "At the time, builders primarily accessed their work through a chatbot interface. Our team was tasked with envisioning a future Control Plane that would help builders return to ongoing work, identify issues, and understand the performance of interconnected AI artifacts.",
                 "The project initially explored both builder and administrator needs, but later narrowed its focus to the Builder Control Plane. This is why our early research included administrators, even though the final prototype focused on builders.",
-                "Over six weeks, we developed an interactive prototype covering Home, Issues, and Metrics.",
-                "This was a design exploration, not a shipped product.",
+                "Over six weeks, we developed an interactive prototype covering Home, Issues, and Metrics — a design exploration, not a shipped product.",
               ]}
             />
+
+            {/*
+              The confidentiality note, set apart from the narrative rather
+              than added to it: it is about the case study, not about the
+              project. Italic and the page's smallest type, with a gap above
+              and no rule — the type alone is enough to say this is an aside,
+              and a hairline here was reading as the end of the section. It
+              makes no claim about what a visitor is bound by; it says what
+              has been left out and asks.
+            */}
+            <p className="ts-body-small-light m-0 mt-5 w-full italic">
+              To respect project confidentiality, this case study uses
+              simplified, mid-fidelity recreations of our design concepts.
+              Original high-fidelity prototypes and sensitive implementation
+              details are omitted, and all example names and performance data
+              are fictional. Please do not reproduce or redistribute these
+              design concepts without permission.
+            </p>
           </Reveal>
         </CaseSection>
 
@@ -978,7 +995,7 @@ export function CaseStudy() {
               accent={IBM_BLUE}
               /* Sits directly under the screen name now, inside the figure,
                  rather than at the foot of the section. */
-              note="Concept prototype. All names, agents, and performance data are fictional."
+              note="Confidentiality note: To respect project confidentiality, the interfaces shown here are simplified, mid-fidelity recreations of the design concepts. Internal implementation details, sensitive information, and original high-fidelity prototypes have been omitted. All names, examples, and performance data are fictional. Please do not reproduce or redistribute these design concepts without permission."
             />
           </Reveal>
         </CaseSection>
@@ -1068,7 +1085,7 @@ export function CaseStudy() {
               <DesignIterationShowcase
                 areas={DESIGN_AREAS}
                 accent={IBM_BLUE}
-                note="Concept prototype. All names, agents, and performance data are fictional."
+                note="Confidentiality note: To respect project confidentiality, the interfaces shown here are simplified, mid-fidelity recreations of the design concepts. Internal implementation details, sensitive information, and original high-fidelity prototypes have been omitted. All names, examples, and performance data are fictional. Please do not reproduce or redistribute these design concepts without permission."
               />
             </Reveal>
           </div>

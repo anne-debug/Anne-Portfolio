@@ -6,6 +6,7 @@ import {
   WirePanel,
   WireRow,
   WireSearch,
+  WireShortcut,
   WireSlot,
   WireTabs,
   WireText,
@@ -247,18 +248,41 @@ export function IbmHeroWireframes() {
           </span>
         </div>
 
-        <div className="grid min-h-0 flex-1 grid-cols-[0.8fr_1fr] gap-1.5">
-          <div className="flex min-h-0 flex-col gap-1">
+        {/* The pinned column takes the larger share on a phone. The whole
+            composition is ~1/3 size there, and at the desktop ratio the
+            shortcut column came out 45px wide — too narrow for a card to
+            read as one, which is the thing this panel is here to show. The
+            issue rows lose less by being narrow: their titles truncate, a
+            card at 45px has nothing left. */}
+        <div className="grid min-h-0 flex-1 grid-cols-[1fr_1.1fr] gap-1.5 tablet:grid-cols-[0.8fr_1fr]">
+          {/* `min-w-0` on both: without it each column floors at its own
+              min-content width and the ratio above is ignored, which is how
+              the shortcut column ended up at 45px on a phone. */}
+          <div className="flex min-h-0 min-w-0 flex-col gap-1">
             <WireText tone="faint">Pinned shortcuts</WireText>
-            <div className="grid auto-rows-min grid-cols-2 gap-1">
-              <WireTile icon="flow" label="Order triage" />
-              <WireTile icon="chart" label="Trace explorer" />
-              <WireSlot className="!min-h-0 hidden py-2 tablet:flex" />
-              <WireSlot className="!min-h-0 hidden py-2 tablet:flex" />
+            {/* The shortcut cards themselves, not tiles standing in for
+                them: being able to pin an artifact and come back to it is
+                the final Home's own decision, and a labelled square does not
+                show that it is a card with a way into the thing. */}
+            <div className="grid auto-rows-min grid-cols-1 gap-1 tablet:grid-cols-2">
+              <WireShortcut
+                title="Order triage"
+                icon="flow"
+                body="A workflow you pinned."
+                action="View workflow"
+              />
+              <WireShortcut
+                title="Trace explorer"
+                icon="chart"
+                body="A tool you pinned."
+                action="View traces"
+              />
+              <WireSlot className="!min-h-0 hidden py-2 desktop:flex" />
+              <WireSlot className="!min-h-0 hidden py-2 desktop:flex" />
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-col gap-1">
+          <div className="flex min-h-0 min-w-0 flex-col gap-1">
             <WireText tone="faint">Latest issues</WireText>
             <WirePanel className="min-h-0 flex-1">
               <WireRow

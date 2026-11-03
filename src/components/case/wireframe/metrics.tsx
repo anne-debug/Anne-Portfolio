@@ -2,10 +2,11 @@
 
 import type { ReactNode } from "react";
 
-import { HomeV1Page } from "./home";
+import { HomeV1Page, HomeV2Page } from "./home";
 import {
   WireBadge,
   WireBar,
+  WireBlankStat,
   WireButton,
   WireCard,
   WireChartBox,
@@ -21,7 +22,6 @@ import {
   WireSection,
   WireSegmented,
   WireShape,
-  WireSlot,
   WireTabs,
   WireText,
   WireTitle,
@@ -140,14 +140,7 @@ function Analytics() {
 }
 
 /** The Metrics page itself: pinned figures over the analytics pair. */
-function MetricsPage({
-  pins,
-  framed,
-}: {
-  pins: "full" | "slots";
-  /** Draw the window's edge: V2 stands alone, V1 sits in a bordered half. */
-  framed?: boolean;
-}) {
+function MetricsPage({ framed }: { framed?: boolean }) {
   return (
     <WireScreen height="natural" framed={framed} railActive={2}>
       <WireTabs items={PAGE_TABS} active={2} />
@@ -167,11 +160,7 @@ function MetricsPage({
           <PinnedCard label="Total conversations" icon="agent" />
           <PinnedCard label="Usage" icon="chart" />
           <PinnedCard label="Active users" icon="user" />
-          {pins === "full" ? (
-            <PinnedCard label="Estimated cost" icon="book" />
-          ) : (
-            <WireSlot label="Create pin" className="!min-h-0 py-3" />
-          )}
+          <PinnedCard label="Estimated cost" icon="book" />
         </div>
       </WireSection>
 
@@ -219,7 +208,7 @@ export function MetricsV1() {
             <HomeV1Page compact />
           </Side>
           <Side label="Metrics page · usage and cost">
-            <MetricsPage pins="full" />
+            <MetricsPage />
           </Side>
         </div>
       </div>
@@ -228,26 +217,112 @@ export function MetricsV1() {
 }
 
 /* -------------------------------------------------------------------------- */
-/* V2 — consolidation, as far as the capture shows it                         */
+/* V2 — the scattered metrics gathered into one tabbed block                  */
 /* -------------------------------------------------------------------------- */
 
 /**
- * V2 — the same page, and the consolidation drawn as an aside.
+ * The consolidated Fleet overview this round proposed.
  *
- * The capture for this round is the Metrics page with two of its pins left as
- * empty slots; it does not show the merged Fleet overview the narrative
- * describes. Rather than invent a dashboard for it, the page is drawn as it
- * was and the consolidation is a small inset underneath, labelled as an
- * exploration and deliberately quieter than the page above it.
+ * One block, a tab per artifact type, and health and performance grouped
+ * under their own headings instead of scattered across two pages. The figures
+ * are blank on purpose: what the round decided is where these live and how
+ * they are grouped, not what any one of them read.
+ */
+function ConsolidatedFleet() {
+  return (
+    <WireScreen height="natural" railActive={2}>
+      <WireTabs items={PAGE_TABS} active={2} />
+
+      <WireSection
+        title="Fleet overview"
+        action={<WireSegmented items={["Personal", "Team"]} />}
+      >
+        <WirePanel>
+          <div
+            className="border-b px-2 pt-2"
+            style={{ borderColor: "var(--wf-line)" }}
+          >
+            <WireTabs
+              items={["All", "Agents", "Workflows", "Tools", "Knowledge"]}
+              active={0}
+              className="!border-b-0"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5 p-2">
+            <WireText tone="faint">Health</WireText>
+            <div className="grid grid-cols-2 gap-1.5 tablet:grid-cols-4 tablet:gap-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <WireBlankStat
+                  key={i}
+                  className={i > 1 ? "hidden tablet:flex" : ""}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div
+            className="flex flex-col gap-1.5 border-t p-2"
+            style={{ borderColor: "var(--wf-line)" }}
+          >
+            <WireText tone="faint">Performance</WireText>
+            <div className="grid grid-cols-2 gap-1.5 tablet:grid-cols-4 tablet:gap-2">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <WireBlankStat key={i} />
+              ))}
+              <div className="col-span-2 flex min-w-0 items-end">
+                <WireShape kind="bars" className="!h-9" />
+              </div>
+            </div>
+          </div>
+
+          {/* The third group is here because consolidating means this page
+              now carries what Home used to and more besides: usage over time
+              had nowhere to live while the figures were split across two
+              pages. */}
+          <div
+            className="flex flex-col gap-1.5 border-t p-2"
+            style={{ borderColor: "var(--wf-line)" }}
+          >
+            <WireText tone="faint">Usage over time</WireText>
+            <WireChartBox className="!h-[52px] tablet:!h-[64px]">
+              <WireLineChart points={[12, 18, 15, 24, 21, 30, 27, 34]} />
+            </WireChartBox>
+          </div>
+        </WirePanel>
+      </WireSection>
+    </WireScreen>
+  );
+}
+
+/**
+ * V2 — the fleet metrics leave Home and arrive in one place.
+ *
+ * Drawn as a comparison like V1, because the decision is again about where
+ * things live: Home's own fleet block on the left, and on the right the
+ * single tabbed Fleet overview that replaced it and the Health section both.
+ * The left half is the Home V2 component itself, stopped after its fleet
+ * block, so the two sections cannot drift apart.
+ *
+ * Both halves are cut to the argument rather than drawn whole: a column that
+ * runs twice the height of the one beside it is read as the more important
+ * of the two, and leaves the shorter one sitting in a field of white.
  */
 export function MetricsV2() {
   return (
     <WireFigure
       scroll
-      alt="Wireframe of the second Metrics concept: the Metrics page with pinned metrics, one of them left as an empty pin slot, over the usage and cost analytics."
+      alt="Wireframe of the second Metrics concept, drawn as two pages side by side: the Home page still carrying its own fleet block on the left, and on the right one consolidated Fleet overview with a tab per artifact type and health and performance grouped under their own headings."
     >
-      <div className="flex w-full flex-col">
-        <MetricsPage pins="slots" />
+      <div className="flex w-full flex-col gap-3 p-3 tablet:p-4">
+        <div className="grid grid-cols-1 items-start gap-3 tablet:grid-cols-2">
+          <Side label="Home · fleet metrics scattered here">
+            <HomeV2Page compact />
+          </Side>
+          <Side label="Metrics · one tabbed Fleet overview">
+            <ConsolidatedFleet />
+          </Side>
+        </div>
       </div>
     </WireFigure>
   );

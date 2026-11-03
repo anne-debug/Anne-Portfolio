@@ -4688,3 +4688,66 @@ was beating the title for width.
 clips, nothing crosses either viewport edge, the Solution Overview drawings are
 still one height, the Issues and Metrics loops still run, and the build, types
 and lint are clean.
+
+### Scrolling back, Metrics V2 as a comparison, and the confidentiality note
+
+**The preview window came back, because hugging cut drawings off.** The
+previous round let every Design Process prototype be its own height, which is
+right for the short ones and wrong for the tall: Home V1 is 854px of drawing
+at a desktop and over 1000px on a phone, and a figure that tall stops being a
+figure. The prototypes are capped again — 440 on a phone, 540 at a tablet, 580
+at a desktop — with `overflow-y: auto` and a styled scrollbar, and the cap is a
+`max-height`, so anything shorter than it still hugs. Measured at 1440, six of
+the ten hug and four scroll; at 390 all but Metrics V2.5 scroll, which is what
+a 390px-wide viewport does to a drawing of a desktop page.
+
+One finding stands unresolved: on macOS Chromium the scrollbar is an overlay
+and takes no width, so `::-webkit-scrollbar { width: 10px }` styles a bar that
+occupies 0px until the pointer is over it. The content is reachable and the
+bar appears on hover and while scrolling; it is not a persistent gutter. A
+platform that draws classic scrollbars gets the 10px one.
+
+**Metrics V2 is a comparison now, not a single page.** The round it stands for
+moved the fleet metrics off Home and consolidated them into one tabbed Fleet
+overview, and a drawing of the destination alone cannot show a move. It is two
+pages side by side, the same shape V1 uses: Home on the left still carrying
+its own fleet block, and on the right the Fleet overview with a tab per
+artifact type and Health, Performance and Usage grouped under their own
+headings. The left half is `HomeV2Page` itself rather than a copy, so the two
+sections cannot drift.
+
+Both halves are cut to the argument. `compact` drops Home's recent work and
+its artifact table, and squeezes the shortcut grid from five across to three:
+a column running twice the height of the one beside it reads as the more
+important of the two and leaves the shorter one in a field of white. With that
+and the Usage group on the right the two columns finish within ~85px of each
+other, and the whole figure hugs at 529px on a desktop. Metrics V1 is
+untouched.
+
+**The hero's Home panel shows real shortcut cards.** It had tiles standing in
+for them, and being able to pin an artifact and come back to it is the final
+Home's own decision — a labelled square does not show that it is a card with a
+way into the thing. The two cards are there at every width; the two empty
+slots beside them appear from 1200 up, where there is room.
+
+The pinned column takes the larger share of the panel on a phone
+(`grid-cols-[1fr_1.1fr]` against the desktop's `0.8fr_1fr`), and both columns
+carry `min-w-0`. Without that each column floors at its own min-content width,
+the ratio is ignored and the shortcut column comes out 45px wide — too narrow
+for a card to read as one. It is 86px now, which holds a title, a line of body
+and the link.
+
+**The confidentiality note.** Both section-level notes — Solution Overview and
+Design Process — carry the full statement: what the drawings are, what has
+been left out, that the names and figures are invented, and a request not to
+reproduce them. Project Overview gets a shorter one under a hairline after
+"This was a design exploration, not a shipped product.", so a reader meets it
+before the first drawing rather than halfway down the page. Neither claims a
+visitor is bound by anything; they say what was done and ask.
+
+**Checked** at 390, 810 and 1440: nothing crosses either viewport edge on the
+page, every capped prototype scrolls to its end and every short one hugs, the
+Solution Overview drawings are still one height per breakpoint (380 / 430 /
+450), Metrics V1 renders as it did, the hero's pinned cards are legible at all
+three widths, both notes render, and `npx tsc --noEmit`, `npx eslint .`,
+`npx prettier --check` and `npm run build` are clean.
