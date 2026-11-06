@@ -4751,3 +4751,493 @@ Solution Overview drawings are still one height per breakpoint (380 / 430 /
 450), Metrics V1 renders as it did, the hero's pinned cards are legible at all
 three widths, both notes render, and `npx tsc --noEmit`, `npx eslint .`,
 `npx prettier --check` and `npm run build` are clean.
+
+### The IBM hero turns charcoal, and the field becomes a network
+
+**Only the background changed.** The title, the lede, the five facts and the
+three panels are where they were to the pixel, at the same sizes, in the same
+stacking order, with the same animations. The charcoal is a sibling layer with
+negative insets rather than a background with padding on the section, which is
+what let the content stay put.
+
+How far that layer bleeds is the only thing a breakpoint touches. On a phone
+and a tablet it takes back exactly the article's own side padding, so the
+field runs edge to edge with nothing crossing the viewport; from 1200 up the
+rail is a column beside the article with a 50px gap, so the bleed stops at
+24px and the field reads as a plate under the hero instead of running beneath
+the contents list. Everything outside the hero — the rail, the butterfly, the
+nav and the other eight sections — is still cream.
+
+**The hundred-icon field is gone.** It was tiled over the whole canvas and at
+any distance it read as wallpaper. In its place: a square blueprint grid at a
+hundred canvas units, and a routed network of four runs — a top run, a bottom
+run, and a connector down each side closing them into one loop — with circular
+junctions where one meets another. One run and two junctions are Carbon Blue
+50; everything else is white at 17% and 24%. Six outline pictograms sit in the
+margins the panels leave, two above and four below, and they are tested
+against the panel boxes and dropped on contact, so moving a panel re-flows
+them with nothing to edit by hand.
+
+Blue 50 rather than the Blue 60 the panels use inside: 60 is the brand's
+interactive blue and reads as a bruise on charcoal.
+
+**The reveal runs once.** The routes draw themselves in over about a second,
+the junctions arrive after them in order, and it stops — a background that
+keeps moving competes with the three panels, which are what the hero is for.
+`prefers-reduced-motion` renders the finished state with no animation at all,
+which is measured, not assumed. Both decorative layers and the charcoal plate
+are `pointer-events: none`.
+
+**Contrast.** The heading and the fact labels take #f4f4f4, the lede #c6c6c6,
+the values #a8a8a8. The solid category badge is a charcoal pill and would have
+vanished, so it is overridden to a 10% white fill with a hairline ring — in
+the hero, not in `CategoryBadge`, which Metro and BudgetCart still render on
+cream.
+
+**Checked** at 390, 430, 600, 810, 1024, 1200 and 1440: nothing crosses either
+viewport edge and `scrollWidth` equals the viewport at every one, the
+decoration intercepts no clicks, the page body and every section below the
+hero are still cream, the reveal settles and stays settled, reduced motion
+renders the end state, the Design Process and Solution Overview drawings are
+unchanged, and types, lint, format and build are clean.
+
+### The hero field goes full-bleed, and the rail learns to read on it
+
+The charcoal arrived as a plate: inset 24px from the article at desktop, with
+a 12px radius, light page showing all round it. That is a dark card sitting in
+a light page, not a dark hero, and the rounded corners said "component" where
+the section wanted to say "the top of this page". It now runs edge to edge.
+
+**Reaching both edges, from a column that is not centred.** The article is
+offset in the window — by its own padding below 1200, and from 1200 up by the
+rail's column and the 50px beside it — so a band one window wide, centred on
+the article, comes up short on the left and overshoots on the right by the
+same amount. The band is three window widths starting one to the left, which
+covers the window whatever the offset, and `layout.tsx` gives the page's own
+column `overflow-x-clip` so the slack is taken back rather than scrolled. It
+is `clip` and not `hidden` deliberately: `hidden` would make that box a scroll
+container and every sticky section rail in the site would start sticking to it
+instead of to the window. Verified: the rails still pin at 150px on Metro and
+BudgetCart, and `scrollWidth` equals the viewport on all nine pages at all
+twelve widths.
+
+**The content did not move with it.** The band is still a layer, so the
+heading, the lede, the facts and the composition keep the article's column at
+the width they had. Only the background widened.
+
+**Less room above.** `CaseShell` and `CaseRow` take an optional `bodyPadTop`;
+only this page passes one, 80 instead of 120, and every other page renders
+what it rendered before. With the band reaching the top of the page the space
+above the heading is dark rather than a gap, and 120px of it read as a page
+that had not started yet. 80 still clears the pinned nav, and below 1200 the
+floating section button under it. The heading starts 40px earlier and the
+composition with it.
+
+**"Plane" is no longer alone.** `text-balance` on the `h1`, which at the
+column's full width gives two lines of four words and keeps doing the right
+thing as the column narrows. The wording and the type style are untouched.
+
+**The rail reads either way.** Two things were wrong with it over charcoal.
+It was invisible, because the article comes after the rail in the markup and
+the hero section inside it is positioned, so the field painted over the whole
+column — `z-10` on the rail puts it back in front, still under the page's own
+nav. And its ink is `text-dark-charcoal`, which is not ink on #161616:
+`SidebarNav` now takes an optional `darkZone`, the id of a field to watch, and
+inks itself #c6c6c6 with a translucent fold control while the two overlap. The
+accent switches with it, Blue 60 to Blue 50, for the same reason the hero's
+own text does. The test is the field's lower edge against the middle of the
+column rather than its top, because the column is 400px of list and one end of
+it is briefly the wrong colour whichever line is chosen; the middle halves the
+error and the entries fade across it. No other page passes `darkZone`, so no
+other rail watches anything.
+
+**The grid fades out at the sides.** The canvas is only as wide as the
+article's column while the field now runs to the window, so the grid used to
+end on a straight vertical seam a long way inside the charcoal — a wall rather
+than an edge. A mask takes the outermost sliver of the lines, and the deeper
+fade at the top keeps them from starting at full strength one line of type
+under the facts. It adds no tone of its own, and where `mask-composite` is not
+understood the grid keeps the hard edge it had.
+
+**Checked** on all nine pages at 390, 430, 500, 600, 700, 768, 810, 900, 1024,
+1100, 1280 and 1440: nothing crosses either viewport edge and `scrollWidth`
+equals the viewport everywhere. On this page: the band starts at the top of
+the document and ends 56px under the composition, the sections below it are
+unchanged and still cream, the rail is light over the field and charcoal over
+the page, the floating list below 1200 still opens over the hero and is
+readable, reduced motion still renders the reveal's end state, and types,
+lint, format and build are clean.
+
+### The case study opens on Eye-Bee-M, and the hero field becomes a grid
+
+Two pieces, both inside the IBM case study and nothing else on the site.
+
+#### The opening
+
+`IbmIntro` plays Paul Rand's Eye-Bee-M once and then gets out of the way. The
+motion is the source animation's, frame for frame: `scripts/
+ibm-intro-frames.mjs` (`npm run ibm-intro <source.gif>`) recolours it and cuts
+its tail, and does not re-time it.
+
+**What the script does.** The sheet goes dark — each pixel's distance from
+white becomes a mix between the hero's charcoal and Carbon Blue 50 — so the
+animation sits on the page's own background instead of a white card. Because
+it is a mix and not a threshold, the source's tones survive as steps along
+that ramp, which is what keeps the bee's stripes, the eye's iris and the M's
+bars from collapsing into silhouettes; a gamma under 1 lifts the middle of the
+ramp, where the iris and the wings live. The source runs 162 frames: the bee
+leaves at 156, 157 is empty, and 158 to 161 are the logo streaking back in
+blurred. The last four are dropped. Cutting at 157 leaves one empty frame,
+which is the beat the page fades up on — no held frame, no ghost, and `loop: 1`
+so it never runs twice.
+
+**Why a GIF.** An encoder writes an animation as one tall image, and WebP's
+dimension limit is 16383px: 158 frames do not fit at any size worth having.
+GIF's is 65535, which is what sets the frame at 552x414 — the tallest 158
+frames can be. 412KB, and it is upscaled on screen, which the source's own
+motion blur carries.
+
+**Around it.** The overlay is fixed, charcoal, and rendered inside the page
+rather than portalled, so the server's HTML already covers the hero and there
+is nothing to flash before React arrives. The cost of being inside the page is
+the page's stacking context — the pinned nav and the floating section control
+are fixed to the body, outside it — so both are hidden by a `:has()` rule for
+as long as the overlay is there, by `visibility`, since the nav animates its
+own opacity from JavaScript. Lenis is stopped and the document's overflow
+hidden, or a reader would scroll behind the overlay and land halfway down the
+case study when it lifted.
+
+The clock starts when the image is decoded, not when the component mounts,
+because that is when the animation starts; a cached image that is already
+complete is caught in the effect. If the asset errors, or has not arrived in
+four seconds, the overlay lifts anyway — nothing here is worth a reader
+sitting in front of a charcoal screen.
+
+**The ways out** are a skip control, Escape, and `prefers-reduced-motion`. The
+control is deliberately not focused on mount: focus moved by code counts as
+keyboard focus, so every visitor would get a ring around a control whose brief
+is to be discreet. Reduced motion is answered twice — a media rule in
+`globals.css` for the window before hydration, and `useReducedMotion` to take
+it out of the tree and never lock the page.
+
+**The frame's width** is one expression, `min(128vw, 880px, 104vh)`. Fitted
+inside a phone the logo came out at about a hundred pixels in a field of
+charcoal; letting the 4:3 window run a little past the edges buys half as much
+again, 880 is where it stops growing, and the `104vh` term is the same cap as
+height so a short window letterboxes rather than losing the top of the frame.
+
+#### The field
+
+`IbmHeroField` replaces the four routed runs with a grid: 14 columns on
+desktop, 10 at tablet, 6 on a phone, each cell either an outline artifact —
+workflow, agent, database, terminal, server, analytics, the same Carbon-grid
+symbols as before — or a plain node. Which is which comes from an integer hash
+of the cell, so the server and the browser agree and the markup hydrates.
+
+Fewer columns on a small screen is legibility, not taste: the canvas is drawn
+1200 units wide however wide the column is, so at 390 a 32-unit mark would
+land on screen at ten pixels. Fewer columns, bigger marks, the same density of
+ink. A cell comes out about the same size on screen at every breakpoint, which
+is why the signal's dash and line weight are written as a share of one.
+
+Almost all of it is one muted grey and never changes. Three things move:
+
+- **A signal, about once a second.** A line is drawn between two or three
+  neighbours, a dash runs it, and those artifacts come up blue as it arrives
+  and go out behind it. Never more than three at once, and routed around the
+  panels — a signal under an opaque window is work nobody sees. Nothing loops:
+  each one is drawn, arrives, and is taken out of the page, so a hero left on
+  screen settles to a still grid rather than pulsing.
+- **The artifacts near the pointer.** A second copy of the grid in a brighter
+  ink under a soft round mask that follows the pointer, which costs two custom
+  properties a frame and no React render. Off where there is no mouse to
+  follow, since a mask parked in a corner on a touch screen would leave a lit
+  patch there for good.
+- **Nothing else.** No flashing, no field-wide pulse, nothing lit at once.
+
+All of it stops when the hero leaves the screen — an `IntersectionObserver`
+clears the interval, and with no signals in state there is nothing animating
+at all. Reduced motion never starts one and gets the still grid.
+
+The panels are untouched: `wireframe/hero.tsx`, `HERO_PANELS` and the three
+drawings are exactly as they were, and the field reads their boxes out of that
+file to know which cells they cover.
+
+**Checked** on all nine pages at 390, 430, 500, 600, 700, 768, 810, 900, 1024,
+1100, 1280 and 1440: nothing crosses either viewport edge and `scrollWidth`
+equals the viewport, including while the overlay is on screen. On this page:
+the animation plays once and finishes on its own, replays on reload and on
+navigation into the page, skips by click and by Escape with the page unlocked
+afterwards and no overlay left behind, the fade starts with the bee already
+out of frame, reduced motion renders neither the overlay nor a signal and
+never locks the page, and the signals stop offscreen and resume on return.
+Types, lint, format and build are clean.
+
+### The tag turns IBM blue, and the field becomes a wall of artifacts
+
+The hero's category pill was a charcoal pill on a charcoal band, overridden
+to a white-on-white-10% chip so that it showed at all. It is IBM blue now:
+Blue 60 with white on it, which is Carbon's own primary button and carries
+its ratios with it — 5:1 for the label, 3.1:1 for the pill against the
+charcoal, so the edge is as findable as the words are readable. The override
+stays local to this page because `CategoryBadge` is shared with Metro and
+BudgetCart, whose heroes are still cream. The ground stays `#161616`.
+
+The field went from seven symbols to twelve. The six kinds of thing watsonx
+Orchestrate's own design system names — agent, workflow, tool, knowledge,
+connection, model — plus the infrastructure they run on. They are drawn here
+on Carbon's published 32-unit grid rather than imported: the design system's
+files are IBM's, and what a background needs from them is the shape language,
+which is public. Two of the old names were wrong for what they drew and were
+corrected: `tool` was a terminal and is now `terminal`, `knowledge` was a
+database and is now `database`, and both nouns went to the symbols that
+deserve them. The artifact share went from 0.34 to 0.46, which is the
+difference between dots with occasional artifacts and artifacts spaced by
+dots.
+
+Two bugs came out of that. Symbols were landing next to their own kind often
+enough to read as a pattern, so `pick` steps the hash's choice on until it
+differs from the neighbour to the left and the one above — deterministic, so
+it still hydrates. And the hash itself was correlated across salts: 1 and 2
+differ in one low bit, one round of mixing did not carry it to the high end,
+and the roll that decided whether a cell was an artifact was deciding which
+artifact too. Over a 14x9 grid the first third of the roster was never drawn
+once. The salt is multiplied in now and the result mixed twice; all twelve
+appear, four to seven times each.
+
+### The opening is the artwork, and two things move in it
+
+It was a recoloured copy of the original animation and it was soft, for a
+reason no amount of re-encoding would have fixed. An encoder writes an
+animation as one tall image, and the tallest 158 frames fit inside GIF's
+65535px limit is 414, so the frame was 552x414 — and the composition filling
+most of it was being drawn at 880, upscaled about 1.6x.
+
+`EyeBeeM` is Anne's `IBM logo.svg`, inline, shape for shape and coordinate
+for coordinate. Nothing was redrawn or traced. Four things were done to it:
+the white export sheet and Illustrator's four `fill: none` clip boxes are
+dropped, neither of which drew anything; the viewBox is the artwork's own
+bounds, which the export already carries as `Clip-41`; one fill is set on
+the root and inherited; and three shapes are named so they can move. The
+three translates inside the drawing are kept, because they place real
+shapes — only the two that put it on the sheet go with the sheet.
+
+Two things move. `Fill-12` and `Fill-14` are the wings, and each one's hinge
+is exactly the corner of its own bounding box, which is why they can be
+rotated with `transform-box: fill-box` and `transform-origin: right top` —
+no measured origin, no wrapper, no risk of the geometry drifting from the
+artwork. Three beats is three iterations of a one-beat keyframe rather than
+an `alternate` run, so a fourth cannot creep in. `Fill-1` is the pupil, and
+it looks right, left and back to the middle: 22 units either way, inside a
+hole of radius 51.2, so it cannot reach the iris. Everything else is still.
+
+The sequence: wings between 200 and 1500, pupil between 350 and 1900, a
+300ms hold, and the overlay lifts at 2200 over 380. Transform and opacity
+only. `EXIT_AT` in the component and the keyframes in the stylesheet have to
+agree about those numbers, and both say so.
+
+160px wide from tablet up and 120 on a phone, measured, and measured again
+at six times device scale to confirm there is nothing to upscale. Verified:
+three beats, peak 26 degrees, pupil to +22 and -22 and back to exactly 0.
+The ways out are unchanged — skip control, Escape, `prefers-reduced-motion`
+answered by both a media rule and the hook.
+
+`public/ibm-intro/eye-bee-m.gif` and `scripts/ibm-intro-frames.mjs` are left
+in place and unreferenced; the asset rule says not to delete anything under
+`public/`. Nothing requests the file any more.
+
+### The Home demo was pressing Cancel
+
+The pointer in Solution Overview's Home loop is placed as a share of the
+drawing, and the share for the beat that saves the shortcut was 88%. Cancel's
+centre is 89.2% and Save's is 97.8%: the loop was pressing the wrong button,
+and the comment saying "the save that confirms it" did not make it press the
+right one.
+
+A hand-measured number could not have been right at every width in any case.
+The panel is 62% of the page on a phone and 42% from tablet up, and the page
+is taller on a phone, so Save's centre is at 94.3%, 44.6% there and 97.8%,
+85.2% on a desktop. So the pointer is no longer told where Save is: the
+button carries a marker class, and the demo measures it and puts the pointer
+on its centre. It waits 400ms first, because the panel slides 24px in over
+300ms and `getBoundingClientRect` reads the transform — measuring on the next
+frame would land about 19px to the right of where the button comes to rest,
+which is off the end of it on a phone. The `panel` beat is 1600ms, so there
+is room.
+
+Verified at 390, 810 and 1440: the pointer's tip lands within about a pixel
+of Save's centre, and on no sample is it over Cancel.
+
+### The bee flies off, and the rest of the mark goes with the overlay
+
+The opening used to be the whole mark doing small things in place: three wing
+beats and the pupil looking about. The reference is the original animation,
+where the bee leaves. So it leaves. The composition is held for a beat, the
+bee lifts out of it up and to the right, flies one clockwise loop and carries
+straight on off the screen; the eye and the M never move and fade with the
+overlay behind it. The pupil animation is gone.
+
+A bee that leaves the screen cannot be inside an SVG, because an SVG clips
+its own viewBox. It could be let out of the box, but then the flight is
+measured in the artwork's units and has no idea how big the screen is.
+`EyeBeeM` is split in two instead, along a line the export already drew:
+`EyeBeeMStill` is the eye and the M, `EyeBeeMBee` is `Fill-8` through
+`Fill-22`. Both carry the same viewBox and both are stretched over the same
+box, so the bee starts exactly where the export put it — registration that
+costs nothing and cannot drift, because neither drawing moved.
+
+The flight is four nested boxes rather than one path, because each of the
+four is a transform a browser can interpolate exactly, and a loop built out
+of keyframed positions is a polygon with as many sides as it has stops:
+`exit` translates the lot off the screen in `vmax`, `depart` translates it
+out of the logo, `orbit` turns 360 degrees about a point square to the climb
+and a radius to the right of it — which _is_ the loop, since a rotation about
+an offset centre is a circle, exact at every frame — and `upright` turns the
+bee back the other way
+about its own centre at the same rate, so what is left is one 14-degree bank
+held all the way round rather than a cartwheel.
+
+The loop's centre is square to the climb, a radius to the right of it, for
+one reason: a clockwise turn from there starts and ends on the climb, which
+is the direction the bee arrives in and the direction it leaves in. That is
+what makes the three legs read as one curve — nothing stops and turns between
+them. The departure ends with speed still on it rather than easing to a halt,
+and the exit starts 100ms before the loop ends and eases in, so the bee peels
+out of the turn.
+
+The climb is 70 degrees above the horizontal, and that number was found the
+hard way. At 45 the bee crossed the M at the bottom of its loop, and because
+both are the same blue it merged into it — a smudge, for about 150ms. There
+is no fixing that by moving the loop sideways: the eye and the M fill the
+stage from edge to edge, the loop is wider than the gap at either end of
+them, and a clockwise turn entered heading up-right always comes back down
+on the far side of where it started. The only clear space is above, so the
+bee climbs steeply enough to get there first. At 70 degrees the bottom of
+the loop clears the top of the mark by about a tenth of the mark's width.
+
+How far the bee travels and how wide it turns are shares of the mark's own
+width — `87.5cqw` and `30cqw`, the stage being a container — so the flight
+is the same drawing at 120 as at 160, and the one thing it has to clear
+scales with it. Both have a share of the viewport's shorter side as a
+ceiling, for a landscape phone, where the mark is still 160 wide and there
+is half of 375 above it.
+
+Verified by pausing the animations and stepping the timeline: nothing moves
+before 300ms, the heading turns 356 degrees over the whole flight — one loop,
+clockwise, and the bee never comes back within 3px of where it started — the
+bank reads 14 degrees at every sample through the turn, and the bee is off
+the screen by 1890ms at 1440, 1980 at 390 and 1820 at 812x375, before the
+overlay starts to lift at 2150. Through the hold, the departure and the loop
+the bee's ink never comes within 15px of the eye and the M on a phone or 20px
+on a desktop, and stays at least 31px inside the viewport at 320, 66px at 390
+and 12px at 812x375, measured at 320, 360, 390, 430, 500, 600, 700, 768, 810,
+900, 1024, 1100, 1280, 1440 and 2560 and in landscape at 812x375 and 1024x500.
+No wing is ever clipped before the exit, which is the only time anything is
+meant to cross an edge. The wings flutter rather than beat: 13 iterations of
+a 150ms keyframe at 13 degrees, counted rather than `infinite` so nothing is
+still animating behind the fade. Played out: 2818ms wall clock for a 2500ms
+sequence, with no bee and no overlay left in the tree and the scroll
+unlocked. Skip, Escape and `prefers-reduced-motion` are unchanged and all
+three still work.
+
+### The flight is the reference's own, measured off it frame by frame
+
+The loop before this one was invented. It was a good loop — one clean
+clockwise circle, exact at every frame because it was a rotation and not a
+sampled path — but it was not the bee's. Watched next to the original it read
+as a machine going round a circle, and the original does not do that.
+
+So the motion was taken from the original instead of imagined.
+`scripts/ibm-intro-path.mjs` reads the reference frame by frame and finds the
+bee in each one. Colour does most of the work: the drawing is on white, the M
+is the only blue, and the shadows are the only greys, so what is left is the
+bee. Its position is the ink's centroid weighted by distance from white, so
+the motion blur pulls the centre the way the eye does rather than smearing
+it, and its heading comes from the antennae, the one part of the bee that is
+pink. Every distance is divided by the width of the resting composition — the
+eye's left edge to the M's right — so what comes out is not pixels of a
+1600-wide frame but shares of the mark, which is the one measurement the page
+and the reference have in common. Nothing of the reference ships. The output
+is 73 numbers.
+
+What those numbers say is that the bee does not fly one loop. It leaves the
+logo heading up and to the right, swings into a wide counter-clockwise
+circuit of the whole frame, spirals inside itself into a second and tighter
+counter-clockwise loop, and breaks out of that to the right and away: 628
+degrees of turning, not 360, and the second loop a little under half the
+width of the first. It also banks much harder than a constant 14 degrees —
+up to 55 through the two tightest corners — and its speed varies by a factor
+of three between the slow inside of the second loop and the dash out.
+
+That is reproduced as a single animation on a single box with 73 stops, one
+per frame of the reference, each one a `translate()` in shares of the mark
+and a `rotate()` in degrees. A 73-stop polyline is the thing the old
+implementation was built to avoid, and here it is the right answer twice
+over: the reference _is_ 25 discrete frames, so interpolating between them at
+60fps is strictly smoother than the thing being matched, and no closed form
+describes this path anyway. Linear timing throughout, because the speed is
+already in the spacing of the stops.
+
+The box turns about the bee's own centre, which is the point `EyeBeeM`
+names, so `translate()` carries the bee along the path and `rotate()` turns
+it on the spot and neither has to know about the other. The four nested
+layers are gone with the loop they were built for.
+
+Only the last stop is not measured. The reference's frame runs out 1.58 mark
+widths to the right of the logo, which on a real screen is nowhere near the
+edge, so the final heading carries on in `vmax` — far enough to leave any
+viewport — eased in from the speed the bee is already doing rather than from
+a standstill.
+
+The eye and the M got their part of the reference back, which the invented
+version had dropped. The bee wakes up: its wings are folded flat down its
+body to begin with and unfold before it goes, and they beat at the
+reference's own 200ms. The eye blinks, twice, and looks across at the bee on
+the first blink and never looks back. Then the eye closes, goes, and the M
+goes a beat behind it — both before the bee moves, as the reference has it,
+so the flight has the screen to itself and the overlay lifts off nothing.
+
+A flat mark has no eyelid to lower and the obvious substitute does not work:
+the lens is a ring, and flattened it reads as two hairlines with a gap rather
+than a shut eye. The lid is the lens's own outer contour instead, repeated as
+a path of its own, filled, and swept down over the iris from the lens's top
+edge. Shut, the eye is a solid almond, which is what a closed eye looks like
+when everything else in the drawing is solid too. It is the only shape in
+`EyeBeeM` that appears twice, and it is a copy of one that was already there.
+
+Each wing now does two things at once about the same hinge, so they are two
+properties and not two animations of one: `rotate` unfolds it and `transform`
+beats it, and the browser composes the pair in that order. Written both as
+`transform`, the second would simply replace the first.
+
+The flight is written in `--ibm-fly`, which is the mark's own width — `cqw`,
+the stage being a container — so it is the same drawing at 120 as at 160 and
+keeps the reference's proportion to the logo. It reaches 1.58 widths right of
+the bee and a touch over one width above it, and the bee is another 0.22 wide
+at its worst angle, so two ceilings cap it where that will not fit: a narrow
+phone runs out of room sideways and a landscape phone, mark still 160 wide
+with half of 375 above it, runs out of room upwards. Below about 460px and
+below about 400px tall the flight scales down rather than clipping.
+
+The one liberty is the waiting. The reference hovers for 3.4 seconds,
+blinking four times over, before it goes — a loop to sit through on a page
+the reader asked to see — so it is played once and tightened to 1.3. The
+flight itself is 1:1, which is the part being matched. The whole thing is
+4.4 seconds to the reveal, against 2.5 before; the skip control, Escape and
+`prefers-reduced-motion` are all unchanged.
+
+Verified by pausing the animations and stepping the timeline. Against the
+reference's own numbers, the bee on the page is a mean of 0.022 mark widths
+from where the reference puts it and never more than 0.092 — 3.5px and 15px
+at a 160px stage — the worst of it at the one hairpin where the smoothing
+rounds a corner. The heading turns 628 degrees, which is the reference's
+figure exactly. Nothing moves before 1270ms, the bee never returns within 4px
+of where it started, and it is off the screen between 4200 and 4320ms
+depending on the viewport, always before the overlay starts to lift at 4400.
+Through the whole measured flight its ink stays at least 19px inside the
+viewport at 320 wide and 12px at 812x375, and it never overlaps the eye or
+the M, which are gone before it moves. Measured at 320, 360, 390, 430, 500,
+600, 700, 768, 810, 900, 1024, 1100, 1280, 1440 and 2560 wide, and in
+landscape at 812x375 and 1024x500. Played out: 4832ms wall clock for a 4750ms
+sequence, with no bee and no overlay left in the tree and the scroll
+unlocked.

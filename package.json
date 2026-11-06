@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "previews": "node scripts/capture-previews.mjs",
+    "ibm-intro": "node scripts/ibm-intro-frames.mjs",
     "og": "node scripts/capture-og.mjs"
   },
   "dependencies": {

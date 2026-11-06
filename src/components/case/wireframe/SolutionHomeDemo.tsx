@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { useEffect, useState } from "react";
 
 import { HomeFinalPage } from "./home";
 import { DemoPointer, useBeats } from "./demo";
@@ -58,16 +59,39 @@ const BEATS = [
  * Where the pointer rests, as a share of the drawing.
  *
  * `slot` is the first empty place in the pinned grid, measured off the
- * rendered page. The two inside the panel are the suggestion it takes and the
- * save that confirms it.
+ * rendered page, and `panel` is the suggestion the loop takes.
+ *
+ * `chosen` and `done` are where Save is, and they are not measured by hand:
+ * `SAVE_MARK` finds the button at run time and the pointer is put on its
+ * centre. The hand-measured value that used to be here was 88%, and Cancel's
+ * centre is 89.2% — the loop was pressing the wrong button, and saying so in
+ * a comment did not make it press the right one. It could not have been
+ * right at every width in any case: the panel is 62% of the page on a phone
+ * and 42% from tablet up, and the page is taller on a phone, so Save sits at
+ * 44.6% down there and 85.2% on a desktop. The values below are the desktop
+ * ones, used until the measurement lands.
  */
 const POINTER = {
   idle: { left: "24%", top: "66%", opacity: 0 },
   slot: { left: "14%", top: "64%", opacity: 1 },
   panel: { left: "76%", top: "42%", opacity: 1 },
-  chosen: { left: "88%", top: "84%", opacity: 1 },
-  done: { left: "88%", top: "84%", opacity: 0 },
+  chosen: { left: "97.8%", top: "85.2%", opacity: 1 },
+  done: { left: "97.8%", top: "85.2%", opacity: 0 },
 } as const;
+
+/** How the panel's Save button is found again once it is on the page. */
+const SAVE_MARK = "wf-demo-save";
+
+/**
+ * How long to wait before measuring it.
+ *
+ * The panel slides 24px in over 300ms, and `getBoundingClientRect` reads the
+ * transform, so measuring on the next frame would put the pointer about 19px
+ * to the right of where the button comes to rest — off the end of it on a
+ * phone. The `panel` beat is 1600ms and the pointer is still on its way to
+ * the suggestion at this point, so there is nothing to disturb.
+ */
+const SETTLE = 400;
 
 /** The suggestions the panel offers. All invented. */
 const SUGGESTIONS: { title: string; body: string; icon: IconName }[] = [
@@ -93,6 +117,31 @@ export function SolutionHomeDemo() {
   const panelOpen = beat === "panel" || beat === "chosen";
   const pressing = beat === "slot" || beat === "chosen";
 
+  /** Save's centre, as a share of the drawing, once it has been found. */
+  const [save, setSave] = useState<{ left: string; top: string } | null>(null);
+
+  useEffect(() => {
+    if (!panelOpen) return;
+    const page = root.current;
+    if (!page) return;
+
+    const t = window.setTimeout(() => {
+      const button = page.querySelector(`.${SAVE_MARK}`);
+      if (!button) return;
+      const p = page.getBoundingClientRect();
+      const b = button.getBoundingClientRect();
+      if (!p.width || !p.height) return;
+      setSave({
+        left: `${((b.x + b.width / 2 - p.x) / p.width) * 100}%`,
+        top: `${((b.y + b.height / 2 - p.y) / p.height) * 100}%`,
+      });
+    }, SETTLE);
+    return () => window.clearTimeout(t);
+  }, [panelOpen, root]);
+
+  const at = POINTER[beat as keyof typeof POINTER];
+  const onSave = beat === "chosen" || beat === "done";
+
   return (
     <WireFigure
       size="compact"
@@ -117,7 +166,7 @@ export function SolutionHomeDemo() {
 
         {reduceMotion ? null : (
           <DemoPointer
-            at={POINTER[beat as keyof typeof POINTER]}
+            at={onSave && save ? { ...at, ...save } : at}
             pressing={pressing}
           />
         )}
@@ -191,7 +240,7 @@ function ShortcutPanel({
       <span className="flex-1" />
       <span className="flex items-center justify-end gap-1.5">
         <WireButton variant="outline">Cancel</WireButton>
-        <WireButton variant="solid" icon="plus">
+        <WireButton variant="solid" icon="plus" className={SAVE_MARK}>
           Save
         </WireButton>
       </span>

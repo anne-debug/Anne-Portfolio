@@ -128,7 +128,20 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <NoiseBackground />
         <ButterflyCursor />
         <Nav />
-        <div className="relative z-[1] flex w-full flex-1 flex-col items-center">
+        {/*
+          `overflow-x-clip` is what lets a page bleed a background to the
+          edges of the window. A full-bleed layer has to be wider than the
+          column it belongs to, and the only width a child can name that
+          reaches both edges is one measured against the window — which on a
+          platform with classic scrollbars is wider than the page, and would
+          hand the whole site a horizontal scrollbar. Clipping here, on the
+          one box that is exactly the page's width, takes that slack back.
+
+          `clip` rather than `hidden`: `hidden` would make this a scroll
+          container and the sticky section rails inside it would start
+          sticking to this box instead of to the window. `clip` only clips.
+        */}
+        <div className="relative z-[1] flex w-full flex-1 flex-col items-center overflow-x-clip">
           {children}
         </div>
         <Footer />

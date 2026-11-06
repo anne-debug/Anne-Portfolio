@@ -57,11 +57,26 @@ const SETTLE_MS = 340;
 export function SidebarNav({
   entries,
   accent = "var(--color-orange)",
+  darkZone,
+  darkAccent,
 }: {
   entries: SidebarEntry[];
   /** Any CSS colour. Reaches the markup as `--rail-accent`, so the hover and
       active states can be ordinary classes rather than inline styles. */
   accent?: string;
+  /**
+   * The id of a dark field the rail may come to rest over — a case study
+   * whose hero carries a charcoal band across the window, for instance.
+   *
+   * Given one, the column watches it and inks itself light for as long as
+   * the two overlap. Left out, which is every page but the IBM Builder
+   * Control Plane, nothing watches anything and the rail renders exactly the
+   * markup it rendered before this existed.
+   */
+  darkZone?: string;
+  /** The accent to use over that field, when the page's own is too dark for
+      it. Defaults to `accent`. */
+  darkAccent?: string;
 }) {
   /** The portal needs a document, so it waits for hydration. */
   const mounted = useSyncExternalStore(
@@ -76,6 +91,53 @@ export function SidebarNav({
   const [active, setActive] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const article = useRef<HTMLElement | null>(null);
+  /** Whether the open column is currently sitting over `darkZone`. */
+  const [onDark, setOnDark] = useState(false);
+  const column = useRef<HTMLDivElement | null>(null);
+
+  /**
+   * Keep the rail readable while a dark hero passes behind it.
+   *
+   * The test is the field's lower edge against the middle of the column, not
+   * its top: the column is some 300px of list, and for part of a scroll the
+   * field covers the first entries and not the last. Whichever line is
+   * chosen, one end of the list is briefly the wrong colour, so it is drawn
+   * at the point that halves the error, and the entries carry a colour
+   * transition so the swap is a fade rather than a flash.
+   *
+   * A scroll listener rather than an `IntersectionObserver`: what matters is
+   * where one element is relative to another, which an observer against the
+   * window cannot answer. It reads two rectangles inside a frame it asked
+   * for, so a fast scroll coalesces into one read per paint.
+   */
+  useEffect(() => {
+    if (!darkZone) return;
+    const col = column.current;
+    if (!col) return;
+
+    let frame = 0;
+    const read = () => {
+      frame = 0;
+      const zone = document.getElementById(darkZone);
+      if (!zone) return setOnDark(false);
+      const list = col.getBoundingClientRect();
+      const field = zone.getBoundingClientRect();
+      const line = list.top + list.height / 2;
+      setOnDark(field.top <= line && field.bottom >= line);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(read);
+    };
+
+    read();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [darkZone]);
 
   /**
    * Hold the reader's place while the column moves.
@@ -217,7 +279,9 @@ export function SidebarNav({
       className={`ts-body-small block py-1.5 transition-colors ${
         active === entry.id
           ? "font-semibold text-[var(--rail-accent)]"
-          : "text-dark-charcoal hover:text-[var(--rail-accent)]"
+          : `${
+              onDark && !floating ? "text-[#c6c6c6]" : "text-dark-charcoal"
+            } hover:text-[var(--rail-accent)]`
       }`}
     >
       {entry.label}
@@ -257,10 +321,24 @@ export function SidebarNav({
         which is the only way back.
       */}
       <div
-        className={`hidden shrink-0 transition-[width] duration-300 ease-out motion-reduce:transition-none desktop:sticky desktop:top-[150px] desktop:block ${
+        ref={column}
+        /*
+          `z-10` because a hero can bring a background of its own. The article
+          beside this column comes after it in the markup, so anything
+          positioned inside it — a hero section with a field behind it, for
+          one — paints over this column at the same level and swallows it.
+          Lifting the rail one step puts it back in front, and it is still
+          under the page's own pinned nav, which is outside this column's
+          stacking context entirely.
+        */
+        className={`z-10 hidden shrink-0 transition-[width] duration-300 ease-out motion-reduce:transition-none desktop:sticky desktop:top-[150px] desktop:block ${
           rail.enabled && rail.collapsed ? "w-[28px]" : "w-[119px]"
         }`}
-        style={{ "--rail-accent": accent } as CSSProperties}
+        style={
+          {
+            "--rail-accent": onDark ? (darkAccent ?? accent) : accent,
+          } as CSSProperties
+        }
       >
         {rail.enabled ? (
           <button
@@ -271,7 +349,11 @@ export function SidebarNav({
             aria-label={
               rail.collapsed ? "Show section list" : "Hide section list"
             }
-            className="mb-4 flex size-7 items-center justify-center rounded-full border border-grey-100 bg-white text-light-grey transition-colors duration-200 ease-out hover:border-[var(--rail-accent)] hover:text-[var(--rail-accent)] focus-visible:outline-2 focus-visible:outline-offset-2"
+            className={`mb-4 flex size-7 items-center justify-center rounded-full border transition-colors duration-200 ease-out hover:border-[var(--rail-accent)] hover:text-[var(--rail-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 ${
+              onDark
+                ? "border-white/25 bg-white/10 text-[#c6c6c6]"
+                : "border-grey-100 bg-white text-light-grey"
+            }`}
             style={{ outlineColor: "var(--rail-accent)" }}
           >
             {/* Two chevrons facing the way the list will go. */}

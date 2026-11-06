@@ -52,6 +52,7 @@ export function CaseRow({
   bodyWidth,
   bodyGap,
   bodyPad,
+  bodyPadTop,
   bodyPadX,
 }: {
   sidebar?: ReactNode;
@@ -60,6 +61,8 @@ export function CaseRow({
   bodyWidth: number;
   bodyGap: number;
   bodyPad: number;
+  /** Top padding, when the page wants it to differ from `bodyPad`. */
+  bodyPadTop?: number;
   bodyPadX: number;
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -88,7 +91,7 @@ export function CaseRow({
         className={`flex w-full items-start gap-4 px-6 transition-[column-gap] duration-300 ease-out motion-reduce:transition-none tablet:gap-6 tablet:px-[max(24px,var(--body-pad-x))] desktop:justify-center desktop:px-[var(--body-pad-x)] ${gap}`}
         style={
           {
-            paddingTop: bodyPad,
+            paddingTop: bodyPadTop ?? bodyPad,
             paddingBottom: bodyPad,
             "--body-pad-x": `${bodyPadX}px`,
           } as CSSProperties

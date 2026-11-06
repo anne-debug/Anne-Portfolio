@@ -29,6 +29,15 @@ export function CaseShell({
   pageBottom = 0,
   /** Vertical padding on the body column itself. */
   bodyPad = 120,
+  /**
+   * Top padding on the body column, when it differs from the bottom.
+   *
+   * A page whose hero carries its own background wants less room above it
+   * than a page whose hero starts with words on the page colour: the field
+   * is already doing the work the space was doing. Defaults to `bodyPad`, so
+   * a page that does not pass it renders exactly as it did.
+   */
+  bodyPadTop,
   /** Horizontal padding on the body column, on desktop. */
   bodyPadX = 0,
   /** Space between the body and the More Projects strip. */
@@ -53,6 +62,7 @@ export function CaseShell({
   pageTop?: number;
   pageBottom?: number;
   bodyPad?: number;
+  bodyPadTop?: number;
   bodyPadX?: number;
   gapToMore?: number;
   moreBottom?: number;
@@ -79,6 +89,7 @@ export function CaseShell({
           bodyWidth={bodyWidth}
           bodyGap={bodyGap}
           bodyPad={bodyPad}
+          bodyPadTop={bodyPadTop}
           bodyPadX={bodyPadX}
         >
           {children}

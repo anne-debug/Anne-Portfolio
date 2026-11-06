@@ -38,6 +38,7 @@ import { CaseShell } from "@/components/case/CaseShell";
 import { IbmHeroArt } from "@/components/case/IbmHeroArt";
 import { NextSteps } from "@/components/case/NextSteps";
 import { ProblemStatement } from "@/components/case/ProblemStatement";
+import { IbmIntro } from "@/components/case/IbmIntro";
 import { SidebarNav, type SidebarEntry } from "@/components/case/SidebarNav";
 import {
   StickyStepShowcase,
@@ -93,6 +94,10 @@ import { AppearEffect } from "@/lib/framer-effects";
  * case study.
  */
 const IBM_BLUE = "#0F62FE";
+/** Carbon Blue 50: the same accent, at the contrast charcoal needs. */
+const IBM_BLUE_ON_DARK = "#4589FF";
+/** The hero's charcoal band, named so the section rail can watch for it. */
+const HERO_FIELD_ID = "ibm-hero-field";
 
 /**
  * This page's own rail; see CASE_STUDY_NAV_RULES.md.
@@ -665,17 +670,48 @@ export function CaseStudy() {
   return (
     <CaseShell
       current="ibm-watsonx-builder-control-plane"
-      sidebar={<SidebarNav entries={SECTIONS} accent={IBM_BLUE} />}
+      /*
+        The rail is given the hero's field to watch. From 1200 up it is a
+        column beside the article, and the field now runs behind it: over
+        charcoal it inks itself light, and it is back to its ordinary charcoal
+        on grey the moment the light sections arrive. Blue 60 is the accent on
+        the light page and is too dark to read on the field, so Blue 50 stands
+        in for it there — the same pairing the hero's own text uses.
+      */
+      sidebar={
+        <SidebarNav
+          entries={SECTIONS}
+          accent={IBM_BLUE}
+          darkZone={HERO_FIELD_ID}
+          darkAccent={IBM_BLUE_ON_DARK}
+        />
+      }
       moreVariant="compact"
       canvasWidth={1200}
       bodyWidth={1200}
       bodyGap={90}
       pageTop={60}
       bodyPad={120}
+      /*
+        Less room above the hero than the other case studies take, because the
+        hero brings its own field: the charcoal starts at the top of the page,
+        so the space above the heading is dark rather than a gap, and 120px of
+        it read as a page that had not started yet. 80 still clears the pinned
+        nav and, below 1200, the floating section button under it.
+      */
+      bodyPadTop={80}
       bodyPadX={40}
       moreBottom={120}
       collapsibleSidebar
     >
+      {/*
+        The opening: Paul Rand's Eye-Bee-M, once, and then this page. It is
+        rendered here rather than in `page.tsx` so that it is behind the
+        password with everything else — a visitor who has not been let in gets
+        the gate and no animation.
+      */}
+      <IbmIntro />
+
       {/* ---- Hero ------------------------------------------------------ */}
       {/*
         Stacked rather than the two-column header Metro and BudgetCart use.
@@ -685,12 +721,67 @@ export function CaseStudy() {
         one of them four team names. Giving each the full column lets the
         facts sit two across and the product read as a product.
       */}
-      <section className="relative flex w-full flex-col items-start gap-10">
+      <section className="relative isolate flex w-full flex-col items-start gap-10">
+        {/*
+          The charcoal field: a band across the window, behind the hero rather
+          than a background on it.
+
+          It is a layer and not padding so that the heading, the lede, the
+          facts and the composition stay in the article's own column at the
+          width they already had — the background widens, the content does
+          not. Inset 24px from the column it was a rounded plate sitting in
+          the light page, which is not what a dark hero is; now it runs from
+          edge to edge and stops at the hero's own boundary, and the sections
+          under it keep the page's light theme.
+
+          The horizontal numbers are deliberately past the window on both
+          sides rather than pinned to it. The article is not centred in the
+          window — below 1200 it is offset by its own padding, and from 1200
+          up by the rail's column and the 50px beside it — so a band that
+          measured one window width from the article's centre would come up
+          short on the left and overshoot on the right. Three window widths,
+          starting one to the left, reach both edges whatever the offset, and
+          `overflow-x-clip` on the page's own column in `layout.tsx` takes the
+          slack back so nothing is scrollable.
+
+          `-top-[140px]` is the 60px `pageTop` plus the 80px `bodyPadTop`
+          above: the band reaches the top of the page, so there is no light
+          gutter over the hero and the field reads as the page's own header.
+          Below, 56px is the breathing room under the composition before the
+          light comes back.
+        */}
+        <div
+          id={HERO_FIELD_ID}
+          aria-hidden
+          className="pointer-events-none absolute -top-[140px] -bottom-[56px] left-[-100vw] -z-10 w-[300vw] bg-[#161616]"
+        />
+
         <div className="flex w-full flex-col items-start gap-5">
-          <CategoryBadge label="Enterprise AI · UX Design" variant="solid" />
+          {/*
+            The solid badge is a charcoal pill, which all but disappears on
+            the band, so this one is IBM blue — `IBM_BLUE` above, written out
+            because a Tailwind class has to be a literal. Blue 60 with white
+            on it is Carbon's own primary button, which is where the ratio
+            comes from: 5:1 for the label, and 3.1:1 for the pill against the
+            charcoal, so its edge is as findable as the words are readable.
+
+            Overriding it here rather than in `CategoryBadge`: the component is
+            shared with Metro and BudgetCart, and both of those heroes are
+            still cream.
+          */}
+          <div className="[&>span]:bg-[#0F62FE] [&>span]:text-white">
+            <CategoryBadge label="Enterprise AI · UX Design" variant="solid" />
+          </div>
 
           <div className="flex w-full flex-col gap-5">
-            <h1 className="ts-heading-2 w-full text-left text-grey-200">
+            {/*
+              `text-balance` rather than a hand-placed break: the browser
+              evens the lines out itself, which at the column's full width
+              turns "Designing the Future Builder Control / Plane" into two
+              lines of four words and keeps doing the right thing as the
+              column narrows. The wording and the type style are untouched.
+            */}
+            <h1 className="ts-heading-2 w-full text-left text-balance !text-[#f4f4f4]">
               Designing the Future Builder Control Plane
             </h1>
             {/*
@@ -700,7 +791,7 @@ export function CaseStudy() {
               "A", "For", "To" and "And" as well, which reads as a bug rather
               than as a style. The size and colour still come from the class.
             */}
-            <p className="ts-body-large-fluid max-w-[760px] text-left normal-case">
+            <p className="ts-body-large-fluid max-w-[760px] text-left !text-[#c6c6c6] normal-case">
               Designing a centralized starting point for builders to navigate,
               monitor, and troubleshoot their agentic work.
             </p>
@@ -712,8 +803,8 @@ export function CaseStudy() {
         <dl className="grid w-full grid-cols-2 gap-x-[6px] gap-y-5">
           {META.map(([label, value]) => (
             <div key={label} className="flex flex-col">
-              <dt className="ts-body font-semibold">{label}</dt>
-              <dd className="ts-body max-w-[600px]">{value}</dd>
+              <dt className="ts-body font-semibold !text-[#f4f4f4]">{label}</dt>
+              <dd className="ts-body max-w-[600px] !text-[#a8a8a8]">{value}</dd>
             </div>
           ))}
         </dl>

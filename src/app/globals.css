@@ -296,18 +296,43 @@
 
   /* Tablet and up */
   @media (width >= 810px) {
-    .ts-heading-1 { font-size: 80px; }
-    .ts-blog-title { font-size: clamp(96px, calc(96px + 24 * (100vw - 810px) / 390), 120px); }
-    .ts-heading-2 { font-size: clamp(48px, calc(48px + 24 * (100vw - 810px) / 390), 72px); }
-    .ts-section-title { font-size: clamp(32px, calc(32px + 8 * (100vw - 810px) / 390), 40px); }
-    .ts-heading-3 { font-size: clamp(32px, calc(32px + 23 * (100vw - 810px) / 390), 55px); }
-    .ts-heading-3b { font-size: clamp(32px, calc(32px + 6 * (100vw - 810px) / 390), 38px); }
-    .ts-heading-4 { font-size: clamp(20px, calc(20px + 8 * (100vw - 810px) / 390), 28px); }
-    .ts-heading-5 { font-size: clamp(22px, calc(22px + 14 * (100vw - 810px) / 390), 36px); }
-    .ts-heading-6 { font-size: clamp(18px, calc(18px + 6 * (100vw - 810px) / 390), 24px); }
-    .ts-body-large { font-size: 32px; }
-    .ts-body { font-size: 16px; line-height: 1.2em; }
-    .ts-more-projects { font-size: clamp(44px, calc(44px + 16 * (100vw - 810px) / 390), 60px); }
+    .ts-heading-1 {
+      font-size: 80px;
+    }
+    .ts-blog-title {
+      font-size: clamp(96px, calc(96px + 24 * (100vw - 810px) / 390), 120px);
+    }
+    .ts-heading-2 {
+      font-size: clamp(48px, calc(48px + 24 * (100vw - 810px) / 390), 72px);
+    }
+    .ts-section-title {
+      font-size: clamp(32px, calc(32px + 8 * (100vw - 810px) / 390), 40px);
+    }
+    .ts-heading-3 {
+      font-size: clamp(32px, calc(32px + 23 * (100vw - 810px) / 390), 55px);
+    }
+    .ts-heading-3b {
+      font-size: clamp(32px, calc(32px + 6 * (100vw - 810px) / 390), 38px);
+    }
+    .ts-heading-4 {
+      font-size: clamp(20px, calc(20px + 8 * (100vw - 810px) / 390), 28px);
+    }
+    .ts-heading-5 {
+      font-size: clamp(22px, calc(22px + 14 * (100vw - 810px) / 390), 36px);
+    }
+    .ts-heading-6 {
+      font-size: clamp(18px, calc(18px + 6 * (100vw - 810px) / 390), 24px);
+    }
+    .ts-body-large {
+      font-size: 32px;
+    }
+    .ts-body {
+      font-size: 16px;
+      line-height: 1.2em;
+    }
+    .ts-more-projects {
+      font-size: clamp(44px, calc(44px + 16 * (100vw - 810px) / 390), 60px);
+    }
   }
 
   /* Desktop */
@@ -316,18 +341,44 @@
        render of the Desktop frame measures 80px, which is also the only size
        that keeps "Hi, this is Anne Lin" on one line inside its 720px box.
        Matching the render; see the note in README-port.md. */
-    .ts-heading-1 { font-size: 80px; line-height: 1.1em; }
-    .ts-blog-title { font-size: 120px; }
-    .ts-heading-2 { font-size: 72px; }
-    .ts-section-title { font-size: 40px; }
-    .ts-heading-3 { font-size: 55px; }
-    .ts-heading-3b { font-size: 38px; }
-    .ts-heading-4 { font-size: 28px; }
-    .ts-heading-5 { font-size: 36px; }
-    .ts-heading-6 { font-size: 24px; }
-    .ts-body-large { font-size: 20px; }
-    .ts-body { font-size: 16px; line-height: 1.3em; }
-    .ts-more-projects { font-size: 60px; }
+    .ts-heading-1 {
+      font-size: 80px;
+      line-height: 1.1em;
+    }
+    .ts-blog-title {
+      font-size: 120px;
+    }
+    .ts-heading-2 {
+      font-size: 72px;
+    }
+    .ts-section-title {
+      font-size: 40px;
+    }
+    .ts-heading-3 {
+      font-size: 55px;
+    }
+    .ts-heading-3b {
+      font-size: 38px;
+    }
+    .ts-heading-4 {
+      font-size: 28px;
+    }
+    .ts-heading-5 {
+      font-size: 36px;
+    }
+    .ts-heading-6 {
+      font-size: 24px;
+    }
+    .ts-body-large {
+      font-size: 20px;
+    }
+    .ts-body {
+      font-size: 16px;
+      line-height: 1.3em;
+    }
+    .ts-more-projects {
+      font-size: 60px;
+    }
   }
 }
 
@@ -449,22 +500,42 @@ body {
 
 @keyframes invite-wave {
   0%,
-  100% { transform: rotate(-9deg); }
-  50% { transform: rotate(13deg); }
+  100% {
+    transform: rotate(-9deg);
+  }
+  50% {
+    transform: rotate(13deg);
+  }
 }
 
 @keyframes invite-sparkle {
   0%,
-  22% { opacity: 0; transform: scale(0.6); }
-  50% { opacity: 1; transform: scale(1); }
-  74% { opacity: 0; transform: scale(0.8); }
-  100% { opacity: 0; transform: scale(0.6); }
+  22% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  74% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
 }
 
 @keyframes invite-bob {
   0%,
-  100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
 }
 
 .invite-character {
@@ -484,8 +555,12 @@ body {
   transform-origin: center;
   animation: invite-sparkle 3s ease-in-out infinite;
 }
-.invite-spark-2 { animation-delay: 0.12s; }
-.invite-spark-3 { animation-delay: 0.24s; }
+.invite-spark-2 {
+  animation-delay: 0.12s;
+}
+.invite-spark-3 {
+  animation-delay: 0.24s;
+}
 
 /*
    The bubble at rest, and the states it answers with.
@@ -520,9 +595,13 @@ body {
    query — a touch device has no pointer to leave, so an unguarded `:hover`
    would stay lit after the tap. */
 @media (hover: hover) {
-  .invite:hover { transform: scale(1.04); }
+  .invite:hover {
+    transform: scale(1.04);
+  }
   .invite:hover .invite-wand,
-  .invite:hover .invite-spark { animation-duration: 1.6s; }
+  .invite:hover .invite-spark {
+    animation-duration: 1.6s;
+  }
 
   .invite:hover .invite-bubble,
   .invite:hover .invite-tail {
@@ -535,11 +614,15 @@ body {
     transform: translateY(-1px);
   }
 
-  .invite:hover .invite-bubble-text { color: var(--color-orange); }
+  .invite:hover .invite-bubble-text {
+    color: var(--color-orange);
+  }
 }
 
 /* Keyboard focus gets the same emphasis as the pointer, on every device. */
-.invite:focus-visible { transform: scale(1.04); }
+.invite:focus-visible {
+  transform: scale(1.04);
+}
 
 .invite:focus-visible .invite-bubble,
 .invite:focus-visible .invite-tail {
@@ -552,7 +635,9 @@ body {
   transform: translateY(-1px);
 }
 
-.invite:focus-visible .invite-bubble-text { color: var(--color-orange); }
+.invite:focus-visible .invite-bubble-text {
+  color: var(--color-orange);
+}
 
 /* Held: the bubble presses back down under the finger or the pointer. */
 .invite:active .invite-bubble,
@@ -566,7 +651,9 @@ body {
   transform: translateY(1px);
 }
 
-.invite:active { transform: scale(0.99); }
+.invite:active {
+  transform: scale(0.99);
+}
 
 @media (prefers-reduced-motion: reduce) {
   .invite-character,
@@ -575,16 +662,24 @@ body {
     animation: none;
   }
   /* The sparkles stay put and visible rather than blinking. */
-  .invite-spark { opacity: 0.9; }
-  .invite-wand { transform: rotate(-9deg); }
+  .invite-spark {
+    opacity: 0.9;
+  }
+  .invite-wand {
+    transform: rotate(-9deg);
+  }
   .invite,
   .invite:hover,
   .invite:focus-visible,
-  .invite:active { transform: none; }
+  .invite:active {
+    transform: none;
+  }
   /* The states still read — colour carries them — but nothing moves. */
   .invite:hover .invite-bubble,
   .invite:focus-visible .invite-bubble,
-  .invite:active .invite-bubble { transform: none; }
+  .invite:active .invite-bubble {
+    transform: none;
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -596,11 +691,17 @@ body {
 
 @keyframes ryze-bob {
   0%,
-  100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }
 
-.ryze-bob { animation: ryze-bob 5s ease-in-out infinite; }
+.ryze-bob {
+  animation: ryze-bob 5s ease-in-out infinite;
+}
 
 @media (prefers-reduced-motion: reduce) {
   .ryze-bob {
@@ -636,4 +737,915 @@ body {
   background-clip: content-box;
   border: 2px solid transparent;
   border-radius: 5px;
+}
+
+/*
+  The IBM hero's field: a grid of artifacts with signals running between them.
+
+  Three rules, and nothing in them touches a theme token or any selector but
+  this field's own. `IbmHeroField` writes the classes; the motion lives here
+  because every piece of it is a fixed, finite animation that plays and stops,
+  which is a keyframe's job rather than a frame loop's.
+
+  Nothing loops. A signal is drawn, it arrives, it goes out, and the element
+  is taken out of the page — so a hero left on screen settles to a still grid
+  between signals rather than pulsing at the reader.
+*/
+
+/* The line a signal travels, only present while it is travelling. */
+@keyframes ibm-wire {
+  0% {
+    opacity: 0;
+  }
+  16% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/*
+  The dash itself. `--ibm-len` is the line's length and `--ibm-dash` the
+  dash's, both in canvas units: the dash starts one dash-length before the
+  line and ends one line-length past it, so it enters and leaves cleanly
+  instead of appearing at the first node and vanishing at the last.
+*/
+@keyframes ibm-signal {
+  from {
+    stroke-dashoffset: var(--ibm-dash);
+  }
+  to {
+    stroke-dashoffset: calc(-1 * var(--ibm-len) * 1px);
+  }
+}
+
+/* An artifact the signal has reached. */
+@keyframes ibm-lit {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  62% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.ibm-wire {
+  opacity: 0;
+  animation: ibm-wire 2.6s ease-out forwards;
+}
+
+.ibm-signal {
+  stroke-dasharray: calc(var(--ibm-dash) * 1px) calc(var(--ibm-len) * 1px);
+  stroke-dashoffset: calc(var(--ibm-dash) * 1px);
+  animation: ibm-signal 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.ibm-lit {
+  opacity: 0;
+  animation: ibm-lit 1.1s ease-out forwards;
+}
+
+/*
+  The brighter copy of the grid, shown in a soft circle around the pointer.
+
+  Off by default and only ever on where a mouse can be: a touch screen has no
+  pointer to follow, and a mask parked at the element's corner would leave a
+  lit patch sitting there for good. The mask is what moves — `IbmHeroField`
+  writes the two positions once an animation frame — so the grid underneath
+  is never re-rendered.
+*/
+.ibm-field-hot {
+  display: none;
+  opacity: 0;
+  transition: opacity 320ms ease-out;
+  mask-image: radial-gradient(
+    circle 150px at var(--ibm-mx, 50%) var(--ibm-my, -30%),
+    #000 0%,
+    rgba(0, 0, 0, 0.45) 42%,
+    transparent 72%
+  );
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .ibm-field-hot {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ibm-field-hot {
+    display: none;
+  }
+}
+
+/*
+  The IBM case study's opening: the official Eye-Bee-M animation, in vector.
+
+  The motion is the reference animation's own, measured off it frame by
+  frame by `scripts/ibm-intro-path.mjs` and reproduced with the supplied
+  artwork — so the choreography is the original's and every edge on screen
+  is a vector edge. Nothing of the reference ships; what came out of it is
+  the list of numbers in `@keyframes ibm-ebm-fly` below.
+
+  Transform and opacity only, so every frame is composited and the drawing
+  underneath is never re-rasterised — which is half of why it stays sharp.
+  The other half is that it is the artwork and not a picture of it.
+
+  ── What happens ──────────────────────────────────────────────────────────
+  The bee wakes up: its wings unfold and start to beat while the eye blinks
+  and looks across at it. Then the eye closes and goes, the M goes after it,
+  and the bee flies the reference's own flight — two counter-clockwise loops,
+  the second inside the first — and carries on out of the frame. There is
+  nothing left on the overlay when it lifts.
+
+  ── The timings ───────────────────────────────────────────────────────────
+  One clock, and `IbmIntro` has to agree with it:
+
+       0 -  200   the mark fades up
+     200 -  340   the wings unfold
+     320 - 4520   the wings beat, 200ms a cycle, 21 of them
+     360 -  540   a blink
+     480 -  640   the pupil slides across to the bee, and stays there
+     700 -  880   another blink
+     960 - 1040   the eye closes for good
+    1040 - 1180   the eye goes
+    1120 - 1260   the M goes
+    1260 - 4440   the flight: 2880 off the reference, then 300 out of frame
+    4400          the overlay starts to lift     — `IbmIntro`'s `EXIT_AT`
+    4750          gone
+*/
+.ibm-ebm {
+  /*
+    The unit the whole flight is written in: the mark's own width, which is
+    what `cqw` is here, the stage being the container. A share and not a
+    pixel figure, so the flight is the same drawing at 120 as at 160 and
+    keeps the proportion to the logo that the reference gives it.
+
+    The two ceilings are for screens the flight would not fit on at that
+    size. It reaches 1.58 widths to the right of the bee and a touch over
+    one width above it, and the bee is another 0.22 wide at its worst angle,
+    so a narrow phone runs out of room sideways and a landscape phone — mark
+    still 160 wide, half of 375 above it — runs out of room upwards. Below
+    about 460px and below about 400px tall the flight scales down rather
+    than clipping; everywhere else both ceilings are slack and the flight is
+    exactly the mark's width.
+  */
+  --ibm-fly: min(100cqw, calc(27vw - 8px), calc(40vh - 8px));
+
+  animation: ibm-ebm-in 200ms linear both;
+}
+
+@keyframes ibm-ebm-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── The eye ─────────────────────────────────────────────────────────── */
+
+/*
+  The lid: the lens's own outer contour, swept down over the iris from the
+  lens's top edge, which is the point named here in the artwork's own units.
+  At rest it is scaled to nothing and has no area to paint.
+
+  All three blinks are stops in one animation rather than three animations
+  with three delays, because they are one performance and reading them in
+  order is the only way to see its rhythm.
+*/
+.ibm-ebm-lid {
+  transform-origin: 190.7px 138.9px;
+  animation: ibm-ebm-blink 1120ms linear both;
+}
+
+@keyframes ibm-ebm-blink {
+  0%,
+  32.14% {
+    transform: scaleY(0);
+  }
+  39.29%,
+  42.86% {
+    transform: scaleY(1);
+  }
+  48.21%,
+  62.5% {
+    transform: scaleY(0);
+  }
+  69.64%,
+  73.21% {
+    transform: scaleY(1);
+  }
+  78.57%,
+  85.71% {
+    transform: scaleY(0);
+  }
+  92.86%,
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+/*
+  The one thing the eye does besides blink: it looks across at the bee, on
+  the first blink, and never looks back. 17 units is a little over half the
+  room the pupil has inside the iris — the reference takes its own pupil to
+  the edge, but that pupil is half again as wide as this one and the same
+  gesture at this size would read as a stare.
+*/
+.ibm-ebm-pupil {
+  animation: ibm-ebm-look 160ms cubic-bezier(0.33, 0, 0.3, 1) 480ms both;
+}
+
+@keyframes ibm-ebm-look {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(17px, 0);
+  }
+}
+
+/*
+  The eye first and the M a beat behind it, as the reference has them: both
+  gone before the bee moves, so the flight has the screen to itself and the
+  overlay lifts off nothing.
+*/
+.ibm-ebm-eye {
+  animation: ibm-ebm-off 140ms linear 1040ms both;
+}
+
+.ibm-ebm-m {
+  animation: ibm-ebm-off 140ms linear 1120ms both;
+}
+
+@keyframes ibm-ebm-off {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* ── The wings ───────────────────────────────────────────────────────── */
+
+/*
+  Each wing does two things at once about the same hinge, so they are two
+  properties and not two animations of one: `rotate` unfolds it and
+  `transform` beats it, and the browser composes the pair in that order.
+  Written both ways round, the second would simply replace the first.
+
+  52deg lays a wing flat down the body, which is where the reference keeps
+  them until the bee is ready to go. The beat is 200ms, which is the beat
+  the reference flies at, counted rather than left `infinite` so nothing is
+  still animating behind the fade.
+*/
+.ibm-ebm-wing {
+  transform-box: fill-box;
+  animation-duration: 140ms, 200ms;
+  animation-timing-function:
+    cubic-bezier(0.2, 0, 0.2, 1), cubic-bezier(0.37, 0, 0.63, 1);
+  animation-delay: 200ms, 320ms;
+  animation-iteration-count: 1, 21;
+  animation-fill-mode: both, both;
+}
+
+.ibm-ebm-wing--left {
+  transform-origin: right top;
+  animation-name: ibm-ebm-unfold-left, ibm-ebm-beat-left;
+}
+
+.ibm-ebm-wing--right {
+  transform-origin: left top;
+  animation-name: ibm-ebm-unfold-right, ibm-ebm-beat-right;
+}
+
+@keyframes ibm-ebm-unfold-left {
+  from {
+    rotate: -52deg;
+  }
+  to {
+    rotate: 0deg;
+  }
+}
+
+@keyframes ibm-ebm-unfold-right {
+  from {
+    rotate: 52deg;
+  }
+  to {
+    rotate: 0deg;
+  }
+}
+
+@keyframes ibm-ebm-beat-left {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(13deg);
+  }
+}
+
+@keyframes ibm-ebm-beat-right {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-13deg);
+  }
+}
+
+/* ── The flight ──────────────────────────────────────────────────────── */
+
+/*
+  One animation for the whole flight, turning about the bee's own centre,
+  which is the point `EyeBeeM` names: 50.2% and 52% of the stage.
+
+  Every stop below is a frame of the reference — where the bee was and which
+  way it was pointing — so the path, the two loops, the banking into the
+  turns and the speed around them are all its own, not a shape invented to
+  look like it. Linear, because the timing is already in the spacing of the
+  stops: the bee is slow through the tight second loop and fast across the
+  top of the first because that is how it flies in the reference.
+
+  The one stop that is not measured is the last. The reference's frame runs
+  out at 1.58 widths to the right of the logo, which on a real screen is
+  nowhere near the edge, so the final heading is carried on in `vmax` —
+  far enough to leave any viewport, and eased in from the speed the bee is
+  already doing rather than from a standstill.
+*/
+.ibm-ebm-fly {
+  transform-origin: 50.2% 52%;
+  animation: ibm-ebm-fly 3180ms linear 1260ms both;
+}
+/* 73 stops, 40ms apart, straight off the reference, then the exit. */
+@keyframes ibm-ebm-fly {
+  0% {
+    transform: translate(calc(var(--ibm-fly) * 0), calc(var(--ibm-fly) * 0))
+      rotate(0deg);
+  }
+  1.258% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.05),
+        calc(var(--ibm-fly) * -0.07)
+      )
+      rotate(15.8deg);
+  }
+  2.516% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.104),
+        calc(var(--ibm-fly) * -0.144)
+      )
+      rotate(30.9deg);
+  }
+  3.774% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.167),
+        calc(var(--ibm-fly) * -0.214)
+      )
+      rotate(45.4deg);
+  }
+  5.031% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.237),
+        calc(var(--ibm-fly) * -0.268)
+      )
+      rotate(58.9deg);
+  }
+  6.289% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.316),
+        calc(var(--ibm-fly) * -0.301)
+      )
+      rotate(69.3deg);
+  }
+  7.547% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.413),
+        calc(var(--ibm-fly) * -0.316)
+      )
+      rotate(73.7deg);
+  }
+  8.805% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.527),
+        calc(var(--ibm-fly) * -0.318)
+      )
+      rotate(70.1deg);
+  }
+  10.063% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.65),
+        calc(var(--ibm-fly) * -0.313)
+      )
+      rotate(59.4deg);
+  }
+  11.321% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.777),
+        calc(var(--ibm-fly) * -0.307)
+      )
+      rotate(44.4deg);
+  }
+  12.579% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.902),
+        calc(var(--ibm-fly) * -0.312)
+      )
+      rotate(26.5deg);
+  }
+  13.836% {
+    transform: translate(
+        calc(var(--ibm-fly) * 1.011),
+        calc(var(--ibm-fly) * -0.342)
+      )
+      rotate(8.1deg);
+  }
+  15.094% {
+    transform: translate(
+        calc(var(--ibm-fly) * 1.076),
+        calc(var(--ibm-fly) * -0.409)
+      )
+      rotate(-7.2deg);
+  }
+  16.352% {
+    transform: translate(
+        calc(var(--ibm-fly) * 1.081),
+        calc(var(--ibm-fly) * -0.503)
+      )
+      rotate(-17.4deg);
+  }
+  17.61% {
+    transform: translate(
+        calc(var(--ibm-fly) * 1.03),
+        calc(var(--ibm-fly) * -0.603)
+      )
+      rotate(-24.2deg);
+  }
+  18.868% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.949),
+        calc(var(--ibm-fly) * -0.692)
+      )
+      rotate(-30.1deg);
+  }
+  20.126% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.858),
+        calc(var(--ibm-fly) * -0.763)
+      )
+      rotate(-36deg);
+  }
+  21.384% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.771),
+        calc(var(--ibm-fly) * -0.817)
+      )
+      rotate(-42.4deg);
+  }
+  22.642% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.686),
+        calc(var(--ibm-fly) * -0.86)
+      )
+      rotate(-48.7deg);
+  }
+  23.899% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.586),
+        calc(var(--ibm-fly) * -0.902)
+      )
+      rotate(-54.8deg);
+  }
+  25.157% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.471),
+        calc(var(--ibm-fly) * -0.943)
+      )
+      rotate(-61.2deg);
+  }
+  26.415% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.351),
+        calc(var(--ibm-fly) * -0.975)
+      )
+      rotate(-68.5deg);
+  }
+  27.673% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.233),
+        calc(var(--ibm-fly) * -0.996)
+      )
+      rotate(-76.4deg);
+  }
+  28.931% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.116),
+        calc(var(--ibm-fly) * -1.006)
+      )
+      rotate(-84.1deg);
+  }
+  30.189% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.005),
+        calc(var(--ibm-fly) * -1.005)
+      )
+      rotate(-91.7deg);
+  }
+  31.447% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.127),
+        calc(var(--ibm-fly) * -0.991)
+      )
+      rotate(-99.2deg);
+  }
+  32.704% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.246),
+        calc(var(--ibm-fly) * -0.964)
+      )
+      rotate(-106.8deg);
+  }
+  33.962% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.357),
+        calc(var(--ibm-fly) * -0.925)
+      )
+      rotate(-114.6deg);
+  }
+  35.22% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.459),
+        calc(var(--ibm-fly) * -0.876)
+      )
+      rotate(-122.2deg);
+  }
+  36.478% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.548),
+        calc(var(--ibm-fly) * -0.82)
+      )
+      rotate(-129.3deg);
+  }
+  37.736% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.627),
+        calc(var(--ibm-fly) * -0.757)
+      )
+      rotate(-135.8deg);
+  }
+  38.994% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.702),
+        calc(var(--ibm-fly) * -0.681)
+      )
+      rotate(-142.7deg);
+  }
+  40.252% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.777),
+        calc(var(--ibm-fly) * -0.591)
+      )
+      rotate(-151.3deg);
+  }
+  41.509% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.848),
+        calc(var(--ibm-fly) * -0.483)
+      )
+      rotate(-161.3deg);
+  }
+  42.767% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.91),
+        calc(var(--ibm-fly) * -0.351)
+      )
+      rotate(-173.1deg);
+  }
+  44.025% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.957),
+        calc(var(--ibm-fly) * -0.202)
+      )
+      rotate(-186.7deg);
+  }
+  45.283% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.977),
+        calc(var(--ibm-fly) * -0.046)
+      )
+      rotate(-200.7deg);
+  }
+  46.541% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.97),
+        calc(var(--ibm-fly) * 0.108)
+      )
+      rotate(-214.1deg);
+  }
+  47.799% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.935),
+        calc(var(--ibm-fly) * 0.255)
+      )
+      rotate(-226.2deg);
+  }
+  49.057% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.869),
+        calc(var(--ibm-fly) * 0.396)
+      )
+      rotate(-237.8deg);
+  }
+  50.314% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.777),
+        calc(var(--ibm-fly) * 0.523)
+      )
+      rotate(-250deg);
+  }
+  51.572% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.67),
+        calc(var(--ibm-fly) * 0.627)
+      )
+      rotate(-262.5deg);
+  }
+  52.83% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.562),
+        calc(var(--ibm-fly) * 0.702)
+      )
+      rotate(-273.6deg);
+  }
+  54.088% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.445),
+        calc(var(--ibm-fly) * 0.744)
+      )
+      rotate(-284.2deg);
+  }
+  55.346% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.289),
+        calc(var(--ibm-fly) * 0.74)
+      )
+      rotate(-298.3deg);
+  }
+  56.604% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.085),
+        calc(var(--ibm-fly) * 0.658)
+      )
+      rotate(-318.2deg);
+  }
+  57.862% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.126),
+        calc(var(--ibm-fly) * 0.48)
+      )
+      rotate(-345.2deg);
+  }
+  59.119% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.28),
+        calc(var(--ibm-fly) * 0.223)
+      )
+      rotate(-376.8deg);
+  }
+  60.377% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.324),
+        calc(var(--ibm-fly) * -0.068)
+      )
+      rotate(-407.3deg);
+  }
+  61.635% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.241),
+        calc(var(--ibm-fly) * -0.331)
+      )
+      rotate(-436.4deg);
+  }
+  62.893% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.066),
+        calc(var(--ibm-fly) * -0.497)
+      )
+      rotate(-463.2deg);
+  }
+  64.151% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.123),
+        calc(var(--ibm-fly) * -0.539)
+      )
+      rotate(-485deg);
+  }
+  65.409% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.276),
+        calc(var(--ibm-fly) * -0.492)
+      )
+      rotate(-502.9deg);
+  }
+  66.667% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.386),
+        calc(var(--ibm-fly) * -0.398)
+      )
+      rotate(-519.7deg);
+  }
+  67.925% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.459),
+        calc(var(--ibm-fly) * -0.285)
+      )
+      rotate(-535.6deg);
+  }
+  69.182% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.5),
+        calc(var(--ibm-fly) * -0.163)
+      )
+      rotate(-550.1deg);
+  }
+  70.44% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.512),
+        calc(var(--ibm-fly) * -0.029)
+      )
+      rotate(-565.7deg);
+  }
+  71.698% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.495),
+        calc(var(--ibm-fly) * 0.108)
+      )
+      rotate(-582.5deg);
+  }
+  72.956% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.435),
+        calc(var(--ibm-fly) * 0.226)
+      )
+      rotate(-596.3deg);
+  }
+  74.214% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.331),
+        calc(var(--ibm-fly) * 0.305)
+      )
+      rotate(-607.3deg);
+  }
+  75.472% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.198),
+        calc(var(--ibm-fly) * 0.332)
+      )
+      rotate(-617.3deg);
+  }
+  76.73% {
+    transform: translate(
+        calc(var(--ibm-fly) * -0.058),
+        calc(var(--ibm-fly) * 0.306)
+      )
+      rotate(-626.8deg);
+  }
+  77.987% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.07),
+        calc(var(--ibm-fly) * 0.241)
+      )
+      rotate(-636.2deg);
+  }
+  79.245% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.183),
+        calc(var(--ibm-fly) * 0.152)
+      )
+      rotate(-645.7deg);
+  }
+  80.503% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.288),
+        calc(var(--ibm-fly) * 0.047)
+      )
+      rotate(-655.4deg);
+  }
+  81.761% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.384),
+        calc(var(--ibm-fly) * -0.069)
+      )
+      rotate(-664.6deg);
+  }
+  83.019% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.474),
+        calc(var(--ibm-fly) * -0.19)
+      )
+      rotate(-670deg);
+  }
+  84.277% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.568),
+        calc(var(--ibm-fly) * -0.303)
+      )
+      rotate(-669.1deg);
+  }
+  85.535% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.694),
+        calc(var(--ibm-fly) * -0.398)
+      )
+      rotate(-663.4deg);
+  }
+  86.792% {
+    transform: translate(
+        calc(var(--ibm-fly) * 0.876),
+        calc(var(--ibm-fly) * -0.467)
+      )
+      rotate(-655.2deg);
+  }
+  88.05% {
+    transform: translate(
+        calc(var(--ibm-fly) * 1.102),
+        calc(var(--ibm-fly) * -0.498)
+      )
+      rotate(-645.6deg);
+  }
+  89.308% {
+    transform: translate(
+        calc(var(--ibm-fly) * 1.34),
+        calc(var(--ibm-fly) * -0.487)
+      )
+      rotate(-636.3deg);
+  }
+  90.566% {
+    transform: translate(
+        calc(var(--ibm-fly) * 1.575),
+        calc(var(--ibm-fly) * -0.451)
+      )
+      rotate(-627.6deg);
+    animation-timing-function: cubic-bezier(0.5, 0.11, 0.85, 1);
+  }
+  100% {
+    transform: translate(
+        calc(var(--ibm-fly) * 1.575 + 90vmax),
+        calc(var(--ibm-fly) * -0.451 + 2.1vmax)
+      )
+      rotate(-627.6deg);
+  }
+}
+
+/*
+  The IBM case study's opening animation, for a reader who asked for no motion.
+
+  `IbmIntro` takes itself out of the tree in a layout effect, which is before
+  the first paint but after the server's markup has been sent. This is the
+  half of the answer that needs no JavaScript: between the HTML arriving and
+  React picking it up there is a window where the overlay is on screen and
+  nothing has run yet, and a reader who asked for stillness should not see it
+  at all. The effect is still what unlocks the page, which a rule cannot do.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .ibm-intro {
+    display: none;
+  }
+}
+
+/*
+  The site's own chrome, while the opening is on screen.
+
+  The overlay is rendered where it belongs, inside the page, so that the
+  server's HTML already covers the hero and nothing flashes before React
+  arrives. The cost of being inside the page is the page's own stacking
+  context: the pinned nav and the floating section control are fixed to the
+  body, outside it, and would float over the animation however high the
+  overlay is lifted. Rather than portal the overlay out — which would mean it
+  did not exist until hydration — the two are hidden for as long as it is
+  there, and come back by themselves when it goes.
+
+  `visibility` and not `opacity`: the nav animates its own opacity from
+  JavaScript, and an inline style wins over a rule here.
+*/
+body:has(.ibm-intro) [aria-label="Main"],
+body:has(.ibm-intro) [aria-label="Open section menu"],
+body:has(.ibm-intro) #case-sections {
+  visibility: hidden;
 }
