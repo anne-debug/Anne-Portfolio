@@ -7,6 +7,7 @@ import { Butterfly, Smiley, Sparkle } from "@/components/site/Doodles";
 import { CtaButton } from "@/components/site/CtaButton";
 import { ArcText } from "./ArcText";
 import { FloatingImage, type HeroImageVariant } from "./FloatingImage";
+import type { BuildStyle } from "./paintBuild";
 
 const TITLE = "Hi, this is Anne Lin";
 const TAGLINE =
@@ -94,6 +95,14 @@ const ENTER: Record<string, { x: number; y: number }> = {
   portrait: { x: 200, y: -100 },
   framed: { x: -200, y: -100 },
   sculpture: { x: -200, y: 200 },
+};
+
+/** The medium each piece is redrawn in when tapped. */
+const BUILD: Record<string, BuildStyle> = {
+  rooster: "ink",
+  portrait: "pastel",
+  framed: "scribble",
+  sculpture: "pencil",
 };
 
 const ALT = {
@@ -514,6 +523,7 @@ function Stage({
           tapRotate={layer.tapRotate}
           parallaxSpeed={layer.parallaxSpeed}
           draggable={animated}
+          buildStyle={BUILD[layer.key]}
           priority={priority}
           appear={
             layer.appear

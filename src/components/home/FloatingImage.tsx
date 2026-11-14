@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 
 import {
@@ -11,6 +11,13 @@ import {
   Parallax,
   type EnterState,
 } from "@/lib/framer-effects";
+
+import {
+  containRect,
+  playPaintingBuild,
+  type BuildHandle,
+  type BuildStyle,
+} from "./paintBuild";
 
 /**
  * Framer component "Hero floating image".
@@ -59,6 +66,8 @@ export interface FloatingImageProps {
   draggable?: boolean;
   parallaxSpeed?: number;
   priority?: boolean;
+  /** How a tap replays the piece being made: pencil, ink, pastel or scribble. */
+  buildStyle?: BuildStyle;
 }
 
 export function FloatingImage({
@@ -71,6 +80,7 @@ export function FloatingImage({
   draggable = true,
   parallaxSpeed = 100,
   priority = false,
+  buildStyle = "pencil",
 }: FloatingImageProps) {
   const { width, height, ...offsets } = position;
 
@@ -80,15 +90,68 @@ export function FloatingImage({
   const [tapped, setTapped] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // A tap also replays the piece being made, from blank paper to finished,
+  // stroke by stroke in the piece's own medium, on a canvas laid exactly over
+  // the picture. See `paintBuild.ts`.
+  const reduceMotion = useReducedMotion();
+  const imgRef = useRef<HTMLImageElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const build = useRef<BuildHandle | null>(null);
+
+  const playBuild = useCallback(() => {
+    const img = imgRef.current;
+    const cvs = canvasRef.current;
+    if (!img || !cvs || !img.complete || !img.naturalWidth) return;
+
+    // Layout size, which the tilt and the breathing loop do not change.
+    const box = containRect(
+      img.offsetWidth,
+      img.offsetHeight,
+      img.naturalWidth,
+      img.naturalHeight,
+    );
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    build.current?.cancel();
+    cvs.width = Math.max(1, Math.round(box.width * dpr));
+    cvs.height = Math.max(1, Math.round(box.height * dpr));
+    Object.assign(cvs.style, {
+      left: `${box.left}px`,
+      top: `${box.top}px`,
+      width: `${box.width}px`,
+      height: `${box.height}px`,
+      visibility: "visible",
+    });
+    img.style.visibility = "hidden";
+
+    let handle: BuildHandle;
+    try {
+      handle = playPaintingBuild(cvs, img, buildStyle);
+    } catch {
+      cvs.style.visibility = "hidden";
+      img.style.visibility = "";
+      return;
+    }
+    build.current = handle;
+    void handle.done.then(() => {
+      if (build.current !== handle) return;
+      build.current = null;
+      img.style.visibility = "";
+      cvs.style.visibility = "hidden";
+    });
+  }, [buildStyle]);
+
   const onTap = useCallback(() => {
     if (timer.current) clearTimeout(timer.current);
     setTapped(true);
     timer.current = setTimeout(() => setTapped(false), HOLD_MS);
-  }, []);
+    if (!reduceMotion) playBuild();
+  }, [playBuild, reduceMotion]);
 
   useEffect(
     () => () => {
       if (timer.current) clearTimeout(timer.current);
+      build.current?.cancel();
     },
     [],
   );
@@ -106,9 +169,10 @@ export function FloatingImage({
         to={{ scale: 1.02, transition: "spring-duration 1.4s 0 0s" }}
         repeatType="mirror"
         repeatDelay="2s"
-        className="size-full"
+        className="relative size-full"
       >
         <Image
+          ref={imgRef}
           src={HERO_IMAGE_VARIANTS[variant]}
           alt={alt}
           width={width}
@@ -116,6 +180,12 @@ export function FloatingImage({
           draggable={false}
           className="pointer-events-none size-full object-contain select-none"
           priority={priority}
+        />
+        <canvas
+          ref={canvasRef}
+          aria-hidden
+          className="pointer-events-none absolute"
+          style={{ visibility: "hidden" }}
         />
       </LoopEffect>
     </motion.div>
