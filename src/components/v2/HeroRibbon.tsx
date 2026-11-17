@@ -128,9 +128,16 @@ function Flower({
           fill="none"
           stroke="#fff"
           strokeWidth={w * 2.4}
-          initial={reduce ? false : { pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ delay, duration: dur, ease: [0.3, 0.1, 0.3, 1] }}
+          // a stroke at length 0 still paints a speck, so it stays hidden
+          // until its own stroke begins (Anne, 2026-11-17)
+          initial={reduce ? false : { pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{
+            delay,
+            duration: dur,
+            ease: [0.3, 0.1, 0.3, 1],
+            opacity: { delay, duration: 0.01 },
+          }}
         />
       </mask>
       <g mask={`url(#${id})`}>{body}</g>
@@ -257,9 +264,14 @@ function Flower({
             strokeWidth={6}
             strokeLinecap="round"
             opacity={0.85}
-            initial={reduce ? false : { pathLength: 0 }}
-            animate={{ pathLength: 1 }}
-            transition={{ delay: start, duration: T * 0.8, ease: "easeOut" }}
+            initial={reduce ? false : { pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 0.85 }}
+            transition={{
+              delay: start,
+              duration: T * 0.8,
+              ease: "easeOut",
+              opacity: { delay: start, duration: 0.01 },
+            }}
           />
           {/* one long leaf off the stem */}
           <g transform="translate(6,128) rotate(28)">
@@ -505,17 +517,19 @@ function measureSeal(overlay: HTMLElement, hero: HTMLElement): Spot | null {
   const b = btn.getBoundingClientRect();
   const size = Math.round(Math.min(r.width * 0.3, b.height * 0.95));
   // from 810px up: left of the heading, a little below its middle, as in
-  // Anne's reference layout (2026-11-17), at about 0.45 of the heading's height
+  // Anne's reference layout (2026-11-17). Measured from the heading's own
+  // box, not its letters: the letters slide up as they appear and change
+  // width when the web font lands, which used to shift the seal right and up
+  // just after it was stamped. The box is one line, 1.2em tall, and its left
+  // edge is where the letters start.
   const h = !isPhoneLayout() ? visible(hero, "h1.hero-title") : undefined;
   if (h) {
-    const hr = document.createRange();
-    hr.selectNodeContents(h);
-    const t = hr.getBoundingClientRect();
+    const t = h.getBoundingClientRect();
     if (t.width) {
       return {
-        x: Math.round(t.left - o.left - t.height * 0.85),
-        y: Math.round(t.top - o.top + t.height * 0.88),
-        size: Math.round(t.height * 0.45),
+        x: Math.round(t.left - o.left - t.height * 1.12),
+        y: Math.round(t.top - o.top + t.height),
+        size: Math.round(t.height * 0.59),
       };
     }
   }
