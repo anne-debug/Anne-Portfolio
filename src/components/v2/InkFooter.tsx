@@ -204,7 +204,10 @@ export function InkFooter() {
   return (
     <footer
       className="relative w-full overflow-hidden"
-      style={{ background: BG, width: "100vw", marginLeft: "calc(50% - 50vw)", marginRight: "calc(50% - 50vw)" }}
+      /* rendered by the root layout on every page (site/Footer.tsx), where it
+         is already the page's full width; 100vw would overshoot it wherever
+         scrollbars take up room */
+      style={{ background: BG }}
     >
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center justify-items-center gap-7 px-10 py-8 tablet:grid-cols-3 tablet:gap-6 tablet:py-7">
         <Yu className="h-[92px] w-auto tablet:h-[104px] tablet:justify-self-start" />

@@ -4,7 +4,6 @@ import { SelectedWork } from "@/components/home/SelectedWork";
 import type { WorkCardProps } from "@/components/home/WorkCard";
 import { AboutMe } from "@/components/v2/AboutMe";
 import { IntroBento } from "@/components/v2/Bento";
-import { InkFooter } from "@/components/v2/InkFooter";
 import { HeroRibbon } from "@/components/v2/HeroRibbon";
 import { KindWords } from "@/components/v2/KindWords";
 import { RecentMoves } from "@/components/v2/RecentMoves";
@@ -19,7 +18,7 @@ import { PROJECTS } from "@/lib/projects";
  * pegboard → Selected Work cards (the home page's own design: IBM large, then
  * Taipei Metro and BudgetCart side by side) → [lamp + testimonials bento] → peelable sticker
  * board → latest moves on a polaroid clothesline → dark footer with 鈺 in
- * red calligraphy and the make-a-wish candle. The site's own footer is hidden on `/` (Footer.tsx).
+ * red calligraphy and the make-a-wish candle. The footer is the site-wide ink footer from the root layout (site/Footer.tsx).
  */
 /* Order Anne asked for on 2026-11-16. Names, summaries and links are read from
    lib/projects.ts so the cards cannot drift from the case studies. */
@@ -68,9 +67,6 @@ export function HomeV2() {
       </div>
       <IntroBento />
       <RecentMoves />
-      <div className="-mb-[100px]">
-        <InkFooter />
-      </div>
     </main>
   );
 }
