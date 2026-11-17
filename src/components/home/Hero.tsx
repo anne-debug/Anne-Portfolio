@@ -237,7 +237,9 @@ const DESKTOP: Composition = {
 
 const PHONE: Composition = {
   name: "phone",
-  stage: { width: 390, height: 613 },
+  // 50px taller than Framer's 613: the arc text gets its own band above the
+  // heading, and everything below it moves down with it (Anne, 2026-11-17)
+  stage: { width: 390, height: 663 },
   // The Phone frame carries no appear effects on the text, the button or the
   // artwork, and no drag effect either.
   animated: false,
@@ -246,7 +248,7 @@ const PHONE: Composition = {
     height: 286,
     gap: 40,
     titleGap: 16,
-    offsets: { left: 58.5, top: 172 },
+    offsets: { left: 58.5, top: 222 },
     title: {
       fontSize: 48,
       lineHeight: "1.2em",
@@ -261,11 +263,14 @@ const PHONE: Composition = {
       textAlign: "center",
     },
   },
+  // Framer's Phone frame drops the arc; Anne wants it on phones too. Centred
+  // between the rooster and the sketch, clear of both (2026-11-17).
+  arc: { left: 65, top: 136 },
   doodles: [
     // Framer has these at 59,168 and 311,249, on top of the greeting and the
     // tagline once the copy grew; moved clear of both.
-    { key: "sparkle", width: 30, height: 30, offsets: { left: 32, top: 130 } },
-    { key: "smiley", width: 30, height: 30, offsets: { left: 316, top: 300 } },
+    { key: "sparkle", width: 30, height: 30, offsets: { left: 32, top: 180 } },
+    { key: "smiley", width: 30, height: 30, offsets: { left: 316, top: 350 } },
     { key: "butterfly", width: 30, height: 31, offsets: { left: 40, bottom: 166 } },
   ],
   art: [
@@ -542,10 +547,10 @@ function phoneScale() {
   if (typeof window === "undefined") return 1;
   const w = window.innerWidth;
   const fit = (w - 40) / PHONE.stage.width;
-  // the hero starts 100px down and the lower paintings end about 557px into
+  // the hero starts 100px down and the lower paintings end about 607px into
   // the stage, so they stay in the window with 16px to spare (Anne, 2026-11-17:
   // they were cropped, and the subtitle and button read too large at 1.7)
-  const tall = (window.innerHeight - 116) / 557;
+  const tall = (window.innerHeight - 116) / 607;
   return Math.max(1, Math.min(1 + ((w - 520) / 280) * 0.7, 1.7, fit, tall));
 }
 function subscribeResize(cb: () => void) {
@@ -567,7 +572,7 @@ function useCtaBoost() {
   return raw / 100;
 }
 function usePhoneScale() {
-  const raw = useSyncExternalStore(subscribeResize, () => Math.round(phoneScale() * 100), () => 100);
+  const raw = useSyncExternalStore(subscribeResize, () => Math.round(phoneScale() * 100), () => 0);
   return raw / 100;
 }
 
@@ -588,7 +593,7 @@ function fitScale() {
   return Math.max(0.5, Math.min(1, byHeight, byWidth));
 }
 function useFitScale() {
-  const raw = useSyncExternalStore(subscribeResize, () => Math.round(fitScale() * 100), () => 100);
+  const raw = useSyncExternalStore(subscribeResize, () => Math.round(fitScale() * 100), () => 0);
   return raw / 100;
 }
 
@@ -599,8 +604,14 @@ export function Hero({
   hideSmiley = false,
   swapButterfly = false,
 }: { tagline?: string; arcNote?: string; hideSmiley?: boolean; swapButterfly?: boolean } = {}) {
-  const scale = usePhoneScale();
-  const k = useFitScale();
+  // The server cannot know the window, so both scales read 0 there and the
+  // stages stay hidden until the browser has its own numbers; otherwise the
+  // page paints at full size first and then jumps (Anne's recording, 2026-11-17).
+  const rawScale = usePhoneScale();
+  const rawK = useFitScale();
+  const ready = rawScale > 0 && rawK > 0;
+  const scale = rawScale || 1;
+  const k = rawK || 1;
   const cta = useCtaBoost();
   const copy: HeroCopy = { tagline, arcNote, hideSmiley, swapButterfly };
   return (
@@ -617,7 +628,11 @@ export function Hero({
       <FontPreview />
       <div
         className="shrink-0 tablet:hidden"
-        style={{ width: PHONE.stage.width * scale, height: PHONE.stage.height * scale }}
+        style={{
+          width: PHONE.stage.width * scale,
+          height: PHONE.stage.height * scale,
+          visibility: ready ? undefined : "hidden",
+        }}
       >
         <div style={{ transform: `scale(${scale})`, transformOrigin: "top left", width: PHONE.stage.width, height: PHONE.stage.height }}>
           <Stage composition={PHONE} className="" priority copy={copy} />
@@ -629,6 +644,7 @@ export function Hero({
           width: DESKTOP.stage.width,
           height: DESKTOP.stage.height,
           transform: `translateY(-${LIFT}px)${k !== 1 ? ` scale(${k})` : ""}`,
+          visibility: ready ? undefined : "hidden",
         }}
       >
         <Stage composition={DESKTOP} className="block" priority={false} copy={{ ...copy, ctaScale: cta }} />
