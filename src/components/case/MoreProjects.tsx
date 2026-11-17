@@ -123,7 +123,7 @@ function RuleCard({ card, index }: { card: MoreProjectCard; index: number }) {
           status={card.status}
         />
         <div className="flex w-full flex-col items-start gap-5">
-          <CategoryBadge label={card.category} size="small" />
+          <CategoryBadge label={card.category} size="small" variant="solid" />
           <h3 className="ts-heading-3 w-full text-left" style={CARD_TITLE}>
             {card.title}
           </h3>
@@ -167,7 +167,7 @@ function CompactCard({
           status={card.status}
         />
         <div className="flex w-full flex-col items-start gap-2.5">
-          <span className="ts-button rounded-[30px] bg-dark-charcoal px-3 py-1 text-off-white">
+          <span className="project-tag ts-button rounded-[30px] bg-dark-charcoal px-3 py-1 text-off-white">
             {card.category}
           </span>
           <h3 className="ts-heading-5 w-full text-left" style={CARD_TITLE}>

@@ -69,8 +69,24 @@ function LoadMoreButton({ href, label }: { href: string; label: string }) {
   );
 }
 
-export function SelectedWork() {
-  const [large, ...rest] = WORK;
+interface SelectedWorkProps {
+  /** Cards to show, the large one first. Defaults to the home page's three. */
+  work?: WorkCardProps[];
+  /** Drops the extra top padding, for pages that space their own sections. */
+  flush?: boolean;
+  /** Leaves out the line under the heading. */
+  hideDescription?: boolean;
+  /** Text on the button under the cards. */
+  moreLabel?: string;
+}
+
+export function SelectedWork({
+  work = WORK,
+  flush = false,
+  hideDescription = false,
+  moreLabel = "Load More",
+}: SelectedWorkProps) {
+  const [large, ...rest] = work;
 
   return (
     /* The extra top padding is not Framer's. Framer leaves 119px between the
@@ -79,42 +95,46 @@ export function SelectedWork() {
        that still read as lopsided, so this section is pushed down a little. */
     <section
       id="works"
-      className="relative flex w-full flex-col items-center gap-10 pt-10 tablet:pt-[70px]"
+      className={`relative flex w-full flex-col items-center gap-10 ${
+        flush ? "" : "pt-10 tablet:pt-[70px]"
+      }`}
     >
-      <div className="relative flex w-full items-center justify-center gap-2.5 overflow-clip">
+      <div className={`relative flex w-full items-center justify-center gap-2.5 ${hideDescription ? "" : "overflow-clip"}`}>
         <Image
           src="/vectors/star.png"
           alt=""
           width={57}
           height={57}
-          className="absolute left-[76px] top-[57px] hidden size-[57px] object-contain desktop:block"
+          className={`v2-ink-art absolute left-[76px] hidden size-[57px] object-contain desktop:block ${hideDescription ? "top-1/2 -translate-y-1/2" : "top-[57px]"}`}
         />
         <Image
           src="/vectors/squiggle.png"
           alt=""
           width={57}
           height={57}
-          className="absolute right-[13px] top-[66px] hidden size-[57px] object-contain desktop:block"
+          className={`v2-ink-art absolute right-[13px] hidden size-[57px] object-contain desktop:block ${hideDescription ? "top-1/2 -translate-y-1/2" : "top-[66px]"}`}
         />
         <div className="flex w-full flex-col items-center gap-4 overflow-hidden">
           <h2 className="ts-heading-2 max-w-[720px] text-center text-deep-blue">
             {TITLE}
           </h2>
-          <p
-            className="max-w-[720px] text-center text-light-grey"
-            style={{
-              fontFamily: "var(--font-dm-sans)",
-              fontSize: "16px",
-              letterSpacing: "-0.1px",
-              lineHeight: "1.3em",
-            }}
-          >
-            {DESCRIPTION}
-          </p>
+          {!hideDescription && (
+            <p
+              className="max-w-[720px] text-center text-light-grey"
+              style={{
+                fontFamily: "var(--font-dm-sans)",
+                fontSize: "16px",
+                letterSpacing: "-0.1px",
+                lineHeight: "1.3em",
+              }}
+            >
+              {DESCRIPTION}
+            </p>
+          )}
         </div>
       </div>
 
-      <div className="flex w-full flex-col items-center gap-[60px]">
+      <div className={`flex w-full flex-col items-center ${flush ? "gap-8" : "gap-[60px]"}`}>
         {/* Framer insets the card block to 1038px, which is exactly
             504 + 30 + 504, so the two-up row sets the width. */}
         <div className="flex w-full max-w-[1038px] flex-col items-center">
@@ -129,7 +149,7 @@ export function SelectedWork() {
         </div>
 
         <div className="flex h-12 w-full items-center justify-center">
-          <LoadMoreButton href="/my-projects" label="Load More" />
+          <LoadMoreButton href="/my-projects" label={moreLabel} />
         </div>
       </div>
     </section>

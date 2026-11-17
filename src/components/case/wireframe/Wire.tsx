@@ -42,8 +42,10 @@ const TOKENS = {
   "--wf-line": "#e3e3e3",
   "--wf-line-strong": "#cdcdcd",
   "--wf-ink": "#3d3d3d",
-  "--wf-ink-soft": "#6f6f6f",
-  "--wf-ink-faint": "#9b9b9b",
+  /* soft and faint darkened (2026-11-16) so the smallest wireframe labels
+     pass 4.5:1: faint is 4.95:1 on the screen, 4.55:1 on --wf-surface */
+  "--wf-ink-soft": "#555555",
+  "--wf-ink-faint": "#707070",
   "--wf-fill": "#e6e6e6",
   "--wf-fill-soft": "#efefef",
   "--wf-accent": "#0f62fe",

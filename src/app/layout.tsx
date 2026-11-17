@@ -14,6 +14,8 @@ import { ButterflyCursor } from "@/components/case/ButterflyCursor";
 import { Footer } from "@/components/site/Footer";
 import { Nav } from "@/components/site/Nav";
 import { NoiseBackground } from "@/components/site/NoiseBackground";
+import { SiteLamp } from "@/components/site/SiteLamp";
+import { ThemeScript } from "@/components/site/ThemeScript";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -123,11 +125,14 @@ const fontVariables = [
  */
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${fontVariables} h-full antialiased`}>
+    <html lang="en" className={`${fontVariables} h-full antialiased`} suppressHydrationWarning>
       <body className="relative flex min-h-full flex-col bg-chestnut-bg">
+        {/* applies a saved dark mode before first paint, so a reload does not flash light */}
+        <ThemeScript />
         <NoiseBackground />
         <ButterflyCursor />
         <Nav />
+        <SiteLamp />
         {/*
           `overflow-x-clip` is what lets a page bleed a background to the
           edges of the window. A full-bleed layer has to be wider than the

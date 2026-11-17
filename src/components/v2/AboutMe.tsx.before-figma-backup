@@ -1,0 +1,600 @@
+"use client";
+
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { motion, useReducedMotion } from "motion/react";
+
+import { handFont, markerFont } from "./aboutFonts";
+
+/**
+ * "About me" for the home page: a pegboard of Anne's photos and small objects
+ * beside an intro card and a resume card. Rebuilt from the section in her
+ * Framer project (Home → About me).
+ *
+ * The board is laid out on a fixed 1000x650 canvas and scaled to the width it
+ * gets, so every item keeps its place at any screen size. The photos are
+ * Anne's own. Everything else on the board (clips, clock, name tag, 2026
+ * balloons, clover keychain, sun pin, pencil) is drawn here in SVG/CSS; the
+ * Framer board used a marketplace component's sticker images, which are not
+ * copied.
+ *
+ * Each item can be dragged and springs back. The clock shows the visitor's
+ * local time. Photos on the shelf lift on hover.
+ */
+
+const mansalva = { fontFamily: "var(--font-mansalva)" };
+const sans = { fontFamily: "var(--font-dm-sans)" };
+const IMG = "/images/about";
+
+const TODO = [
+  { text: "Ship portfolio v4", done: true },
+  { text: "Sketch something new", done: false },
+  { text: "Coffee chat with a classmate", done: false },
+  { text: "Plan the next case study", done: true },
+];
+
+/* ------------------------------------------------------------------------ */
+/* small drawn objects                                                      */
+/* ------------------------------------------------------------------------ */
+
+function WoodClip({ className, style }: { className?: string; style?: CSSProperties }) {
+  return (
+    <svg viewBox="0 0 34 73" className={className} style={style} aria-hidden>
+      <rect x={9} y={2} width={16} height={69} rx={7} fill="#E9D3B4" />
+      <rect x={9} y={2} width={7} height={69} rx={3.5} fill="#F3E4CC" />
+      <rect x={7} y={30} width={20} height={5} rx={2.5} fill="#B9BDC4" />
+      <path d="M17,8 v18" stroke="#CDB28C" strokeWidth={1.5} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function SilverClip({ className, style }: { className?: string; style?: CSSProperties }) {
+  return (
+    <svg viewBox="0 0 30 64" className={className} style={style} aria-hidden fill="none" strokeLinecap="round">
+      <path d="M9,20 V50 a6,6 0 0 0 12,0 V12 a8,8 0 0 0 -16,0 V52 a10,10 0 0 0 20,0 V22" stroke="#9EA3AB" strokeWidth={3} />
+      <path d="M9,20 V50 a6,6 0 0 0 12,0 V12 a8,8 0 0 0 -16,0 V52 a10,10 0 0 0 20,0 V22" stroke="#E6E8EC" strokeWidth={1} />
+    </svg>
+  );
+}
+
+function BinderClip({ className, style }: { className?: string; style?: CSSProperties }) {
+  return (
+    <svg viewBox="0 0 52 75" className={className} style={style} aria-hidden>
+      <path d="M26,4 a9,9 0 0 1 9,9 v22 h-4 V13 a5,5 0 0 0 -10,0 v22 h-4 V13 a9,9 0 0 1 9,-9 Z" fill="#8A6A4B" />
+      <path d="M6,40 q0,-6 6,-6 h28 q6,0 6,6 l3,26 q0,5 -5,5 H8 q-5,0 -5,-5 Z" fill="#5A4130" />
+      <path d="M9,40 h34" stroke="#7A5B43" strokeWidth={2} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function RoundPin({ className, style }: { className?: string; style?: CSSProperties }) {
+  return (
+    <svg viewBox="0 0 26 26" className={className} style={style} aria-hidden>
+      <circle cx={13} cy={13} r={11} fill="#B8BCC2" />
+      <circle cx={13} cy={13} r={7} fill="#D9DCE0" />
+      <circle cx={10.5} cy={10.5} r={2.5} fill="#F4F5F6" />
+    </svg>
+  );
+}
+
+function StarClip({ className, style }: { className?: string; style?: CSSProperties }) {
+  return (
+    <svg viewBox="0 0 37 52" className={className} style={style} aria-hidden fill="none" stroke="#A9ADB3" strokeWidth={2.4} strokeLinejoin="round">
+      <path d="M18.5,3 l4.6,9.6 10.4,1.3 -7.7,7.1 2,10.3 -9.3,-5.1 -9.3,5.1 2,-10.3 -7.7,-7.1 10.4,-1.3 Z" />
+      <circle cx={18.5} cy={40} r={8} />
+    </svg>
+  );
+}
+
+function Clover({ className, style }: { className?: string; style?: CSSProperties }) {
+  return (
+    <svg viewBox="0 0 148 166" className={className} style={style} aria-hidden>
+      {/* ring */}
+      <circle cx={78} cy={30} r={17} fill="none" stroke="#B4B8BE" strokeWidth={4} />
+      {/* luggage tag */}
+      <g transform="rotate(-38 48 96)">
+        <rect x={22} y={74} width={64} height={30} rx={8} fill="#F0DFC4" />
+        <circle cx={32} cy={89} r={3.5} fill="#F8F6F3" />
+        <path d="M42,84 h34 M42,90 h28 M42,96 h20" stroke="#C7AE86" strokeWidth={2} strokeLinecap="round" />
+      </g>
+      {/* pink strap */}
+      <rect x={64} y={50} width={22} height={74} rx={6} fill="#E7A7C2" />
+      <path d="M75,96 c-5,-7 -12,2 0,10 c12,-8 5,-17 0,-10 Z" fill="#F7D3E2" />
+      {/* clover */}
+      <g fill="#1F9D55">
+        <path d="M110,106 c-14,-20 -34,-2 -8,10 c-26,10 -8,30 8,10 c10,24 30,6 10,-8 c24,-10 6,-30 -10,-12 Z" />
+      </g>
+      <path d="M112,118 q6,22 -4,40" fill="none" stroke="#1F9D55" strokeWidth={4} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function Sun({ className, style }: { className?: string; style?: CSSProperties }) {
+  const rays = Array.from({ length: 12 }, (_, i) => i * 30);
+  return (
+    <svg viewBox="-30 -30 60 60" className={className} style={style} aria-hidden>
+      {rays.map((a) => (
+        <path key={a} d="M0,-13 C3,-20 2,-25 0,-29 C-2,-25 -3,-20 0,-13 Z" fill="#D9A93A" transform={`rotate(${a})`} />
+      ))}
+      <circle r={13} fill="#EBC25A" />
+      <circle r={9} fill="#F6DC8E" />
+    </svg>
+  );
+}
+
+function Pencil({ className, style }: { className?: string; style?: CSSProperties }) {
+  return (
+    <svg viewBox="0 0 39 229" className={className} style={style} aria-hidden>
+      <path d="M12,40 L19.5,8 L27,40 Z" fill="#F1DCC0" />
+      <path d="M17,19 L19.5,8 L22,19 Z" fill="#4A4A4A" />
+      <rect x={12} y={40} width={15} height={160} fill="#FBFBFB" stroke="#E2E2E2" />
+      <rect x={12} y={200} width={15} height={10} fill="#C9CCD1" />
+      <rect x={12} y={210} width={15} height={14} rx={4} fill="#F2B8C6" />
+    </svg>
+  );
+}
+
+/** "2026" as four balloon numerals; the zero is a flower. */
+function Year({ className, style }: { className?: string; style?: CSSProperties }) {
+  const digit = (ch: string, x: number, fill: string, rot: number) => (
+    <text
+      x={x}
+      y={46}
+      fontSize={54}
+      fontWeight={800}
+      textAnchor="middle"
+      transform={`rotate(${rot} ${x} 30)`}
+      fill={fill}
+      stroke="#fff"
+      strokeWidth={5}
+      paintOrder="stroke fill"
+      style={{ fontFamily: "var(--font-dm-sans)" }}
+    >
+      {ch}
+    </text>
+  );
+  const petals = [0, 72, 144, 216, 288];
+  return (
+    <svg viewBox="0 0 190 60" className={className} style={style} aria-hidden>
+      <defs>
+        <filter id="year-soft" x="-10%" y="-20%" width="120%" height="150%">
+          <feDropShadow dx={0} dy={2} stdDeviation={1.5} floodColor="#000" floodOpacity={0.18} />
+        </filter>
+      </defs>
+      <g filter="url(#year-soft)">
+        {digit("2", 26, "#F6C453", -6)}
+        <g transform="translate(72,30)">
+          {petals.map((a) => (
+            <ellipse key={a} cx={0} cy={-13} rx={10} ry={13} fill="#F29BB8" stroke="#fff" strokeWidth={2.5} transform={`rotate(${a})`} />
+          ))}
+          <circle r={7} fill="#F7D36B" />
+        </g>
+        {digit("2", 118, "#8FD3C8", 5)}
+        {digit("6", 162, "#B9A3EA", -4)}
+      </g>
+    </svg>
+  );
+}
+
+function Smiley({ className, style }: { className?: string; style?: CSSProperties }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} style={style} aria-hidden>
+      <circle cx={12} cy={12} r={10} fill="#3B3B3B" />
+      <circle cx={8.5} cy={10} r={1.4} fill="#F7ECDA" />
+      <circle cx={15.5} cy={10} r={1.4} fill="#F7ECDA" />
+      <path d="M7.5,14 q4.5,4.5 9,0" fill="none" stroke="#F7ECDA" strokeWidth={1.6} strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/* ------------------------------------------------------------------------ */
+/* LED clock                                                                */
+/* ------------------------------------------------------------------------ */
+
+// segments: a top, b top-right, c bottom-right, d bottom, e bottom-left, f top-left, g middle
+const SEG: Record<string, string> = {
+  "0": "abcdef",
+  "1": "bc",
+  "2": "abged",
+  "3": "abgcd",
+  "4": "fgbc",
+  "5": "afgcd",
+  "6": "afgecd",
+  "7": "abc",
+  "8": "abcdefg",
+  "9": "abfgcd",
+};
+const SEG_PATH: Record<string, string> = {
+  a: "M5,2 H25 L21,6 H9 Z",
+  b: "M27,4 V24 L23,21 V8 Z",
+  c: "M27,28 V48 L23,44 V31 Z",
+  d: "M5,50 H25 L21,46 H9 Z",
+  e: "M3,28 V48 L7,44 V31 Z",
+  f: "M3,4 V24 L7,21 V8 Z",
+  g: "M6,26 L9,23.5 H21 L24,26 L21,28.5 H9 Z",
+};
+
+function Digit({ ch, x }: { ch: string; x: number }) {
+  const on = SEG[ch] ?? "";
+  return (
+    <g transform={`translate(${x},0)`}>
+      {Object.entries(SEG_PATH).map(([k, d]) => (
+        <path key={k} d={d} fill={on.includes(k) ? "#FFFFFF" : "#E4E4E4"} stroke={on.includes(k) ? "#8A8A8A" : "#DADADA"} strokeWidth={on.includes(k) ? 1.3 : 0.6} strokeLinejoin="round" />
+      ))}
+    </g>
+  );
+}
+
+function Clock() {
+  // "88:88" until mounted, so the server and the first client render match
+  const [time, setTime] = useState("8888");
+  useEffect(() => {
+    const tick = () => {
+      const d = new Date();
+      setTime(String(d.getHours()).padStart(2, "0") + String(d.getMinutes()).padStart(2, "0"));
+    };
+    tick();
+    const id = window.setInterval(tick, 5000);
+    return () => window.clearInterval(id);
+  }, []);
+  return (
+    <div
+      className="flex h-full w-full items-center justify-center"
+      role="img"
+      aria-label="Clock showing your local time"
+    >
+      <svg viewBox="0 0 160 52" className="h-[78%] w-[92%]" style={{ filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.12))" }}>
+        <Digit ch={time[0]} x={0} />
+        <Digit ch={time[1]} x={36} />
+        <g fill="#fff" stroke="#8A8A8A" strokeWidth={1.3} className="about-clock-colon">
+          <rect x={77} y={15} width={6} height={6} rx={1.5} />
+          <rect x={77} y={31} width={6} height={6} rx={1.5} />
+        </g>
+        <Digit ch={time[2]} x={94} />
+        <Digit ch={time[3]} x={130} />
+      </svg>
+      <style>{`@keyframes about-blink{0%,49%{opacity:1}50%,100%{opacity:.25}}.about-clock-colon{animation:about-blink 1s steps(1) infinite}@media (prefers-reduced-motion: reduce){.about-clock-colon{animation:none}}`}</style>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------------ */
+/* board                                                                    */
+/* ------------------------------------------------------------------------ */
+
+const BOARD = `${IMG}/board`;
+
+/**
+ * One sticker image from Anne's Framer board (clips, keychains, 2026, sun,
+ * pencil). The files live in public/images/about/board and are downloaded by
+ * `node scripts/fetch-board-assets.mjs`. Until a file is there, the drawn
+ * stand-in passed as children is shown instead, so the board never has holes.
+ */
+function Sticker({ name, className, style, over, children }: { name: string; className?: string; style?: CSSProperties; over?: ReactNode; children?: ReactNode }) {
+  const ref = useRef<HTMLImageElement>(null);
+  const [missing, setMissing] = useState(false);
+  useEffect(() => {
+    // an image that failed before React attached never fires onError
+    const el = ref.current;
+    if (el && el.complete && el.naturalWidth === 0) setMissing(true);
+  }, []);
+  if (missing) return <>{children}</>;
+  return (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img ref={ref} src={`${BOARD}/${name}.png`} alt="" draggable={false} className={`object-contain ${className ?? ""}`} style={style} onError={() => setMissing(true)} />
+      {over}
+    </>
+  );
+}
+
+function Photo({ src, alt, className, position }: { src: string; alt: string; className?: string; position?: string }) {
+  return (
+    <div className={`relative overflow-hidden ${className ?? ""}`}>
+      <Image src={`${IMG}/${src}`} alt={alt} fill sizes="260px" className="object-cover" style={{ objectPosition: position }} draggable={false} />
+    </div>
+  );
+}
+
+/** One thing on the board: placed in board px, draggable, springs back. */
+function Item({
+  x,
+  y,
+  w,
+  h,
+  rot = 0,
+  z = 1,
+  label,
+  children,
+}: {
+  x: number;
+  y: number;
+  w: number;
+  h?: number;
+  rot?: number;
+  z?: number;
+  label?: string;
+  children: ReactNode;
+}) {
+  const reduce = useReducedMotion() ?? false;
+  return (
+    <motion.div
+      className="absolute cursor-grab touch-none active:cursor-grabbing"
+      style={{ left: x, top: y, width: w, height: h, rotate: rot, zIndex: z }}
+      drag={!reduce}
+      dragSnapToOrigin
+      dragElastic={0.6}
+      dragTransition={{ bounceStiffness: 400, bounceDamping: 30 }}
+      whileDrag={{ scale: 1.04, zIndex: 20 }}
+      aria-label={label}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+const HOLE_X = Array.from({ length: 19 }, (_, i) => 33 + i * 51);
+const HOLE_Y = [33, 114, 195, 276, 357, 438, 519, 588];
+const paper = "0 1px 2px rgba(0,0,0,0.14), 0 6px 12px rgba(0,0,0,0.10)";
+
+function Board() {
+  return (
+    <div className="relative h-[650px] w-[1000px] select-none">
+      {/* pegboard */}
+      <div className="absolute left-0 top-0 h-[641px] w-[1000px] rounded-[28px] bg-[#F0F0F0]" style={{ boxShadow: "2px 5px 10px rgba(153,153,153,0.25)" }}>
+        {HOLE_X.map((hx) =>
+          HOLE_Y.map((hy) => (
+            <span
+              key={`${hx}-${hy}`}
+              className="absolute h-[39px] w-[18px] rounded-full bg-[#F8F6F3]"
+              style={{ left: hx, top: hy, boxShadow: "inset 1px 2px 3px rgba(0,0,0,0.14)" }}
+            />
+          )),
+        )}
+      </div>
+
+      {/* polaroid: lake days */}
+      <Item x={42} y={60} w={114} h={159} label="Polaroid: lake days">
+        <div className="relative flex h-full w-full flex-col rounded-[4px] p-[5px] pb-[45px]" style={{ boxShadow: paper, background: `#FBF6EC url(${BOARD}/paper.png) center / cover` }}>
+          <Photo src="anne-lake.jpg" alt="Anne by the lake in autumn" className="h-full w-full rounded-[2px]" />
+          <p className="absolute bottom-[8px] left-0 w-full -rotate-[4deg] text-center text-[22px] leading-none text-[#2A3132]" style={mansalva}>
+            lake days
+          </p>
+          <Sticker name="clip-wood" className="absolute left-[23px] top-[-43px] h-[73px] w-[34px]">
+            <WoodClip className="absolute left-[23px] top-[-43px] h-[73px] w-[34px]" />
+          </Sticker>
+        </div>
+      </Item>
+
+      {/* film strip: friends */}
+      <Item x={174} y={52} w={97} rot={-5} label="Photo strip: friends">
+        <div className="relative flex w-full flex-col gap-[4px] rounded-[4px] bg-[#1F1F1F] p-[5px] pb-[40px]" style={{ boxShadow: paper }}>
+          <Photo src="friends-fair.jpg" alt="Anne with friends at a fall fair" className="h-[80px] w-full rounded-[2px]" />
+          <Photo src="friend-selfie.jpg" alt="Selfie with a friend" className="h-[80px] w-full rounded-[2px]" />
+          <Photo src="mirror-group.jpg" alt="Mirror photo with friends" className="h-[80px] w-full rounded-[2px]" />
+          <p className="absolute bottom-[9px] left-0 w-full -rotate-[4deg] text-center text-[20px] uppercase leading-none text-white" style={{ fontFamily: markerFont }}>
+            friends
+          </p>
+          <Sticker name="pin-round" className="absolute left-[35px] top-[-13px] h-[25px] w-[26px]">
+            <RoundPin className="absolute left-[35px] top-[-13px] h-[25px] w-[26px]" />
+          </Sticker>
+        </div>
+      </Item>
+
+      {/* red tree */}
+      <Item x={23} y={392} w={252} h={205} label="Photo: red maple tree">
+        <div className="relative h-full w-full rounded-[4px] bg-[#FFFCFC]" style={{ boxShadow: paper }}>
+          <Photo src="red-tree.jpg" alt="A bright red maple tree" className="h-full w-full rounded-[2px]" />
+          <Sticker name="clip-silver" className="absolute left-[84px] top-[-37px] h-[64px] w-[30px]">
+            <SilverClip className="absolute left-[84px] top-[-37px] h-[64px] w-[30px]" />
+          </Sticker>
+        </div>
+      </Item>
+
+      {/* clock */}
+      <Item x={284} y={33} w={216} h={97} z={2}>
+        <Clock />
+      </Item>
+
+      {/* to-do list */}
+      <Item x={306} y={150} w={176} h={250} label="To-do list">
+        <div className="absolute bottom-0 left-0 h-[191px] w-[176px] rounded-[6px] bg-[#FFEC9E] px-[14px]" style={{ boxShadow: paper }}>
+          <p className="mt-[18px] text-center text-[19px] leading-none text-[#2A3132]" style={{ fontFamily: handFont }}>
+            To-do list
+          </p>
+          <ul className="mt-[14px] flex flex-col gap-[9px]">
+            {TODO.map((t) => (
+              <li key={t.text} className="flex items-center gap-[7px] text-[10px] leading-[14px]" style={{ ...sans, color: t.done ? "rgba(42,49,50,0.45)" : "#2A3132" }}>
+                <span
+                  className="inline-block h-[9px] w-[9px] shrink-0 rounded-full"
+                  style={t.done ? { background: "#2A3132" } : { boxShadow: "inset 0 0 0 1.2px #2A3132" }}
+                />
+                <span style={{ textDecoration: t.done ? "line-through" : undefined }}>{t.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <Sticker name="clip-binder" className="absolute left-[62px] top-0 h-[75px] w-[52px]">
+            <BinderClip className="absolute left-[62px] top-0 h-[75px] w-[52px]" />
+          </Sticker>
+      </Item>
+
+      {/* keychain with picnic photo */}
+      <Item x={500} y={75} w={100} h={148} z={2} label="Keychain photo: picnic">
+        <div className="absolute bottom-0 left-0 h-[148px] w-[99px]">
+          <Sticker name="jelly-frame" className="absolute inset-0 z-[1] h-full w-full">
+            <div className="absolute inset-0 rounded-[14px]" style={{ background: "linear-gradient(160deg,#BFF0C8,#7FD99A)", boxShadow: "inset 0 0 0 3px rgba(255,255,255,0.55), 0 6px 12px rgba(0,0,0,0.12)" }} />
+          </Sticker>
+          <Photo src="picnic.jpg" alt="A picnic on the grass" className="absolute left-[13px] top-[14px] h-[121px] w-[73px] rounded-[6px]" />
+        </div>
+        <Sticker name="clip-star" className="absolute left-[31px] top-[-41px] h-[52px] w-[37px]">
+            <StarClip className="absolute left-[31px] top-[-41px] h-[52px] w-[37px]" />
+          </Sticker>
+      </Item>
+
+      {/* bunny */}
+      <Item x={506} y={228} w={110} h={161} rot={5} z={2} label="Drawing of a bunny in a red sweater">
+        <Image src={`${IMG}/bunny-drawing.png`} alt="Drawing of a bunny in a red sweater" width={318} height={464} className="h-auto w-full" draggable={false} style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.15))" }} />
+      </Item>
+
+      {/* latte */}
+      <Item x={622} y={46} w={159} h={157} label="Photo: latte and lunch">
+        <div className="h-full w-full overflow-hidden rounded-[4px]" style={{ boxShadow: paper }}>
+          <Photo src="latte.jpg" alt="A latte and a plate of pasta" className="h-full w-full rounded-[2px]" />
+        </div>
+      </Item>
+
+      {/* 2026 */}
+      <Item x={728} y={8} w={254} h={92} z={3}>
+        <Sticker name="year-2" className="absolute left-[39px] top-[2px] h-[80px] w-[56px] rotate-[10deg]">
+          <Year className="absolute left-0 top-0 h-[60px] w-[190px]" />
+        </Sticker>
+        <Sticker name="year-flower" className="absolute left-[81px] top-[8px] h-[76px] w-[71px]" />
+        <Sticker name="year-2" className="absolute left-[141px] top-[11px] h-[76px] w-[53px] -rotate-[6deg]" />
+        <Sticker name="year-6" className="absolute left-[192px] top-[9px] h-[76px] w-[58px] rotate-[19deg]" />
+      </Item>
+
+      {/* name tag */}
+      <Item x={799} y={104} w={178} h={101} label="Name tag: Anne">
+        <div className="flex h-full w-full flex-col items-center justify-end gap-[8px] rounded-[12px] bg-[#5E0A0A] px-[6px] pb-[6px]" style={{ boxShadow: paper }}>
+          <p className="text-[13px] font-bold leading-none tracking-[0.02em] text-[#F7ECDA]" style={{ fontFamily: "var(--font-inter), var(--font-dm-sans)" }}>
+            MY NAME TAG
+          </p>
+          <div className="relative flex h-[56px] w-full items-center justify-center rounded-[4px]" style={{ background: `#F7ECDA url(${BOARD}/texture.png) left top / cover` }}>
+            <span className="text-[38px] leading-none text-[#1B1B1B]" style={{ fontFamily: handFont }}>
+              ANNE
+            </span>
+            <Sticker name="smiley" className="absolute bottom-[2px] left-[136px] h-[29px] w-[24px] rotate-[8deg]">
+              <Smiley className="absolute bottom-[2px] right-[4px] h-[24px] w-[24px] rotate-[8deg]" />
+            </Sticker>
+          </div>
+        </div>
+      </Item>
+
+      {/* clover keychain */}
+      <Item x={408} y={452} w={160} h={180}>
+        <Sticker
+          name="keychain-clover"
+          className="h-full w-full"
+          over={<span className="absolute left-[50%] top-[13px] h-[26px] w-[9px] -translate-x-1/2 rounded-full bg-white" style={{ boxShadow: "3px 1px 6px rgba(0,0,0,0.29)" }} />}
+        >
+          <Clover className="h-full w-full" style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.14))" }} />
+        </Sticker>
+      </Item>
+
+      {/* shelf: three photos, a pencil, a frosted ledge */}
+      <div className="absolute left-[603px] top-[236px] z-[3] h-[370px] w-[372px]">
+        {[
+          { src: "lake.jpg", alt: "Lake view at sunset", left: 18, top: 7, rot: -4, lift: -132 },
+          { src: "pumpkins.jpg", alt: "Pumpkins at a farm stand", left: 165, top: 9, rot: 2, lift: -132 },
+          { src: "banana-bread.jpg", alt: "Three loaves of banana bread", left: 61, top: 21, rot: 0, lift: -113 },
+        ].map((b) => (
+          <motion.div
+            key={b.src}
+            className="absolute h-[330px] w-[186px] overflow-hidden"
+            style={{ left: b.left, top: b.top, rotate: b.rot, boxShadow: paper }}
+            whileHover={{ y: b.lift }}
+            transition={{ type: "spring", duration: 0.5, bounce: 0 }}
+          >
+            <Photo src={b.src} alt={b.alt} className="h-full w-full" />
+            <span className="absolute bottom-0 left-0 h-full w-[20px] bg-[rgba(79,79,79,0.28)]" />
+          </motion.div>
+        ))}
+        <motion.div className="absolute left-[240px] top-[40px] h-[300px] w-[39px]" style={{ rotate: 12 }} whileHover={{ y: -113 }} transition={{ type: "spring", duration: 0.5, bounce: 0 }}>
+          <Sticker name="pencil" className="h-full w-full">
+            <Pencil className="h-full w-full" />
+          </Sticker>
+        </motion.div>
+        <div
+          className="absolute bottom-0 right-0 h-[104px] w-[372px] rounded-[6px]"
+          style={{ background: "rgba(230,240,250,0.57)", backdropFilter: "blur(5px)", WebkitBackdropFilter: "blur(5px)", boxShadow: "0 6px 12px rgba(0,0,0,0.08)" }}
+        >
+          <div className="absolute left-[28px] top-[16px] h-[72px] w-[58px] -rotate-[5deg] bg-white p-[2px]" style={{ boxShadow: paper }}>
+            <Photo src="anne-selfie.jpg" alt="Anne" className="h-full w-full" />
+          </div>
+          <Sticker name="sun" className="absolute left-[233px] top-[11px] h-[72px] w-[72px] rotate-[14deg]" style={{ filter: "drop-shadow(3px 2px 3px rgba(0,0,0,0.25))" }}>
+            <Sun className="absolute left-[212px] top-[14px] h-[64px] w-[64px]" style={{ filter: "drop-shadow(0 3px 4px rgba(0,0,0,0.18))" }} />
+          </Sticker>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Scales the fixed 1000x650 board to whatever width it is given. */
+function ScaledBoard() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.8);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setScale(el.clientWidth / 1000));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className="relative w-full" style={{ aspectRatio: "1000 / 650" }}>
+      <div className="absolute left-0 top-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
+        <Board />
+      </div>
+    </div>
+  );
+}
+
+export function AboutMe() {
+  return (
+    <section aria-labelledby="about-title" className="flex w-full flex-col gap-10">
+      <div>
+        <p className="inline-block -rotate-[4deg] text-[22px] leading-[1.2] text-orange" style={mansalva}>
+          hi again ✎
+        </p>
+        <h2 id="about-title" className="ts-heading-1 mt-1 text-deep-blue">
+          About me
+        </h2>
+      </div>
+
+      <div className="grid w-full grid-cols-1 gap-5 desktop:grid-cols-[minmax(0,1fr)_300px]">
+        {/* phones: the board keeps a readable size and scrolls sideways */}
+        <div className="-mx-5 overflow-x-auto px-5 pb-2 tablet:mx-0 tablet:overflow-visible tablet:px-0 tablet:pb-0">
+          <div className="w-[640px] tablet:w-full">
+            <ScaledBoard />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-5 tablet:grid-cols-2 desktop:flex desktop:flex-col">
+          <div className="flex flex-col gap-3 rounded-[20px] bg-light-grey-super p-6 desktop:flex-1">
+            <p className="text-[13px] font-bold leading-none tracking-[0.08em] text-orange" style={sans}>
+              Yu En Lin (Anne)
+            </p>
+            <p className="text-[28px] leading-[1.1] text-deep-blue" style={{ fontFamily: "var(--font-instrument)" }}>
+              M.S. in UX @UMICH ’27
+            </p>
+            <div className="flex flex-col gap-4 text-[15px] leading-[1.5] text-dark-charcoal" style={sans}>
+              <p>I’m a product designer with a cross-functional background. I like turning messy, complex systems into products that feel clear and a little delightful to use.</p>
+              <p>
+                Three words that describe how I work:
+                <br />
+                Systems Thinking · Critical Thinking · Attention to Detail
+              </p>
+              <p>Open to product and UX design roles starting June 2027.</p>
+            </div>
+          </div>
+
+          <Link
+            href="/resume"
+            className="flex -rotate-[1.5deg] flex-col gap-2 self-start rounded-[20px] bg-white px-6 py-[22px] transition-transform duration-300 hover:scale-[1.03] tablet:self-start desktop:self-auto"
+            style={{ boxShadow: "0 0 0 1px rgba(0,22,102,0.12), 0 1px 2px rgba(0,0,0,0.10), 0 6px 14px rgba(0,0,0,0.06)" }}
+          >
+            <span className="text-[24px] leading-[1.2] text-deep-blue" style={mansalva}>
+              the short version
+            </span>
+            <span className="text-[15px] font-medium text-dark-charcoal" style={sans}>
+              Read my resume →
+            </span>
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}

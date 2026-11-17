@@ -6,7 +6,7 @@ export function NoiseBackground() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-x-0 top-0 z-0 h-screen w-full overflow-hidden"
+      className="site-noise pointer-events-none fixed inset-x-0 top-0 z-0 h-screen w-full overflow-hidden"
       style={{
         backgroundImage: "url(/images/noise.gif)",
         mixBlendMode: "color-dodge",

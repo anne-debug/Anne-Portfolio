@@ -54,7 +54,7 @@ export function DesktopWindow({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.96 }}
         transition={{ type: "spring", duration: 0.45, bounce: 0.12 }}
-        className="pointer-events-auto flex flex-col overflow-hidden rounded-xl bg-white shadow-[0_30px_80px_rgba(0,0,0,0.32)]"
+        className="pointer-events-auto flex flex-col overflow-hidden rounded-xl bg-[var(--v2-card)] shadow-[0_30px_80px_rgba(0,0,0,0.32)]"
         /* The desktop keeps a floor under it on short screens, so the window is
            also held inside the viewport rather than following that floor. */
         style={{

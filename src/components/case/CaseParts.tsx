@@ -32,7 +32,7 @@ export function CategoryBadge({
 }) {
   if (variant === "solid") {
     return (
-      <span className="ts-button inline-flex items-center justify-center rounded-[30px] bg-dark-charcoal px-3 py-1 text-off-white">
+      <span className="project-tag ts-button inline-flex items-center justify-center rounded-[30px] bg-dark-charcoal px-3 py-1 text-off-white">
         {label}
       </span>
     );
@@ -70,9 +70,11 @@ export function CaseHeader({
   titleGap = 10,
   legacy = false,
   media,
+  mediaWidth,
 }: {
   category: string;
-  title: string;
+  /** A string, or markup when a page needs to choose its own line break. */
+  title: ReactNode;
   description: string;
   meta: MetaEntry[];
   /** Space between the title and its short description; Framer varies it. */
@@ -92,6 +94,8 @@ export function CaseHeader({
    * across. Without one it stays a full-width stack.
    */
   media?: ReactNode;
+  /** Width classes for the artwork column; defaults to 60% (tablet) and 64% (desktop). */
+  mediaWidth?: string;
 }) {
   const split = Boolean(media);
 
@@ -118,10 +122,8 @@ export function CaseHeader({
             legacy ? "gap-[23px]" : "gap-5"
           }`}
         >
-          <CategoryBadge
-            label={category}
-            variant={legacy ? "outline" : "solid"}
-          />
+          {/* one tag style on every project (Anne, 2026-11-16): dark grey in light, orange in dark */}
+          <CategoryBadge label={category} variant="solid" />
 
           <div className="flex w-full flex-col" style={{ gap: titleGap }}>
             <h1
@@ -188,7 +190,7 @@ export function CaseHeader({
         it 318px, nine to spare. Jubo's title is three lines either way.
       */}
       {media ? (
-        <div className="w-full shrink-0 tablet:w-[60%] desktop:w-[64%]">
+        <div className={`w-full shrink-0 ${mediaWidth ?? "tablet:w-[60%] desktop:w-[64%]"}`}>
           {media}
         </div>
       ) : null}

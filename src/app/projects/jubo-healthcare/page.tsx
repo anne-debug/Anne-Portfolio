@@ -46,7 +46,16 @@ export default function JuboHealthcarePage() {
     >
       <CaseHeader
         category="Web Development"
-        title="Jubo Healthcare Platform"
+        /* "Jubo Healthcare" on one line, "Platform" under it (Anne, 2026-11-16).
+           The laptop takes a little less of the row so the first line fits. */
+        title={
+          <>
+            <span className="whitespace-nowrap">Jubo Healthcare</span>
+            <br />
+            Platform
+          </>
+        }
+        mediaWidth="tablet:w-[52%] desktop:w-[59%]"
         titleGap={20}
         description="Designed frontend modules for a senior care platform to streamline medical record input and improve patient data visibility across devices."
         meta={[

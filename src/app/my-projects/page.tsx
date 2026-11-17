@@ -64,7 +64,7 @@ export default function MyProjectsPage() {
                    column it lands in — the single one below 1000, either of the
                    two above it — and from 1200 the cap is lifted and they have
                    nothing left to do. */
-                className="group mx-auto flex w-full max-w-[520px] flex-col items-center gap-6 rounded-[40px] p-[30px] transition-colors hover:bg-light-grey-super/50 desktop:max-w-none desktop:flex-row desktop:items-start"
+                className="project-row group mx-auto flex w-full max-w-[520px] flex-col items-center gap-6 rounded-[40px] p-[30px] transition-colors hover:bg-light-grey-super/50 desktop:max-w-none desktop:flex-row desktop:items-start"
               >
                 <div
                   /* Framer's desktop thumbnail measures 402px wide in a 1120px
@@ -91,14 +91,15 @@ export default function MyProjectsPage() {
                     edge. */}
                 <div className="flex w-full min-w-0 flex-1 flex-col items-start gap-4 pt-4 pb-6 desktop:pt-0">
                   <div className="flex w-full flex-col gap-2.5">
-                    <span className="inline-flex items-center gap-2 self-start rounded-full bg-orange px-3 py-1">
+                    {/* sized after Anne's Framer card (2026-11-16): 16px label, roomier pill */}
+                    <span className="inline-flex items-center gap-2.5 self-start rounded-full bg-orange px-[14px] py-[5px]">
                       <span
-                        className="size-1.5 rounded-full bg-white"
+                        className="size-2 rounded-full bg-white"
                         aria-hidden
                       />
                       {/* The colour has to sit on the label itself: `.ts-body-small`
                           sets its own, so it never inherits the one above. */}
-                      <span className="ts-body-small text-white">
+                      <span className="ts-body-small text-white" style={{ fontSize: 16, lineHeight: 1.3 }}>
                         {project.category}
                       </span>
                     </span>

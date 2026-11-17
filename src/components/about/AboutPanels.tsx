@@ -25,7 +25,7 @@ export function AboutMeCard() {
       <div className="flex w-full shrink-0 flex-col gap-4 tablet:w-[280px]">
         <div className="relative aspect-square w-full overflow-hidden rounded-xl">
           <Image
-            src="/about/qA91tsWqu6oxlpIBtUXYYpHfY.jpg"
+            src="/about/anne-portrait.jpg"
             alt="Anne Lin"
             fill
             sizes="280px"

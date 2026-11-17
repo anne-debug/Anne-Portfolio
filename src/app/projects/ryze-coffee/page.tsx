@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
+import { ThemedImage } from "@/components/site/ThemedImage";
+
 import {
   CaseHeader,
   CaseSection,
@@ -144,6 +146,72 @@ const FLOW_TWO = [
   "Do they understand how it works?",
   "Are they comfortable providing their information?",
 ];
+
+/**
+ * Next Steps: the effort scale that used to be a picture on a white card
+ * (sWbImqiE0I1hv9hwbIiA8hBxU0.png), drawn here so it has no background and its
+ * text and line follow light and dark mode (Anne, 2026-11-16). Colours are
+ * `--ns-line` and `--ns-dot` in globals.css: line 4.8:1 on the light page and
+ * 7.35:1 on the dark one, dots 8.7:1 and 12.3:1, each dot ringed in the page
+ * colour so it stands off the line. Labels use the body text colour.
+ *
+ * From 810 it is the horizontal scale of the original; phones get the same
+ * scale running down the page, since four labels do not fit across 390px.
+ */
+const NEXT_STEPS: { label: string; at: number; above: boolean }[] = [
+  { label: "Remove Countdown Timer and Sale Promotion", at: 15, above: true },
+  { label: "Clarify Subscription", at: 43, above: false },
+  { label: "Modify HomePage Design", at: 60, above: true },
+  { label: "Redesign Mindfulness Service Page", at: 84, above: false },
+];
+
+function NextStepsScale() {
+  const dot = "block size-[22px] shrink-0 rounded-full border-[4px] border-chestnut-bg";
+  return (
+    <figure className="w-full" aria-label="Next steps, ordered from low to high engineering cost">
+      {/* tablet and desktop: across */}
+      <div className="hidden items-center gap-6 tablet:flex">
+        <span className="ts-body shrink-0 text-light-grey">Low Eng cost</span>
+        <div className="relative h-[190px] flex-1">
+          <span aria-hidden className="absolute inset-x-0 top-1/2 h-[6px] -translate-y-1/2 rounded-full" style={{ background: "var(--ns-line)" }} />
+          <ol>
+            {NEXT_STEPS.map((s) => (
+              <li key={s.label}>
+                <span
+                  aria-hidden
+                  className={`${dot} absolute top-1/2 -translate-x-1/2 -translate-y-1/2`}
+                  style={{ left: `${s.at}%`, background: "var(--ns-dot)" }}
+                />
+                <span
+                  className={`ts-body absolute w-[220px] -translate-x-1/2 text-center text-balance text-dark-charcoal ${s.above ? "bottom-[calc(50%+22px)]" : "top-[calc(50%+22px)]"}`}
+                  style={{ left: `${s.at}%` }}
+                >
+                  {s.label}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <span className="ts-body shrink-0 text-light-grey">High Eng cost</span>
+      </div>
+
+      {/* phones: down the page */}
+      <div className="tablet:hidden">
+        <p className="ts-body text-light-grey">Low Eng cost</p>
+        <ol className="relative my-3 flex flex-col gap-6 py-3 pl-9">
+          <span aria-hidden className="absolute left-[8px] inset-y-0 w-[6px] rounded-full" style={{ background: "var(--ns-line)" }} />
+          {NEXT_STEPS.map((s) => (
+            <li key={s.label} className="relative">
+              <span aria-hidden className={`${dot} absolute -left-[39px] top-[2px]`} style={{ background: "var(--ns-dot)" }} />
+              <span className="ts-body text-dark-charcoal">{s.label}</span>
+            </li>
+          ))}
+        </ol>
+        <p className="ts-body text-light-grey">High Eng cost</p>
+      </div>
+    </figure>
+  );
+}
 
 export default function RyzeCoffeePage() {
   return (
@@ -316,7 +384,7 @@ export default function RyzeCoffeePage() {
             />
             <Reveal className="w-full pt-5">
               <div className="w-full tablet:w-[77%]">
-                <Image
+                <ThemedImage
                   src="/case/TiWQE7JDRoA2Uw2psZXUDkOqD24.png"
                   alt="The persona created for the Ryze redesign"
                   width={1600}
@@ -558,14 +626,7 @@ export default function RyzeCoffeePage() {
               ]}
             />
             <Reveal className="w-full">
-              <Image
-                src="/case/sWbImqiE0I1hv9hwbIiA8hBxU0.png"
-                alt="What I learned from the Ryze Coffee redesign"
-                width={2000}
-                height={1200}
-                sizes="1200px"
-                className="h-auto w-full rounded-[20px]"
-              />
+              <NextStepsScale />
             </Reveal>
           </div>
         </CaseSection>

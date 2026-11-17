@@ -12,6 +12,9 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 
+import { useSiteDark } from "@/components/site/theme";
+import { darkSrc } from "@/lib/darkImages";
+
 /**
  * A case-study image that opens full screen when it is clicked.
  *
@@ -417,6 +420,11 @@ export function Zoomable({
    */
   fitZoom?: boolean;
 }) {
+  /* The opened picture sits on the page colour, so a dark page needs the dark copy too. */
+  const siteDark = useSiteDark();
+  const lightSrc = src;
+  src = (siteDark && darkSrc(lightSrc)) || lightSrc;
+
   /* An animation has to reach the browser as the file it is. Run through the
      image optimizer a GIF comes back as one still frame, so the picture that
      moves in the article would stop the moment it was opened. */

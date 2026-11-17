@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
+import { ThemedImage } from "@/components/site/ThemedImage";
+
 import { Accordion } from "@/components/case/Accordion";
 import { Paragraphs } from "@/components/case/CaseParts";
 import {
@@ -193,7 +195,7 @@ const ITERATIONS = [
           width={1800}
           height={1200}
         >
-          <Image
+          <ThemedImage
             src="/case/fzF5n4Ff6g9fa90YW4Q4fBSm3Co.png"
             alt="The existing mileage-based fare rebate"
             width={1800}
@@ -242,7 +244,7 @@ const ITERATIONS = [
           width={1800}
           height={1200}
         >
-          <Image
+          <ThemedImage
             src="/case/oUBlOSx88XZWYIKfSJrzZbV0E.png"
             alt="Metro Points reframed around daily commuting"
             width={1800}
@@ -303,7 +305,7 @@ const ITERATIONS = [
           width={1800}
           height={1200}
         >
-          <Image
+          <ThemedImage
             src="/case/Yq6Pbh5kfTFnt4CgDN7K8JhcYLI.png"
             alt="Explorations of how proximity and value were communicated"
             width={1800}
@@ -406,7 +408,7 @@ export default function TaipeiMetroPage() {
           }
         >
           <div className="flex w-full flex-col gap-5">
-            <span className="ts-button self-start rounded-[30px] bg-dark-charcoal px-3 py-1 text-off-white">
+            <span className="project-tag ts-button self-start rounded-[30px] bg-dark-charcoal px-3 py-1 text-off-white">
               UI / UX Design
             </span>
             <div className="flex w-full flex-col gap-5">
@@ -484,7 +486,7 @@ export default function TaipeiMetroPage() {
               }}
             />
 
-            <Image
+            <ThemedImage
               src="/case/1MeOVEBvOGnOx8hi8SWSqyAG1lU.png"
               alt="Metro Taipei"
               width={800}
@@ -712,11 +714,11 @@ export default function TaipeiMetroPage() {
                   sizes="240px"
                   className="h-auto w-full"
                 />
-                <span className="absolute inset-x-0 top-[26%] text-center text-[clamp(26px,4vw,40px)] leading-none font-medium text-dark-charcoal">
+                <span className="absolute inset-x-0 top-[26%] text-center text-[clamp(26px,4vw,40px)] leading-none font-medium text-dark-charcoal v2-paper">
                   Why?
                 </span>
               </span>
-              <Image
+              <ThemedImage
                 src="/case/GyTFSVEROuIS9A2t6v7auAAyo.png"
                 alt=""
                 width={161}
@@ -767,7 +769,7 @@ export default function TaipeiMetroPage() {
               width={2400}
               height={1400}
             >
-              <Image
+              <ThemedImage
                 src="/case/rVYcn7al7gIYMqYcqgmTpTnNKHw.png"
                 alt="Overview of the Metro Points redesign"
                 width={2400}
@@ -834,7 +836,7 @@ export default function TaipeiMetroPage() {
                   width={2400}
                   height={1400}
                 >
-                  <Image
+                  <ThemedImage
                     src="/case/CedlfXpFrJY8EXvd7JkVSFFIUo.png"
                     alt="The existing Metro Points earning flow"
                     width={2400}
@@ -947,7 +949,7 @@ export default function TaipeiMetroPage() {
               width={2400}
               height={1200}
             >
-              <Image
+              <ThemedImage
                 src="/case/wDPo1NTuWfkIl1pEa8YhSFa3ehQ.png"
                 alt="The three user groups defined for recruitment"
                 width={2400}
@@ -1074,7 +1076,7 @@ export default function TaipeiMetroPage() {
                 width={2800}
                 height={1852}
               >
-                <Image
+                <ThemedImage
                   src="/case/pNyfX9DrGQ19Zt7RnUUADVb24.png"
                   alt="The two rider segments, with high-frequency point users nested inside the low-to-mid engagement group"
                   width={2800}
@@ -1100,7 +1102,7 @@ export default function TaipeiMetroPage() {
                 width={2400}
                 height={1400}
               >
-                <Image
+                <ThemedImage
                   src="/case/D5kodJ1CD0Cjg7IhFE0pqpadrRI.png"
                   alt="A matrix plotting each reward system by daily presence against ease of redemption"
                   width={2400}
@@ -1188,7 +1190,7 @@ export default function TaipeiMetroPage() {
                     <h3 className="ts-heading-6 pt-[1px]">{it.label}</h3>
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col gap-2.5">
-                    <h4 className="ts-heading-5">{it.title}</h4>
+                    <h4 className="ts-heading-6">{it.title}</h4>
                     <p className="ts-body">{it.lede}</p>
                     {"detail" in it ? it.detail : null}
                     <Accordion summary={it.summary}>{it.body}</Accordion>
@@ -1250,7 +1252,7 @@ export default function TaipeiMetroPage() {
               width={2800}
               height={1200}
             >
-              <Image
+              <ThemedImage
                 src="/case/sBEweLasNhWBXDBcOUGtbYZFNHg.png"
                 alt="The consolidated Metro Points entry"
                 width={2800}
@@ -1352,7 +1354,7 @@ export default function TaipeiMetroPage() {
                 width={2800}
                 height={1200}
               >
-                <Image
+                <ThemedImage
                   src="/case/y2WHxFY8x6y1DfdzC3rFDqsTI.png"
                   alt="Metro Points redefined around travel distance"
                   width={2800}
@@ -1399,7 +1401,7 @@ export default function TaipeiMetroPage() {
                 width={2800}
                 height={1200}
               >
-                <Image
+                <ThemedImage
                   src="/case/T52XV12BcXFyv9VUac5hG6uEE9g.png"
                   alt="The redesigned rewards experience"
                   width={2800}
@@ -1436,19 +1438,19 @@ export default function TaipeiMetroPage() {
             </h5>
             {/* The artwork is a transparent PNG and sits straight on the page:
                 no panel behind it. */}
-            <Reveal className="w-full pt-2">
+            <Reveal className="mx-auto w-full max-w-[760px] pt-2">
               <Zoomable
                 src="/case/uG6UgyeylPUQYscl6pJUW8XM.png"
                 alt="Little Jie surfacing a nearby reward beside the point rewards tab"
                 width={2800}
                 height={1600}
               >
-                <Image
+                <ThemedImage
                   src="/case/uG6UgyeylPUQYscl6pJUW8XM.png"
                   alt="Little Jie surfacing a nearby reward beside the point rewards tab"
                   width={2800}
                   height={1600}
-                  sizes="(width < 810px) 92vw, 950px"
+                  sizes="(width < 810px) 92vw, 760px"
                   className="h-auto w-full"
                 />
               </Zoomable>
@@ -1600,9 +1602,16 @@ export default function TaipeiMetroPage() {
               mechanism,
             </h3>
             <h3 className="ts-heading-6">
-              <span className="text-deep-blue">Metro Points</span>{" "}
-              <span className="text-[#2f9e68]">
-                became embedded into daily commuting
+              {/* one blue-to-green sweep from "Metro Points" to "commuting" (Anne, 2026-11-16) */}
+              <span
+                style={{
+                  backgroundImage: "linear-gradient(90deg, var(--color-deep-blue), var(--case-green))",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                Metro Points became embedded into daily commuting
               </span>
             </h3>
           </div>
@@ -1651,7 +1660,7 @@ export default function TaipeiMetroPage() {
                 </p>
               </div>
             </div>
-            <Image
+            <ThemedImage
               src="/case/ODUF40NzVYFLwC6n63ckMD5FY.png"
               alt=""
               width={187}

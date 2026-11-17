@@ -7,8 +7,43 @@ import { Butterfly, Smiley, Sparkle } from "@/components/site/Doodles";
 import { CtaButton } from "@/components/site/CtaButton";
 import { ArcText } from "./ArcText";
 import { FloatingImage, type HeroImageVariant } from "./FloatingImage";
+import FontPreview from "./FontPreview";
+import type { BuildStyle } from "./paintBuild";
 
 const TITLE = "Hi, this is Anne Lin";
+
+/**
+ * TRIAL: the home heading in Mansalva (loaded in layout.tsx as
+ * --font-mansalva) instead of the shared Libre Baskerville Italic
+ * `ts-heading-1`. Only this heading changes; the class itself and its other
+ * uses are untouched.
+ *
+ * Each layout gets the largest size and spacing that keeps the line on one
+ * row inside its existing max width (720px, 500px, 300px). Tablet and phone
+ * are smaller than the old heading because their boxes used to wrap it onto
+ * two lines.
+ *
+ * Other trials, to switch to instead (load the font in layout.tsx with the
+ * variable named here first; ?font=KEY previews them without that):
+ *   Gaegu: family "var(--font-gaegu)", desktop 86px / -1px,
+ *     tablet 60px / -1px, phone 36px / -0.5px
+ *   Zeyada: family "var(--font-zeyada)", desktop 96px / 0px,
+ *     tablet 68px / 0px, phone 40px / 0px
+ *
+ * To go back to Libre Baskerville Italic, set this to `null`.
+ */
+const HEADING_FONT: {
+  family: string;
+  size: Record<string, { fontSize: number; letterSpacing: string }>;
+} | null = {
+  family: "var(--font-mansalva)",
+  size: {
+    desktop: { fontSize: 86, letterSpacing: "-1px" },
+    tablet: { fontSize: 60, letterSpacing: "-1px" },
+    phone: { fontSize: 36, letterSpacing: "-0.5px" },
+  },
+};
+
 const TAGLINE =
   "I’m a Product designer with tech BG, passionate about transforming complexity into clear, useful products that spark moments of delight and connection";
 
@@ -94,6 +129,14 @@ const ENTER: Record<string, { x: number; y: number }> = {
   portrait: { x: 200, y: -100 },
   framed: { x: -200, y: -100 },
   sculpture: { x: -200, y: 200 },
+};
+
+/** The medium each piece is redrawn in when tapped. */
+const BUILD: Record<string, BuildStyle> = {
+  rooster: "ink",
+  portrait: "pastel",
+  framed: "scribble",
+  sculpture: "pencil",
 };
 
 const ALT = {
@@ -375,18 +418,27 @@ function Enter({
   );
 }
 
+interface HeroCopy {
+  tagline: string;
+  /** a short line under the curved "M.S. in UX" text; stages without the arc leave it out */
+  arcNote?: string;
+}
+
 function Stage({
   composition,
   className,
   priority,
+  copy,
 }: {
   composition: Composition;
   className: string;
   priority: boolean;
+  copy: HeroCopy;
 }) {
   const { stage, content, doodles, art, arc, animated, name } = composition;
   const { title, tagline } = content;
 
+  const headingFont = HEADING_FONT?.size[name];
   const titleStyle: CSSProperties = {
     fontSize: title.fontSize,
     lineHeight: title.lineHeight,
@@ -394,7 +446,11 @@ function Stage({
     maxWidth: title.maxWidth,
     textAlign: title.textAlign,
     width: "100%",
+    ...(HEADING_FONT && headingFont
+      ? { ...headingFont, fontFamily: HEADING_FONT.family, whiteSpace: "nowrap" }
+      : {}),
   };
+  const titleClass = `hero-title ts-heading-1 text-deep-blue ${HEADING_FONT ? "not-italic" : "italic"}`;
   const taglineStyle: CSSProperties = {
     fontSize: tagline.fontSize,
     lineHeight: tagline.lineHeight,
@@ -444,11 +500,11 @@ function Stage({
               tokenization="word"
               delay="0.2s"
               style={{ opacity: 0, y: 10, transition: "spring-duration 0.8s 0 0.07s" }}
-              className="ts-heading-1 text-deep-blue italic"
+              className={titleClass}
               textStyle={titleStyle}
             />
           ) : (
-            <h1 className="ts-heading-1 text-deep-blue italic" style={titleStyle}>
+            <h1 className={titleClass} style={titleStyle}>
               {TITLE}
             </h1>
           )}
@@ -456,7 +512,7 @@ function Stage({
           {animated ? (
             <TextEffect
               as="p"
-              text={TAGLINE}
+              text={copy.tagline}
               tokenization="line"
               delay="0.8s"
               style={{ opacity: 0, y: -10, transition: "spring-duration 1.2s 0 0s" }}
@@ -465,7 +521,7 @@ function Stage({
             />
           ) : (
             <p className="ts-hero-tagline text-dark-charcoal" style={taglineStyle}>
-              {TAGLINE}
+              {copy.tagline}
             </p>
           )}
         </div>
@@ -486,7 +542,7 @@ function Stage({
       {doodles.map((layer) => (
         <div
           key={layer.key}
-          className="absolute text-[#555]"
+          className="absolute text-[var(--v2-doodle,#555)]"
           style={layer.offsets as CSSProperties}
         >
           <Doodle layer={layer} />
@@ -501,6 +557,14 @@ function Stage({
           style={{ left: arc.left, top: arc.top }}
         >
           <ArcText id={`hero-arc-${name}`} />
+          {copy.arcNote ? (
+            <p
+              className="-mt-1 w-[260px] text-center text-[16.5px] leading-none text-dark-charcoal"
+              style={{ fontFamily: "var(--font-dm-sans)" }}
+            >
+              {copy.arcNote}
+            </p>
+          ) : null}
         </AppearEffect>
       ) : null}
 
@@ -514,6 +578,7 @@ function Stage({
           tapRotate={layer.tapRotate}
           parallaxSpeed={layer.parallaxSpeed}
           draggable={animated}
+          buildStyle={BUILD[layer.key]}
           priority={priority}
           appear={
             layer.appear
@@ -533,7 +598,9 @@ function Stage({
   );
 }
 
-export function Hero() {
+/** `tagline` and `arcNote` let the v2 preview try new copy; `/` uses the defaults. */
+export function Hero({ tagline = TAGLINE, arcNote }: { tagline?: string; arcNote?: string } = {}) {
+  const copy: HeroCopy = { tagline, arcNote };
   return (
     <section
       id="hero"
@@ -547,16 +614,20 @@ export function Hero() {
         marginRight: "calc(50% + 40px - 50vw)",
       }}
     >
-      <Stage composition={PHONE} className="tablet:hidden" priority />
+      {/* TEMPORARY font comparison: active only with ?font= or ?accent=. */}
+      <FontPreview />
+      <Stage composition={PHONE} className="tablet:hidden" priority copy={copy} />
       <Stage
         composition={TABLET}
         className="hidden tablet:block desktop:hidden"
         priority={false}
+        copy={copy}
       />
       <Stage
         composition={DESKTOP}
         className="hidden desktop:block"
         priority={false}
+        copy={copy}
       />
     </section>
   );

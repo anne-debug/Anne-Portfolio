@@ -262,7 +262,6 @@ const FOLDERS: Folder[] = [
           "NlxZCg6Je3EEYyA4ysjRMZtFL0.jpg",
           "pGZaQaJVr0KX6ZA8yqEaMfEVp4c.jpg",
           "J00NayEfAGwkOenKdnUarAAYG1A.jpg",
-          "auvT9AV2xZYbWYyERna1FZ8EGic.png",
         ].map(img),
       },
       {
@@ -315,7 +314,7 @@ export function AboutDesktop() {
           fill
           sizes="100vw"
           priority
-          className="object-cover"
+          className="about-wallpaper object-cover transition-[filter] duration-500"
         />
 
         {FOLDERS.map((f) => (

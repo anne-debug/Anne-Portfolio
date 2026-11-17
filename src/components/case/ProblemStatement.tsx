@@ -36,7 +36,7 @@ export function ProblemStatement({
 }) {
   return (
     <div
-      className="flex w-full items-center justify-center gap-4 rounded-[20px] px-6 py-10 tablet:gap-6 tablet:px-10 tablet:py-[54px] desktop:px-12 desktop:py-[66px]"
+      className="hmw-card flex w-full items-center justify-center gap-4 rounded-[20px] px-6 py-10 tablet:gap-6 tablet:px-10 tablet:py-[54px] desktop:px-12 desktop:py-[66px]"
       style={{
         background:
           "linear-gradient(117deg, rgba(240,253,244,1) 0%, rgba(238,245,254,1) 50%, rgba(255,255,255,1) 100%)",

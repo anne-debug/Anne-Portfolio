@@ -13,7 +13,8 @@
 
   /* Neutrals */
   --color-grey-200: rgb(48, 48, 48);
-  --color-grey-150: rgb(143, 143, 143);
+  /* was 143: small grey notes were 3.0:1 on the page; 104 reaches 4.5:1 */
+  --color-grey-150: rgb(104, 104, 104);
   --color-grey-100: rgb(218, 218, 218);
   --color-grey-50: rgb(245, 245, 245);
   --color-black: rgb(0, 0, 0);
@@ -1648,4 +1649,261 @@ body:has(.ibm-intro) [aria-label="Main"],
 body:has(.ibm-intro) [aria-label="Open section menu"],
 body:has(.ibm-intro) #case-sections {
   visibility: hidden;
+}
+
+/* ───────────────────────────────────────────────────────────────────────────
+   v2 home preview: dark mode. The pull cord on the About me pinboard
+   (components/v2/LampBoard.tsx) sets `data-theme` on the board only; the cord in the
+   page's top right corner (components/site/SiteLamp.tsx) sets it on <html> for the whole site. The site's colour tokens are re-pointed here, so anything
+   built on them follows; text pairs are chosen for WCAG AA (4.5:1) or better.
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  --v2-card: rgb(255, 255, 255);
+  --v2-line: rgba(42, 49, 50, 0.22);
+  /* outline of the testimonial cards, and the fill of the project cards */
+  --v2-quote-stroke: rgba(42, 49, 50, 0.22);
+  --work-card: rgb(235, 233, 228);
+  /* Ryze Next Steps scale (ryze-coffee/page.tsx) */
+  --ns-line: #c2410c;
+  --ns-dot: #7c2d12;
+  /* About me: the bio card and the tilted resume note */
+  --about-card: rgb(235, 233, 228);
+  --about-note: rgb(255, 255, 255);
+  --about-label: var(--color-orange);
+  /* fairy lights on the About me board: unlit when the board is light */
+  --fairy-glow: 0;
+  --v2-ring: rgba(0, 22, 102, 0.12);
+  --v2-board: #f0f0f0;
+  --v2-board-hole: #f8f6f3;
+  --v2-sticker-board: #f1efe7;
+  --v2-avatar: #e3e0da;
+  --case-green: #1f7a4d;
+  --weather-ink: #2563eb;
+  --clock-on: #ffffff;
+  --clock-on-edge: #8a8a8a;
+  --clock-off: #e4e4e4;
+  --clock-off-edge: #dadada;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --color-chestnut-bg: rgb(30, 30, 32);
+  --color-grey-200: rgb(232, 230, 226);
+  --color-grey-100: rgb(72, 72, 76);
+  --color-grey-50: rgb(44, 44, 46);
+  --color-grey-150: rgb(165, 165, 168);
+  --color-light-grey-super: rgb(44, 44, 46);
+  --color-deep-blue: rgb(198, 212, 255);
+  --color-dark-charcoal: rgb(238, 236, 232);
+  --color-light-grey: rgb(186, 184, 179);
+  --color-nav-bg: rgba(44, 44, 46, 0.92);
+  --color-nav-border: rgb(72, 72, 76);
+  --v2-card: rgb(44, 44, 46);
+  --v2-line: rgba(255, 255, 255, 0.28);
+  /* Anne, 2026-11-16: cards were melting into the dark page. Testimonials get
+     a pale outline, project cards a grey clearly lighter than the page. */
+  --v2-quote-stroke: rgba(255, 255, 255, 0.6);
+  --work-card: rgb(72, 72, 76);
+  --ns-line: #fb923c;
+  --ns-dot: #fed7aa;
+  --about-card: rgb(72, 72, 76);
+  --about-note: rgb(72, 72, 76);
+  /* the site orange is 3.4:1 on the lighter card; this one is 4.5:1 */
+  --about-label: rgb(255, 162, 112);
+  --fairy-glow: 1;
+  --v2-ring: rgba(255, 255, 255, 0.16);
+  --v2-board: #1d1f23;
+  --v2-board-hole: #0d0e10;
+  --v2-sticker-board: #1d1f23;
+  --v2-avatar: #3a3d44;
+  --v2-doodle: rgb(232, 230, 226);
+  --case-green: #45c088;
+  --weather-ink: #a9c2ff;
+  --clock-on: #ffe9a8;
+  --clock-on-edge: #ffe9a8;
+  --clock-off: #2a2c31;
+  --clock-off-edge: #2a2c31;
+}
+
+/* A lit area inside a dark page (the About me board with its own cord
+   pulled while the site is dark): every token goes back to its light value. */
+[data-theme="light"] {
+  color-scheme: light;
+  --color-chestnut-bg: rgb(248, 246, 243);
+  --color-grey-200: rgb(48, 48, 48);
+  --color-grey-150: rgb(104, 104, 104);
+  --color-grey-100: rgb(218, 218, 218);
+  --color-grey-50: rgb(245, 245, 245);
+  --color-off-white: rgb(248, 246, 243);
+  --color-white: rgb(255, 255, 255);
+  --color-light-grey-super: rgb(235, 233, 228);
+  --color-deep-blue: rgb(0, 22, 102);
+  --color-dark-charcoal: rgb(42, 49, 50);
+  --color-light-grey: rgb(95, 101, 102);
+  --color-nav-bg: rgba(255, 255, 255, 0.9);
+  --color-nav-border: rgb(218, 218, 218);
+  --v2-card: rgb(255, 255, 255);
+  --v2-line: rgba(42, 49, 50, 0.22);
+  /* outline of the testimonial cards, and the fill of the project cards */
+  --v2-quote-stroke: rgba(42, 49, 50, 0.22);
+  --work-card: rgb(235, 233, 228);
+  /* Ryze Next Steps scale (ryze-coffee/page.tsx) */
+  --ns-line: #c2410c;
+  --ns-dot: #7c2d12;
+  /* About me: the bio card and the tilted resume note */
+  --about-card: rgb(235, 233, 228);
+  --about-note: rgb(255, 255, 255);
+  --about-label: var(--color-orange);
+  /* fairy lights on the About me board: unlit when the board is light */
+  --fairy-glow: 0;
+  --v2-ring: rgba(0, 22, 102, 0.12);
+  --v2-board: #f0f0f0;
+  --v2-board-hole: #f8f6f3;
+  --v2-sticker-board: #f1efe7;
+  --v2-avatar: #e3e0da;
+  --case-green: #1f7a4d;
+  --v2-doodle: initial;
+  --weather-ink: #2563eb;
+  --clock-on: #ffffff;
+  --clock-on-edge: #8a8a8a;
+  --clock-off: #e4e4e4;
+  --clock-off-edge: #dadada;
+}
+
+/* Dark mode has no film grain: the page is a flat dark grey. */
+[data-theme="dark"] .site-noise {
+  display: none;
+}
+
+/* Chips and buttons filled with the text colour (dark in light mode) turn
+   pale in dark mode, and orange fills fail contrast with white text, so the
+   pale text inside both becomes near-black there. */
+[data-theme="dark"] :is(.bg-dark-charcoal, .bg-grey-200, .bg-light-grey, .bg-orange):not([data-theme="light"] *) {
+  --color-off-white: rgb(24, 24, 26);
+  --color-white: rgb(24, 24, 26);
+}
+
+/* Small orange labels on dark surfaces: a slightly lighter orange reaches 4.5:1. */
+[data-theme="dark"] .text-orange:not([data-theme="light"] *, .v2-paper *, .bg-white *) {
+  color: rgb(255, 118, 46);
+}
+
+/* A picture with a copy made for the dark page (ThemedImage) is in the HTML
+   twice; each mode shows its own. */
+html:not([data-theme="dark"]) .theme-dark-only {
+  display: none;
+}
+[data-theme="dark"] .theme-light-only {
+  display: none;
+}
+
+/* The "How might we" card loses its pale gradient on the dark page, so the
+   statement is light type straight on the page. */
+[data-theme="dark"] .hmw-card {
+  background: none !important;
+}
+
+/* The About page's desktop wallpaper dims with the lights. */
+[data-theme="dark"] .about-wallpaper {
+  filter: brightness(0.32) saturate(0.6);
+}
+
+/* Things that are physical paper (polaroids, chips, light pills), and any
+   surface filled with plain white, keep their light surface in dark mode, so
+   the tokens inside them go back to light. */
+[data-theme="dark"] :is(.v2-paper, .bg-white, .bg-white\/80, .bg-white\/85, .bg-ability-blue, .bg-pink, .invite-bubble):not([data-theme="light"] *) {
+  --color-deep-blue: rgb(0, 22, 102);
+  --color-dark-charcoal: rgb(42, 49, 50);
+  --color-light-grey: rgb(95, 101, 102);
+  --color-grey-200: rgb(48, 48, 48);
+  --color-grey-100: rgb(218, 218, 218);
+  --color-grey-50: rgb(245, 245, 245);
+  color: rgb(42, 49, 50);
+}
+
+/* Ink drawings are dark strokes on paper; on the dark page they turn to
+   pale ink. hue-rotate keeps the red seal red. */
+[data-theme="dark"] .v2-ink-art:not([data-theme="light"] *) {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+html,
+body {
+  transition: background-color 0.5s ease;
+}
+
+/* Dark mode: the home greeting turns the site orange (Anne's call, 2026-11-16). */
+[data-theme="dark"] .hero-title:not([data-theme="light"] *) {
+  color: rgb(255, 118, 46);
+}
+
+/* Fairy lights on the About me pegboard (components/v2/FairyLights.tsx): each
+   lit bulb breathes on its own clock. */
+@keyframes fairy-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.55;
+  }
+  60% {
+    opacity: 0.9;
+  }
+}
+
+.fairy-twinkle {
+  animation: fairy-twinkle 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fairy-twinkle {
+    animation: none;
+  }
+}
+
+/* v2 home: "What others say" sits 70px under Selected Work and 84px above
+   My toolkit (the page's own gap is 100px from 810 up). */
+@media (min-width: 810px) {
+  .v2-words-gap {
+    margin-top: -30px;
+    margin-bottom: -16px;
+  }
+}
+
+/* v2 home: section headings (About me, Selected Work and the rest) a step
+   smaller than the site's 72px. The hero headline is ts-heading-1, untouched. */
+.v2-home .ts-heading-2 {
+  font-size: clamp(38px, calc(38px + 6 * (100vw - 390px) / 420), 44px);
+}
+@media (min-width: 810px) {
+  .v2-home .ts-heading-2 {
+    font-size: clamp(44px, calc(44px + 16 * (100vw - 810px) / 390), 60px);
+  }
+}
+@media (min-width: 1200px) {
+  .v2-home .ts-heading-2 {
+    font-size: 60px;
+  }
+}
+
+/* Project tags (case-study headers, More Projects, home project cards): the
+   dark charcoal pill in light mode, orange in dark mode (Anne, 2026-11-16).
+   Near-black text on the orange is 5.3:1. */
+[data-theme="dark"] .project-tag:not([data-theme="light"] *) {
+  background-color: var(--color-orange);
+  color: rgb(26, 26, 26);
+}
+
+/* My Projects rows: in dark mode the hover fill is the same lighter grey as
+   the v2 home cards (--work-card). Light mode keeps its own hover. */
+[data-theme="dark"] .project-row:hover:not([data-theme="light"] *) {
+  background-color: var(--work-card);
+}
+
+/* IBM Builder: its hero is charcoal in light mode too, so the tag there is
+   orange in both modes (CaseStudy.tsx). */
+.ibm-hero-tag .project-tag {
+  background-color: var(--color-orange);
+  color: rgb(26, 26, 26);
 }

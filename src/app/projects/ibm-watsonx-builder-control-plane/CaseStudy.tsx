@@ -94,8 +94,6 @@ import { AppearEffect } from "@/lib/framer-effects";
  * case study.
  */
 const IBM_BLUE = "#0F62FE";
-/** Carbon Blue 50: the same accent, at the contrast charcoal needs. */
-const IBM_BLUE_ON_DARK = "#4589FF";
 /** The hero's charcoal band, named so the section rail can watch for it. */
 const HERO_FIELD_ID = "ibm-hero-field";
 
@@ -674,17 +672,12 @@ export function CaseStudy() {
         The rail is given the hero's field to watch. From 1200 up it is a
         column beside the article, and the field now runs behind it: over
         charcoal it inks itself light, and it is back to its ordinary charcoal
-        on grey the moment the light sections arrive. Blue 60 is the accent on
-        the light page and is too dark to read on the field, so Blue 50 stands
-        in for it there — the same pairing the hero's own text uses.
+        on grey the moment the light sections arrive. Each entry is judged on its
+        own, so the ones hanging below the field's edge are already dark.
       */
       sidebar={
-        <SidebarNav
-          entries={SECTIONS}
-          accent={IBM_BLUE}
-          darkZone={HERO_FIELD_ID}
-          darkAccent={IBM_BLUE_ON_DARK}
-        />
+        /* the rail is orange like every other case study (Anne, 2026-11-16) */
+        <SidebarNav entries={SECTIONS} darkZone={HERO_FIELD_ID} />
       }
       moreVariant="compact"
       canvasWidth={1200}
@@ -769,7 +762,10 @@ export function CaseStudy() {
             shared with Metro and BudgetCart, and both of those heroes are
             still cream.
           */}
-          <div className="[&>span]:bg-[#0F62FE] [&>span]:text-white">
+          {/* Project tags are dark grey in light mode and orange in dark mode,
+              but this hero is charcoal in both, so here the tag is orange in
+              both (Anne, 2026-11-16). */}
+          <div className="ibm-hero-tag">
             <CategoryBadge label="Enterprise AI · UX Design" variant="solid" />
           </div>
 

@@ -102,7 +102,7 @@ export function WorkCard({
           right at every width and on every one of the three card shapes. */}
       <div className="mt-auto flex w-full items-center">
         <div className="flex flex-1 items-center gap-2.5">
-          <span className="ts-button rounded-[30px] bg-dark-charcoal px-3 py-1 text-off-white">
+          <span className="project-tag ts-button rounded-[30px] bg-dark-charcoal px-3 py-1 text-off-white">
             {category}
           </span>
         </div>
@@ -191,7 +191,7 @@ export function WorkCard({
         onMouseLeave={() => setHovered(false)}
         onFocus={() => setHovered(true)}
         onBlur={() => setHovered(false)}
-        className={`flex h-full w-full flex-col items-start gap-5 overflow-clip rounded-2xl bg-light-grey-super p-4 tablet:p-5 ${
+        className={`flex h-full w-full flex-col items-start gap-5 overflow-clip rounded-2xl bg-[var(--work-card)] p-4 tablet:p-5 ${
           large ? "tablet:flex-row tablet:items-stretch" : "tablet:flex-col"
         }`}
       >

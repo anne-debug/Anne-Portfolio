@@ -93,6 +93,8 @@ export function SidebarNav({
   const article = useRef<HTMLElement | null>(null);
   /** Whether the open column is currently sitting over `darkZone`. */
   const [onDark, setOnDark] = useState(false);
+  /** the entries that sit over the dark field right now, judged one by one */
+  const [darkIds, setDarkIds] = useState<string[]>([]);
   const column = useRef<HTMLDivElement | null>(null);
 
   /**
@@ -119,11 +121,22 @@ export function SidebarNav({
     const read = () => {
       frame = 0;
       const zone = document.getElementById(darkZone);
-      if (!zone) return setOnDark(false);
+      if (!zone) {
+        setDarkIds([]);
+        return setOnDark(false);
+      }
       const list = col.getBoundingClientRect();
       const field = zone.getBoundingClientRect();
       const line = list.top + list.height / 2;
       setOnDark(field.top <= line && field.bottom >= line);
+      // each entry by its own middle, so the ones below the field's edge read on the light page
+      const ids: string[] = [];
+      col.querySelectorAll<HTMLElement>("a[data-entry]").forEach((a) => {
+        const r = a.getBoundingClientRect();
+        const mid = r.top + r.height / 2;
+        if (field.top <= mid && field.bottom >= mid) ids.push(a.dataset.entry ?? "");
+      });
+      setDarkIds((prev) => (prev.join() === ids.join() ? prev : ids));
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(read);
@@ -276,12 +289,13 @@ export function SidebarNav({
         goToSection(entry.id);
       }}
       aria-current={active === entry.id ? "true" : undefined}
+      data-entry={entry.id}
       className={`ts-body-small block py-1.5 transition-colors ${
         active === entry.id
           ? "font-semibold text-[var(--rail-accent)]"
           : `${
-              onDark && !floating ? "text-[#c6c6c6]" : "text-dark-charcoal"
-            } hover:text-[var(--rail-accent)]`
+              darkIds.includes(entry.id) && !floating ? "text-[#c6c6c6]" : "text-dark-charcoal"
+            } hover:text-orange`
       }`}
     >
       {entry.label}
@@ -349,7 +363,7 @@ export function SidebarNav({
             aria-label={
               rail.collapsed ? "Show section list" : "Hide section list"
             }
-            className={`mb-4 flex size-7 items-center justify-center rounded-full border transition-colors duration-200 ease-out hover:border-[var(--rail-accent)] hover:text-[var(--rail-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 ${
+            className={`mb-4 flex size-7 items-center justify-center rounded-full border transition-colors duration-200 ease-out hover:border-orange hover:text-orange focus-visible:outline-2 focus-visible:outline-offset-2 ${
               onDark
                 ? "border-white/25 bg-white/10 text-[#c6c6c6]"
                 : "border-grey-100 bg-white text-light-grey"

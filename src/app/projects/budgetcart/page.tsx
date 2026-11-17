@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+
+import { ThemedImage } from "@/components/site/ThemedImage";
 import { Fragment } from "react";
 
 import { Paragraphs } from "@/components/case/CaseParts";
@@ -338,24 +340,23 @@ function NumberedSteps({
 }
 
 /**
- * A design-breakdown walkthrough: a title, an optional journey, a handset
- * playing the flow, and the numbered steps that describe it.
+ * A design-breakdown walkthrough, laid out as Anne's Framer frame draws it
+ * (2026-11-16 screenshot): a rounded tinted panel across the row, the handset
+ * standing on one side and overlapping the panel's top edge, the title and
+ * journey above the panel on the other side, and the numbered steps inside the
+ * panel beside the handset. `side` puts the handset left or right; the two
+ * walkthroughs alternate.
  *
- * The three parts are arranged differently in each range, so they are placed on
- * a grid rather than nested in boxes that would have to be written twice.
+ * - Desktop (1200 up): handset 270px, 64px in from the panel's edge. Framer
+ *   draws 300 and 105 in a wider frame; the article column here is about
+ *   950px, and those values left the title wrapping onto two lines.
+ * - Tablet (810 to 1199): the same composition with a 220px handset.
+ * - Phone (Anne's Framer phone frame): the handset first, the panel behind
+ *   its lower two thirds and 40px past it, then title, journey and steps on
+ *   the page.
  *
- * - Phone: one column, in reading order. Title, then journey, then the demo,
- *   then the steps, so the recording arrives before the description of it.
- * - Tablet: the title and journey run the full width on their own row, and the
- *   demo and the steps share the row beneath.
- * - Desktop: the title and journey sit at the top of the text column, on the
- *   side Framer puts them, and the demo and the steps share the row beneath as
- *   they do on a tablet. `side` is the only thing that differs between the two
- *   walkthroughs; they alternate.
- *
- * From 810 the demo and the steps are both centred in that shared row, so the
- * description sits level with the middle of the handset whichever of the two is
- * taller.
+ * The panel colour is `--work-card`, the same grey as the project cards, so it
+ * follows dark mode.
  */
 function Walkthrough({
   title,
@@ -370,44 +371,39 @@ function Walkthrough({
   screen: string;
   alt: string;
   items: { step: string; lines: string[] }[];
-  /** Which side the demo sits on from 1200, as Framer draws it. */
+  /** Which side the handset stands on from 810 up. */
   side: "left" | "right";
 }) {
-  const demoLeft = side === "left";
+  const left = side === "left";
+  const phoneCol = left ? "tablet:col-start-1" : "tablet:col-start-2";
+  const textCol = left ? "tablet:col-start-2" : "tablet:col-start-1";
   return (
     <div
-      className={`grid w-full grid-cols-1 items-start gap-8 pb-[50px] tablet:grid-cols-[38%_1fr] tablet:gap-x-10 tablet:gap-y-9 desktop:gap-x-[60px] desktop:gap-y-[86px] ${
-        demoLeft
-          ? "desktop:grid-cols-[240px_1fr] desktop:pr-[70px] desktop:pl-[100px]"
-          : "desktop:grid-cols-[1fr_240px] desktop:pr-[100px] desktop:pl-[70px]"
+      className={`grid w-full grid-cols-1 tablet:grid-rows-[auto_1fr] tablet:gap-x-10 tablet:px-12 desktop:gap-x-[56px] desktop:px-[64px] ${
+        left
+          ? "tablet:grid-cols-[minmax(0,220px)_1fr] desktop:grid-cols-[minmax(0,270px)_1fr]"
+          : "tablet:grid-cols-[1fr_minmax(0,220px)] desktop:grid-cols-[1fr_minmax(0,270px)]"
       }`}
     >
+      {/* the tinted panel: under the steps on phones; across the lower row, out to the block's edges, from 810 */}
       <div
-        className={`flex flex-col gap-2.5 tablet:col-span-2 tablet:col-start-1 tablet:row-start-1 desktop:col-span-1 desktop:row-start-1 ${
-          demoLeft ? "desktop:col-start-2" : "desktop:col-start-1"
-        }`}
-      >
+        aria-hidden
+        className="col-start-1 row-start-1 mt-[50%] rounded-[28px] tablet:col-[1/-1] tablet:row-[2] tablet:mt-0 tablet:-mx-12 tablet:rounded-[40px] desktop:-mx-[64px]"
+        style={{ background: "var(--work-card)" }}
+      />
+
+      <div className={`row-start-2 flex flex-col gap-2.5 pt-6 tablet:row-start-1 tablet:self-end tablet:pt-0 tablet:pb-[50px] ${textCol}`}>
         <h4 className="ts-heading-5">{title}</h4>
         {journey ? (
-          <div
-            className="flex flex-wrap items-center"
-            style={{ gap: JOURNEY.gap }}
-          >
+          <div className="flex flex-wrap items-center" style={{ gap: JOURNEY.gap }}>
             {journey.map((label, i) => (
               <Fragment key={label}>
                 {i > 0 ? (
-                  <span
-                    aria-hidden
-                    className="text-light-grey"
-                    style={{ fontSize: JOURNEY.fontSize }}
-                  >
+                  <span aria-hidden className="text-light-grey" style={{ fontSize: JOURNEY.fontSize }}>
                     →
                   </span>
                 ) : null}
-                <span
-                  className="ts-body-large whitespace-nowrap"
-                  style={{ fontSize: JOURNEY.fontSize }}
-                >
+                <span className="ts-body-large whitespace-nowrap" style={{ fontSize: JOURNEY.fontSize }}>
                   {label}
                 </span>
               </Fragment>
@@ -416,41 +412,14 @@ function Walkthrough({
         ) : null}
       </div>
 
+      {/* the handset spans both rows from 810, so it rises above the panel and ends 48px inside it */}
       <div
-        /*
-          The demo column is 38% of the row, but the handset does not fill it:
-          it takes about two thirds of that column and is centred in the rest,
-          which puts it at roughly a quarter of the article, the share it has on
-          desktop. Filling the column instead drew a 426px handset at 1199
-          against Framer's 240, and the composition stopped reading as two
-          balanced columns.
-
-          240 is that desktop width, and it is the ceiling at every width below
-          1200 as well: a narrower screen should never draw this larger than the
-          layout it is scaled down from. Left at 72% of the column it reached
-          340x704 between 600 and 809, half the width of the article and a
-          screen and a half tall. It ramps to 240 and then holds.
-        */
-        className={`mx-auto w-[72%] max-w-[240px] tablet:row-start-2 tablet:w-[68%] tablet:self-center desktop:w-full desktop:max-w-none ${
-          demoLeft
-            ? "tablet:col-start-1 desktop:col-start-1"
-            : "tablet:col-start-1 desktop:col-start-2"
-        }`}
+        className={`relative z-[1] col-start-1 row-start-1 mx-auto w-[72%] max-w-[260px] pb-10 tablet:row-[1/span_2] tablet:mx-0 tablet:w-full tablet:max-w-none tablet:self-start tablet:pb-12 ${phoneCol}`}
       >
-        {/* `fluid` so the handset takes the column it is given; `width` still
-            sets the side buttons, which keeps desktop identical to Framer. */}
         <PhoneMockup screen={screen} width={240} alt={alt} unoptimized fluid />
       </div>
 
-      {/* The steps are shorter than the handset beside them, so from 810 they
-          are centred on it rather than hung from the top of the row. The row is
-          as tall as the handset, so centring in the row centres on the
-          handset. */}
-      <div
-        className={`tablet:col-start-2 tablet:row-start-2 tablet:self-center desktop:row-start-2 ${
-          demoLeft ? "desktop:col-start-2" : "desktop:col-start-1"
-        }`}
-      >
+      <div className={`relative z-[1] col-start-1 row-start-3 pt-6 tablet:row-start-2 tablet:self-center tablet:py-14 ${textCol}`}>
         <NumberedSteps items={items} />
       </div>
     </div>
@@ -504,7 +473,7 @@ export default function BudgetCartPage() {
             top, clear of the shopper. */}
         <div className="flex flex-1 flex-col gap-[144px] tablet:justify-between">
           <div className="flex w-full flex-col gap-5">
-            <span className="ts-button self-start rounded-[30px] bg-dark-charcoal px-[15px] py-[3px] text-off-white">
+            <span className="project-tag ts-button self-start rounded-[30px] bg-dark-charcoal px-[15px] py-[3px] text-off-white">
               UI / UX Design
             </span>
             <div className="flex w-full flex-col gap-[5px]">
@@ -623,7 +592,7 @@ export default function BudgetCartPage() {
               alt=""
               width={57}
               height={57}
-              className="absolute h-auto object-contain"
+              className="v2-ink-art absolute h-auto object-contain"
               style={{ left: "80.59%", top: "1.75%", width: "8.14%" }}
             />
 
@@ -683,7 +652,7 @@ export default function BudgetCartPage() {
                   width={960}
                   height={960}
                 >
-                  <Image
+                  <ThemedImage
                     src="/case/R4QNcJcHWmiPn8uwiqRdpZP43Q.png"
                     alt="Shoppers comparing prices across apps"
                     width={960}
@@ -700,7 +669,7 @@ export default function BudgetCartPage() {
                   width={1942}
                   height={991}
                 >
-                  <Image
+                  <ThemedImage
                     src="/case/z1sqGS2uRo1HdtIjVlPi9HiTGE.png"
                     alt="A grocery receipt"
                     width={1942}
@@ -1003,7 +972,7 @@ export default function BudgetCartPage() {
                     width={2800}
                     height={320}
                   >
-                    <Image
+                    <ThemedImage
                       src="/case/qJMNLto7fdjSEa2nYM4IQinS1uI.png"
                       alt="The traditional shopping order"
                       width={2800}
@@ -1023,7 +992,7 @@ export default function BudgetCartPage() {
                     width={2800}
                     height={324}
                   >
-                    <Image
+                    <ThemedImage
                       src="/case/7qcKT122ZJVDc2Paih8U6pkWwDs.png"
                       alt="The BudgetCart shopping order"
                       width={2800}
@@ -1126,7 +1095,7 @@ export default function BudgetCartPage() {
                 width={2800}
                 height={1242}
               >
-                <Image
+                <ThemedImage
                   src="/case/dU8zzf1NLNV9xV6KJ1ua3ocYhc.png"
                   alt="SNAP signals shown across the shopping journey"
                   width={2800}
@@ -1161,7 +1130,7 @@ export default function BudgetCartPage() {
               width={2800}
               height={1104}
             >
-              <Image
+              <ThemedImage
                 src="/case/k9u4Ty2OAji64lIZlRF0SYyFmg.png"
                 alt="Iterations of the store comparison interface"
                 width={2800}

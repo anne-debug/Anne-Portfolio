@@ -132,7 +132,7 @@ export function StatusOverlay({ label }: { label: string }) {
          The dimming does the work and the blur only softens: at 2px the blur
          read as the picture being out of focus rather than deliberately set
          back, which on a 402px card is a lot of blur. */
-      className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center gap-2.5 rounded-[inherit] bg-dark-charcoal/50 opacity-0 backdrop-blur-[1px] transition-opacity duration-300 group-focus-visible:opacity-100 group-hover:opacity-100"
+      className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center gap-2.5 rounded-[inherit] bg-black/50 opacity-0 backdrop-blur-[1px] transition-opacity duration-300 group-focus-visible:opacity-100 group-hover:opacity-100"
     >
       <span className="size-2.5 shrink-0 rounded-full bg-orange" aria-hidden />
       <span

@@ -7,7 +7,7 @@
  * smiley 57x57, butterfly 57x57.
  */
 
-const INK = "#555555";
+const INK = "currentColor";
 
 /**
  * Framer sizes the same icon differently per breakpoint, and the tablet sparkle
