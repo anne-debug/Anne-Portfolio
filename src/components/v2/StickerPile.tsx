@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "motion/react";
 
-import { CURSOR, JAVASCRIPT, MONGODB, OPENAI, TYPESCRIPT } from "./brandIcons";
+import { CURSOR, GITHUB, JAVASCRIPT, MONGODB, OPENAI, TYPESCRIPT } from "./brandIcons";
 import { DESIGNS } from "./peelArt";
 
 /**
@@ -35,6 +35,7 @@ const TOOLS: Tool[] = [
   // the JS mark is a yellow square with the letters cut out; black shows through them
   { name: "JavaScript", path: JAVASCRIPT, color: "#F7DF1E", tilt: -7, under: "#111111" },
   { name: "MongoDB", path: MONGODB, color: "#47A248", tilt: 4 },
+  { name: "GitHub", path: GITHUB, color: "#181717", tilt: -5 },
 ];
 
 const shadow = { filter: "drop-shadow(0 2px 3px rgba(0,0,0,0.2))" };
@@ -77,7 +78,7 @@ export function StickerPile() {
         {TOOLS.map((t, i) => (
           <motion.li
             key={t.name}
-            className="relative size-[29px] shrink-0 tablet:size-[56px] desktop:size-[72px]"
+            className="relative size-[26px] shrink-0 tablet:size-[50px] desktop:size-[64px]"
             title={t.name}
             variants={{
               // tucked: about a third of each sticker sits behind the drawer front; on the way in they rise from lower

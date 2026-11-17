@@ -95,9 +95,10 @@ function Flower({
 }) {
   const uid = useId().replace(/:/g, "");
   const s = size / 300;
-  const start = 1.3;
-  /** the flower draws in half the time it first did; everything after `start` is scaled by this */
-  const T = 0.5;
+  const start = 1.0;
+  /** the flower's pace: everything after `start` is scaled by this. 0.3 since
+      2026-11-17 (was 0.5), so the whole flower is painted by about 2.2s */
+  const T = 0.3;
   /**
    * One brush stroke: the petal is revealed by a wide line travelling from its
    * base to its tip, the way the brush is pressed down and then lifted. The
@@ -358,8 +359,8 @@ function Flower({
 type Spot = { x: number; y: number; size: number };
 
 const SEAL_RED = "#C8102E";
-/** when the seal is stamped: just after the flower's ink dots land */
-const SEAL_AT = 1.3 + 0.5 * 3.9;
+/** when the seal is stamped: as the flower starts, not after it (Anne, 2026-11-17) */
+const SEAL_AT = 1.0;
 
 /** Anne's name seal, 白文 style: the characters are cut out of the red block. */
 function Seal({ x, y, size, reduce }: Spot & { reduce: boolean }) {
