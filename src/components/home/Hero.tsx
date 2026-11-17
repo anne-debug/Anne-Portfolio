@@ -109,7 +109,7 @@ interface Composition {
     tagline: TextBlock;
   };
   /** Framer's Arc text instance, absent on phone. */
-  arc?: { left: number; top: number };
+  arc?: { left: number; top: number; fontSize?: number };
   /** Text and button appear effects, which only the two wider frames carry. */
   animated: boolean;
   doodles: DoodleLayer[];
@@ -265,7 +265,8 @@ const PHONE: Composition = {
   },
   // Framer's Phone frame drops the arc; Anne wants it on phones too. Centred
   // between the rooster and the sketch, clear of both (2026-11-17).
-  arc: { left: 65, top: 136 },
+  // the same 14px as the phone subtitle (Anne, 2026-11-17)
+  arc: { left: 65, top: 136, fontSize: 14 },
   doodles: [
     // Framer has these at 59,168 and 311,249, on top of the greeting and the
     // tagline once the copy grew; moved clear of both.
@@ -496,11 +497,11 @@ function Stage({
           className="absolute"
           style={{ left: arc.left, top: arc.top }}
         >
-          <ArcText id={`hero-arc-${name}`} />
+          <ArcText id={`hero-arc-${name}`} fontSize={arc.fontSize} />
           {copy.arcNote ? (
             <p
-              className="-mt-1 w-[260px] text-center text-[16.5px] leading-none text-dark-charcoal"
-              style={{ fontFamily: "var(--font-dm-sans)" }}
+              className="-mt-1 w-[260px] text-center leading-none text-dark-charcoal"
+              style={{ fontFamily: "var(--font-dm-sans)", fontSize: arc.fontSize ?? 16.5 }}
             >
               {copy.arcNote}
             </p>
