@@ -8,31 +8,29 @@ import { useState } from "react";
  * The six-petal flower mark that sits inside the CTA button.
  *
  * Framer could not serialise this component because its icon variable points at
- * an icon set the project no longer resolves, so the mark is redrawn here from
- * a capture of the rendered button.
+ * an icon set the project no longer resolves, so the mark is redrawn here to
+ * match Anne's capture of the Framer button (2026-11-17): one outline around
+ * six round petals, with a hollow centre. Each petal is an arc of radius 4.35
+ * centred 8.2 from the middle, running between its two neighbours' joins; the
+ * earlier version stroked six whole overlapping circles, so their insides
+ * crossed each other.
  */
-function FlowerIcon({ className }: { className?: string }) {
-  const petals = Array.from({ length: 6 }, (_, i) => {
-    const angle = (i * Math.PI) / 3 - Math.PI / 2;
-    return {
-      cx: 16 + Math.cos(angle) * 8.4,
-      cy: 16 + Math.sin(angle) * 8.4,
-    };
-  });
+const PETALS =
+  "M11.72 8.59A4.35 4.35 0 1 1 20.28 8.59A4.35 4.35 0 1 1 24.55 16A4.35 4.35 0 1 1 20.28 23.41A4.35 4.35 0 1 1 11.72 23.41A4.35 4.35 0 1 1 7.45 16A4.35 4.35 0 1 1 11.72 8.59Z";
 
+function FlowerIcon({ className }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 32 32"
       fill="none"
       stroke="currentColor"
-      strokeWidth={1.9}
+      strokeWidth={1.6}
+      strokeLinejoin="round"
       aria-hidden
       className={`shrink-0 ${className ?? ""}`}
     >
-      {petals.map((p, i) => (
-        <circle key={i} cx={p.cx} cy={p.cy} r={5.4} />
-      ))}
-      <circle cx={16} cy={16} r={4.3} />
+      <path d={PETALS} />
+      <circle cx={16} cy={16} r={3} />
     </svg>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties, ReactNode } from "react";
+import { useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 
 import { AppearEffect, TextEffect } from "@/lib/framer-effects";
 import { Butterfly, Smiley, Sparkle } from "@/components/site/Doodles";
@@ -154,6 +154,7 @@ const DESKTOP: Composition = {
     width: 891,
     gap: 51,
     titleGap: 25,
+    // Framer's own 111; Anne's reference layout, 2026-11-17
     offsets: { bottom: 111 },
     title: {
       fontSize: 80,
@@ -175,8 +176,10 @@ const DESKTOP: Composition = {
   },
   arc: { left: 386, top: 39 },
   doodles: [
-    { key: "sparkle", width: 90, height: 91, offsets: { left: 188, top: 37 } },
-    { key: "butterfly", width: 57, height: 57, offsets: { left: 37, bottom: 35 } },
+    // up and left of Framer's 232,58, against the rooster (Anne's reference layout)
+    // 70% of Framer's size, same centre (Anne, 2026-11-17)
+    { key: "sparkle", width: 63, height: 64, offsets: { left: 200, top: 50 } },
+    { key: "butterfly", width: 57, height: 57, offsets: { left: 28, bottom: 40 } },
     { key: "smiley", width: 57, height: 57, offsets: { left: 765, top: 78 } },
   ],
   art: [
@@ -201,7 +204,8 @@ const DESKTOP: Composition = {
       rotation: -19,
       tapRotate: -8,
       parallaxSpeed: 105,
-      offsets: { left: 130, bottom: -5 },
+      // 25px higher than Framer's -34 so the corner is not cropped (Anne, 2026-11-17)
+      offsets: { left: 120, bottom: -9 },
       appear: APPEAR.portrait,
     },
     {
@@ -213,7 +217,7 @@ const DESKTOP: Composition = {
       rotation: 12,
       tapRotate: 20,
       parallaxSpeed: 100,
-      offsets: { left: 743, bottom: 16 },
+      offsets: { left: 778, bottom: 4 },
       appear: APPEAR.framed,
     },
     {
@@ -226,89 +230,6 @@ const DESKTOP: Composition = {
       tapRotate: 15,
       parallaxSpeed: 80,
       offsets: { left: 884, top: -63 },
-      appear: APPEAR.sculpture,
-    },
-  ],
-};
-
-const TABLET: Composition = {
-  name: "tablet",
-  stage: { width: 798, height: 340 },
-  animated: true,
-  content: {
-    // Framer pins this one by its centre, 45% down the stage.
-    width: 731,
-    gap: 51,
-    titleGap: 50,
-    offsets: { top: "45%" },
-    title: {
-      fontSize: 83,
-      lineHeight: "1.1em",
-      letterSpacing: "-2px",
-      maxWidth: 500,
-      textAlign: "center",
-    },
-    tagline: {
-      fontSize: 20,
-      lineHeight: "1.3em",
-      letterSpacing: "-0.2px",
-      maxWidth: 500,
-      textAlign: "center",
-    },
-  },
-  arc: { left: 264, top: -193 },
-  doodles: [
-    { key: "sparkle", width: 50, height: 60, offsets: { left: 176, top: -103 } },
-    { key: "butterfly", width: 57, height: 57, offsets: { left: 37, top: 187 } },
-    { key: "smiley", width: 50, height: 50, offsets: { left: 600, top: 56 } },
-  ],
-  art: [
-    {
-      key: "rooster",
-      variant: "Variant 3",
-      alt: ALT.rooster,
-      width: 141,
-      height: 180,
-      rotation: -25,
-      tapRotate: -17,
-      parallaxSpeed: 85,
-      offsets: { left: 41, top: -141 },
-      appear: APPEAR.rooster,
-    },
-    {
-      key: "portrait",
-      variant: "Variant 5",
-      alt: ALT.portrait,
-      width: 145,
-      height: 188,
-      rotation: -19,
-      tapRotate: -8,
-      parallaxSpeed: 105,
-      offsets: { left: 66, bottom: -142 },
-      appear: APPEAR.portrait,
-    },
-    {
-      key: "framed",
-      variant: "Variant 4",
-      alt: ALT.framed,
-      width: 139,
-      height: 175,
-      rotation: 12,
-      tapRotate: 20,
-      parallaxSpeed: 100,
-      offsets: { left: 613, bottom: -95 },
-      appear: APPEAR.framed,
-    },
-    {
-      key: "sculpture",
-      variant: "Variant 6",
-      alt: ALT.sculpture,
-      width: 112,
-      height: 158,
-      rotation: 32,
-      tapRotate: 15,
-      parallaxSpeed: 80,
-      offsets: { left: 652, top: -131 },
       appear: APPEAR.sculpture,
     },
   ],
@@ -341,8 +262,10 @@ const PHONE: Composition = {
     },
   },
   doodles: [
-    { key: "sparkle", width: 30, height: 30, offsets: { left: 59, top: 168 } },
-    { key: "smiley", width: 30, height: 30, offsets: { left: 311, top: 249 } },
+    // Framer has these at 59,168 and 311,249, on top of the greeting and the
+    // tagline once the copy grew; moved clear of both.
+    { key: "sparkle", width: 30, height: 30, offsets: { left: 32, top: 130 } },
+    { key: "smiley", width: 30, height: 30, offsets: { left: 316, top: 300 } },
     { key: "butterfly", width: 30, height: 31, offsets: { left: 40, bottom: 166 } },
   ],
   art: [
@@ -422,6 +345,12 @@ interface HeroCopy {
   tagline: string;
   /** a short line under the curved "M.S. in UX" text; stages without the arc leave it out */
   arcNote?: string;
+  /** HeroRibbon places the smiley itself, off the heading's top-right corner. */
+  hideSmiley?: boolean;
+  /** the ribbon draws the butterfly itself from 810px up; keep this one for measuring only */
+  swapButterfly?: boolean;
+  /** extra scale on the About me button alone, see ctaBoost */
+  ctaScale?: number;
 }
 
 function Stage({
@@ -435,7 +364,10 @@ function Stage({
   priority: boolean;
   copy: HeroCopy;
 }) {
-  const { stage, content, doodles, art, arc, animated, name } = composition;
+  const { stage, content, art, arc, animated, name } = composition;
+  const doodles = copy.hideSmiley
+    ? composition.doodles.filter((d) => d.key !== "smiley")
+    : composition.doodles;
   const { title, tagline } = content;
 
   const headingFont = HEADING_FONT?.size[name];
@@ -462,7 +394,7 @@ function Stage({
 
   // Framer's "45% down the stage" pin, which has to subtract half the measured
   // height rather than a fixed number, because the block wraps differently.
-  const centred = content.offsets.top === "45%";
+  const centred = typeof content.offsets.top === "string" && content.offsets.top.endsWith("%");
 
   return (
     <div
@@ -481,7 +413,7 @@ function Stage({
           ...(centred
             ? {
                 left: "50%",
-                top: "45%",
+                top: content.offsets.top,
                 transform: "translate(-50%, -50%)",
               }
             : content.offsets.left != null
@@ -535,14 +467,17 @@ function Stage({
             transition: "spring-duration 1.4s 0 1.2s",
           }}
         >
-          <CtaButton href="/about" label="About me" />
+          <div style={copy.ctaScale && copy.ctaScale !== 1 ? { transform: `scale(${copy.ctaScale})` } : undefined}>
+            <CtaButton href="/about" label="About me" />
+          </div>
         </Enter>
       </div>
 
       {doodles.map((layer) => (
         <div
           key={layer.key}
-          className="absolute text-[var(--v2-doodle,#555)]"
+          data-doodle={layer.key}
+          className={`absolute text-[var(--v2-doodle,#555)]${copy.swapButterfly && layer.key === "butterfly" ? " hero-butterfly-swap" : ""}`}
           style={layer.offsets as CSSProperties}
         >
           <Doodle layer={layer} />
@@ -598,37 +533,106 @@ function Stage({
   );
 }
 
+/**
+ * The phone stage is 390 wide. Between 520 and 809 the screen is far wider
+ * than that, so the whole stage is scaled up as one piece (CLAUDE.md hero
+ * composition rule) instead of sitting small in the middle.
+ */
+function phoneScale() {
+  if (typeof window === "undefined") return 1;
+  const w = window.innerWidth;
+  const fit = (w - 40) / PHONE.stage.width;
+  // the hero starts 100px down and the lower paintings end about 557px into
+  // the stage, so they stay in the window with 16px to spare (Anne, 2026-11-17:
+  // they were cropped, and the subtitle and button read too large at 1.7)
+  const tall = (window.innerHeight - 116) / 557;
+  return Math.max(1, Math.min(1 + ((w - 520) / 280) * 0.7, 1.7, fit, tall));
+}
+function subscribeResize(cb: () => void) {
+  window.addEventListener("resize", cb);
+  return () => window.removeEventListener("resize", cb);
+}
+/**
+ * From 810 to 1000 the desktop stage is scaled to about 0.57 to 0.77, which
+ * leaves the About me button small; it gets up to 20% back on its own there,
+ * tapering to none at 1000 (Anne, 2026-11-17).
+ */
+function ctaBoost() {
+  if (typeof window === "undefined") return 1;
+  const t = Math.min(1, Math.max(0, (1000 - window.innerWidth) / 190));
+  return 1 + 0.2 * t;
+}
+function useCtaBoost() {
+  const raw = useSyncExternalStore(subscribeResize, () => Math.round(ctaBoost() * 100), () => 100);
+  return raw / 100;
+}
+function usePhoneScale() {
+  const raw = useSyncExternalStore(subscribeResize, () => Math.round(phoneScale() * 100), () => 100);
+  return raw / 100;
+}
+
+/**
+ * From 810px the desktop composition is used at every width, scaled down as
+ * one piece (CLAUDE.md hero rule; Anne's reference layout, 2026-11-17). The
+ * hero is one window tall and starts about 100px down, under the nav, with the
+ * stage centred in it and lifted LIFT px, so the lower left painting keeps
+ * about 25px of air above the window's bottom edge. The lowest painting's box
+ * hangs about 312px below the stage's centre; the scale keeps it on screen. The painted area is about 1180 wide,
+ * and it must fit the 40px column on each side. It never scales up.
+ */
+const LIFT = 40;
+function fitScale() {
+  if (typeof window === "undefined") return 1;
+  const byHeight = (window.innerHeight / 2 - 86) / 312;
+  const byWidth = (window.innerWidth - 80) / 1200;
+  return Math.max(0.5, Math.min(1, byHeight, byWidth));
+}
+function useFitScale() {
+  const raw = useSyncExternalStore(subscribeResize, () => Math.round(fitScale() * 100), () => 100);
+  return raw / 100;
+}
+
 /** `tagline` and `arcNote` let the v2 preview try new copy; `/` uses the defaults. */
-export function Hero({ tagline = TAGLINE, arcNote }: { tagline?: string; arcNote?: string } = {}) {
-  const copy: HeroCopy = { tagline, arcNote };
+export function Hero({
+  tagline = TAGLINE,
+  arcNote,
+  hideSmiley = false,
+  swapButterfly = false,
+}: { tagline?: string; arcNote?: string; hideSmiley?: boolean; swapButterfly?: boolean } = {}) {
+  const scale = usePhoneScale();
+  const k = useFitScale();
+  const cta = useCtaBoost();
+  const copy: HeroCopy = { tagline, arcNote, hideSmiley, swapButterfly };
   return (
     <section
       id="hero"
-      className="relative flex items-center justify-center overflow-hidden tablet:h-screen"
+      className="hero-clip relative flex items-center justify-center overflow-hidden tablet:h-screen"
       /* Framer's section spans the whole padded column of the frame, not the
          1200px reading column, and clips there. The margins pull it back out
-         of `main`'s max width so the clip lands where Framer puts it. */
-      style={{
-        width: "calc(100vw - 80px)",
-        marginLeft: "calc(50% + 40px - 50vw)",
-        marginRight: "calc(50% + 40px - 50vw)",
-      }}
+         of `main`'s max width so the clip lands where Framer puts it. Phones
+         clip at the page's own 20px gutter instead, so the one-line greeting
+         is not cut on a 360px screen. Both live in `.hero-clip`. */
     >
       {/* TEMPORARY font comparison: active only with ?font= or ?accent=. */}
       <FontPreview />
-      <Stage composition={PHONE} className="tablet:hidden" priority copy={copy} />
-      <Stage
-        composition={TABLET}
-        className="hidden tablet:block desktop:hidden"
-        priority={false}
-        copy={copy}
-      />
-      <Stage
-        composition={DESKTOP}
-        className="hidden desktop:block"
-        priority={false}
-        copy={copy}
-      />
+      <div
+        className="shrink-0 tablet:hidden"
+        style={{ width: PHONE.stage.width * scale, height: PHONE.stage.height * scale }}
+      >
+        <div style={{ transform: `scale(${scale})`, transformOrigin: "top left", width: PHONE.stage.width, height: PHONE.stage.height }}>
+          <Stage composition={PHONE} className="" priority copy={copy} />
+        </div>
+      </div>
+      <div
+        className="hidden shrink-0 tablet:block"
+        style={{
+          width: DESKTOP.stage.width,
+          height: DESKTOP.stage.height,
+          transform: `translateY(-${LIFT}px)${k !== 1 ? ` scale(${k})` : ""}`,
+        }}
+      >
+        <Stage composition={DESKTOP} className="block" priority={false} copy={{ ...copy, ctaScale: cta }} />
+      </div>
     </section>
   );
 }

@@ -472,61 +472,102 @@ function resting(hero: HTMLElement, alt: string) {
   return { left: cx - width / 2, top: cy - height / 2, bottom: cy + height / 2, width, height };
 }
 
+/** Below Framer's 810px tablet breakpoint the hero uses its phone stage. */
+/** Below Framer's 810px tablet breakpoint the hero uses its phone stage. */
+function isPhoneLayout() {
+  return !window.matchMedia("(min-width: 810px)").matches;
+}
+
+/** The visible About me button, the anchor for the seal and the flower. */
+function visible(hero: HTMLElement, selector: string) {
+  return Array.from(hero.querySelectorAll<HTMLElement>(selector)).find(
+    (e) => e.getBoundingClientRect().width > 0,
+  );
+}
+
+const ART = [
+  "Ink painting of a rooster",
+  "Pastel portrait painting",
+  "Framed textile artwork",
+  "Sculpture of a child",
+];
+
 /**
- * Places the seal under the rooster, mirroring where the flower sits under
- * the sketch on the other side. On phones it mirrors the flower's phone spot
- * instead: in the gap just above the pastel portrait.
+ * The seal sits left of the About me button and a little above its middle,
+ * in every layout. Anne's rule (2026-11-17): nothing in the hero may cover
+ * anything else, so it is anchored to the button, not to a painting.
  */
 function measureSeal(overlay: HTMLElement, hero: HTMLElement): Spot | null {
   const o = overlay.getBoundingClientRect();
   const r = resting(hero, "Ink painting of a rooster");
-  if (!r || !o.width) return null;
-  if (o.width < 600) {
-    const p = resting(hero, "Pastel portrait painting");
-    if (!p) return null;
-    const size = Math.round(r.width * 0.32);
-    return {
-      x: Math.round(p.left - o.left + p.width * 0.72),
-      y: Math.round(p.top - o.top - size * 0.75),
-      size,
-    };
+  const btn = visible(hero, 'a[href="/about"]');
+  if (!r || !btn || !o.width) return null;
+  const b = btn.getBoundingClientRect();
+  const size = Math.round(Math.min(r.width * 0.3, b.height * 0.95));
+  // from 810px up: left of the heading, a little below its middle, as in
+  // Anne's reference layout (2026-11-17), at about 0.45 of the heading's height
+  const h = !isPhoneLayout() ? visible(hero, "h1.hero-title") : undefined;
+  if (h) {
+    const hr = document.createRange();
+    hr.selectNodeContents(h);
+    const t = hr.getBoundingClientRect();
+    if (t.width) {
+      return {
+        x: Math.round(t.left - o.left - t.height * 0.85),
+        y: Math.round(t.top - o.top + t.height * 0.88),
+        size: Math.round(t.height * 0.45),
+      };
+    }
   }
-  const size = Math.round(r.width * 0.3);
   return {
-    x: Math.round(Math.max(size * 0.6, r.left - o.left + r.width * 0.42)),
-    y: Math.round(r.bottom - o.top + size * 0.95),
+    // up and to the left of the button's top-left corner (Anne, 2026-11-17)
+    x: Math.round(b.left - o.left - size * 0.95),
+    y: Math.round(b.top - o.top - size * 0.2),
     size,
   };
 }
 
 /**
- * Finds the pencil sketch inside the hero and places the flower under it.
- * On phones the heading sits right under the sketch, so the flower moves
- * further down the same side, into the gap above the framed piece.
+ * The flower grows from the button's bottom-right corner. It shrinks rather
+ * than move when a painting below would meet it, so it never covers one.
  */
 function measure(overlay: HTMLElement, hero: HTMLElement): Spot | null {
   const o = overlay.getBoundingClientRect();
   const r = resting(hero, "Sculpture of a child");
-  if (!r || !o.width) return null;
-  if (o.width < 600) {
-    const f = resting(hero, "Framed textile artwork");
-    if (!f) return null;
-    const size = Math.round(r.width * 0.6);
-    return {
-      x: Math.round(f.left - o.left + f.width * 0.62),
-      y: Math.round(f.top - o.top - size * 0.72),
-      size,
-    };
+  const btn = visible(hero, 'a[href="/about"]');
+  if (!r || !btn || !o.width) return null;
+  if (!isPhoneLayout()) {
+    // from 810px up: under the sketch, a little right of its middle (Anne's
+    // reference layout, 2026-11-17), a touch smaller than it was there
+    const size = Math.round(r.width * 0.66);
+    const top = r.bottom - o.top + 2;
+    return { x: Math.round(r.left - o.left + r.width * 0.62), y: Math.round(top + size / 2), size };
   }
-  const size = Math.round(r.width * 0.78);
-  return {
-    x: Math.round(
-      Math.min(o.width - size * 0.3, r.left - o.left + r.width * 0.62),
-    ),
-    y: Math.round(r.bottom - o.top + size * 0.42),
-    size,
-  };
+  const b = btn.getBoundingClientRect();
+  const base = r.width * 0.6;
+  const left = b.right - o.left + 6;
+  const top = b.top - o.top + b.height * 0.55;
+  let size = Math.min(base, o.width - 4 - left);
+  for (const alt of ART) {
+    const a = resting(hero, alt);
+    if (!a) continue;
+    const aLeft = a.left - o.left;
+    const aTop = a.top - o.top;
+    const aRight = aLeft + a.width;
+    const aBottom = aTop + a.height;
+    if (aRight <= left || aLeft >= left + size) continue;
+    if (aBottom <= top || aTop >= top + size * 1.5) continue;
+    // a painting beside the flower caps its width, one below caps its height
+    size = aTop <= top ? Math.min(size, aLeft - 6 - left) : Math.min(size, (aTop - 6 - top) / 1.5);
+  }
+  size = Math.round(Math.max(24, size));
+  return { x: Math.round(left + size / 2), y: Math.round(top + size / 2), size };
 }
+
+const same = (a: Spot | null, b: Spot) =>
+  a && Math.abs(a.x - b.x) < 4 && Math.abs(a.y - b.y) < 4 && Math.abs(a.size - b.size) < 3
+    ? a
+    : b;
 
 export function HeroRibbon() {
   const reduce = useReducedMotion() ?? false;
@@ -539,36 +580,24 @@ export function HeroRibbon() {
     const run = () => {
       if (!overlay.current || !hero.current) return;
       const g = measure(overlay.current, hero.current);
-      if (!g) return;
-      // ignore sub-pixel noise; only move the flower for real layout changes
-      setSpot((old) =>
-        old &&
-        Math.abs(old.x - g.x) < 12 &&
-        Math.abs(old.y - g.y) < 12 &&
-        Math.abs(old.size - g.size) < 6
-          ? old
-          : g,
-      );
+      if (g) setSpot((old) => same(old, g));
       const s = measureSeal(overlay.current, hero.current);
-      if (s)
-        setSeal((old) =>
-          old &&
-          Math.abs(old.x - s.x) < 12 &&
-          Math.abs(old.y - s.y) < 12 &&
-          Math.abs(old.size - s.size) < 6
-            ? old
-            : s,
-        );
+      if (s) setSeal((old) => same(old, s));
     };
     // the resting boxes are known before the artwork lands, so place the
-    // flower and seal straight away; after that only real layout changes move them
+    // flower and seal straight away; after that only real layout changes move
+    // them. The heading's glyphs need the web font, so measure again once it is in.
     run();
     const frame = window.requestAnimationFrame(run);
+    // the button rises into place over its first 2.6s, so measure again once it has landed
+    const late = [1500, 2800].map((ms) => window.setTimeout(run, ms));
+    document.fonts?.ready.then(run);
     const ro = new ResizeObserver(run);
     if (hero.current) ro.observe(hero.current);
     window.addEventListener("resize", run);
     return () => {
       window.cancelAnimationFrame(frame);
+      late.forEach((t) => window.clearTimeout(t));
       ro.disconnect();
       window.removeEventListener("resize", run);
     };

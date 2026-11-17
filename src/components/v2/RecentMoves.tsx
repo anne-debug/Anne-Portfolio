@@ -187,7 +187,7 @@ function Polaroid({ move, tilt, reduce }: { move: Move; tilt: number; reduce: bo
   );
 }
 
-/** the row only fits (and so only drags) from the desktop breakpoint up; below it the line scrolls sideways */
+/** the polaroids drag along the string from the desktop breakpoint up; tablets show the row still, phones stack it */
 const DESKTOP = "(min-width: 1200px)";
 function useDesktop() {
   return useSyncExternalStore(
@@ -284,20 +284,23 @@ export function RecentMoves() {
         </p>
       </div>
 
-      {/* phones and tablets scroll the line sideways; on desktop it fits the column */}
-      <div className="-mx-5 overflow-x-auto px-5 pb-8 pt-1 [scrollbar-width:none] tablet:-mx-10 tablet:px-10 desktop:mx-0 desktop:overflow-visible desktop:px-0 [&::-webkit-scrollbar]:hidden">
-        {/* about 230px a polaroid while scrolling; desktop shares the column */}
+      {/* phones stack the polaroids, each on its own short string; from tablet up they share one line */}
+      <div className="pb-8 pt-1">
         <div
           ref={rowRef}
-          className="relative grid w-[var(--row-w)] gap-5 desktop:w-full"
-          style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`, "--row-w": `${n * 250}px` } as React.CSSProperties}
+          className="moves-row relative grid w-full"
+          style={{ "--cols": n } as React.CSSProperties}
         >
           {/* the string, edge to edge, sagging in the middle */}
-          <svg className="pointer-events-none absolute inset-x-0 top-0 w-full" height={END + SAG + 12} viewBox={`0 0 100 ${END + SAG + 12}`} preserveAspectRatio="none" aria-hidden>
+          <svg className="moves-line pointer-events-none absolute inset-x-0 top-0 w-full" height={END + SAG + 12} viewBox={`0 0 100 ${END + SAG + 12}`} preserveAspectRatio="none" aria-hidden>
             <path d={`M0 ${END} Q50 ${END + 2 * SAG} 100 ${END}`} fill="none" style={{ stroke: "var(--color-dark-charcoal)" }} strokeWidth={1.4} vectorEffect="non-scaling-stroke" />
           </svg>
           {MOVES.map((m, i) => (
-            <div key={m.title} style={{ paddingTop: drop(i) - 14 }}>
+            <div key={m.title} className="moves-item relative" style={{ "--drop": `${drop(i) - 14}px` } as React.CSSProperties}>
+              {/* phones only: this polaroid's own piece of string, passing through its clip at y=14 */}
+              <svg className="moves-own-line pointer-events-none absolute inset-x-0 top-0 w-full" height={30} viewBox="0 0 100 30" preserveAspectRatio="none" aria-hidden>
+                <path d="M0 6 Q50 22 100 6" fill="none" style={{ stroke: "var(--color-dark-charcoal)" }} strokeWidth={1.4} vectorEffect="non-scaling-stroke" />
+              </svg>
               <Hanging i={i} n={n} rowRef={rowRef} rowW={rowW} canDrag={canDrag} reduce={reduce}>
                 <Clip />
                 <div className="-mt-3 w-full max-w-[300px] px-2">

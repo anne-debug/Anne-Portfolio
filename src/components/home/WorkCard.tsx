@@ -89,10 +89,10 @@ export function WorkCard({
       }`}
     >
       <div className="flex w-full flex-col gap-2.5">
-        <h3 className="ts-heading-5 w-full text-left text-[22px] tablet:text-[36px]">
+        <h3 className="ts-heading-5 w-full text-left text-[22px] min-[600px]:text-[24px] tablet:text-[36px]">
           {name}
         </h3>
-        <p className="ts-body w-full text-left text-[14px] text-light-grey tablet:text-[16px]">
+        <p className="ts-body w-full text-left text-[14px] text-light-grey min-[600px]:text-[15px] tablet:text-[16px]">
           {summary}
         </p>
       </div>
@@ -139,7 +139,7 @@ export function WorkCard({
       <ProjectCover
         slug={slug}
         title={name}
-        sizes="278px"
+        sizes="(width < 600px) 100vw, 460px"
         className={coverMotion}
       />
     </div>
@@ -183,7 +183,13 @@ export function WorkCard({
       /* No explicit height here: the two-up row stretches its items, and an
          explicit height would opt this one out of that and leave the pair
          ending at different points. */
-      className={large ? "w-full" : "w-full tablet:w-[504px]"}
+      /* 600 to 809 shows one card per row; full width made them read as
+         posters, so they hold at 460, about a third smaller (Anne, 2026-11-17). */
+      className={
+        large
+          ? "w-full min-[600px]:max-w-[460px] tablet:max-w-none"
+          : "w-full min-[600px]:max-w-[460px] tablet:w-[504px] tablet:max-w-none"
+      }
     >
       <Link
         href={href}
@@ -191,7 +197,7 @@ export function WorkCard({
         onMouseLeave={() => setHovered(false)}
         onFocus={() => setHovered(true)}
         onBlur={() => setHovered(false)}
-        className={`flex h-full w-full flex-col items-start gap-5 overflow-clip rounded-2xl bg-[var(--work-card)] p-4 tablet:p-5 ${
+        className={`flex h-full w-full flex-col items-start gap-5 overflow-clip rounded-2xl bg-[var(--work-card)] p-4 min-[600px]:p-5 ${
           large ? "tablet:flex-row tablet:items-stretch" : "tablet:flex-col"
         }`}
       >

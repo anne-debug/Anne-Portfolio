@@ -1888,10 +1888,10 @@ body {
 }
 
 /* Project tags (case-study headers, More Projects, home project cards): the
-   dark charcoal pill in light mode, orange in dark mode (Anne, 2026-11-16).
-   Near-black text on the orange is 5.3:1. */
+   dark charcoal pill in light mode, cream in dark mode. Orange is kept for
+   calls to action only (Anne, 2026-11-17). */
 [data-theme="dark"] .project-tag:not([data-theme="light"] *) {
-  background-color: var(--color-orange);
+  background-color: rgb(248, 246, 243);
   color: rgb(26, 26, 26);
 }
 
@@ -1904,6 +1904,35 @@ body {
 /* IBM Builder: its hero is charcoal in light mode too, so the tag there is
    orange in both modes (CaseStudy.tsx). */
 .ibm-hero-tag .project-tag {
-  background-color: var(--color-orange);
+  background-color: rgb(248, 246, 243);
   color: rgb(26, 26, 26);
+}
+
+/* Home hero clip: the page gutter on phones, Framer's 40px column from 810 up. */
+.hero-clip { width: 100%; }
+@media (min-width: 810px) {
+  .hero-clip {
+    width: calc(100vw - 80px);
+    margin-left: calc(50% + 40px - 50vw);
+    margin-right: calc(50% + 40px - 50vw);
+  }
+}
+
+/* Recent Life: one polaroid per row on phones, each on its own string; one shared line from 810 up. */
+.moves-row { grid-template-columns: minmax(0, 1fr); gap: 44px; }
+.moves-line { display: none; }
+@media (min-width: 810px) {
+  .moves-row { grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 20px; }
+  .moves-line { display: block; }
+  .moves-own-line { display: none; }
+  .moves-item { padding-top: var(--drop); }
+}
+
+/* From 810px the hero ribbon draws the butterfly and the seal swaps places;
+   the hero's own butterfly stays in the layout only so the seal can be measured against it.
+   Desktop too since 2026-11-17: visible there, it sat on top of the seal. */
+@media (min-width: 810px) {
+  .hero-butterfly-swap {
+    visibility: hidden;
+  }
 }

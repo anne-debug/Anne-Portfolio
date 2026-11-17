@@ -16,9 +16,9 @@ export function AboutMe() {
       </div>
 
       <div className="grid w-full grid-cols-1 gap-5 desktop:grid-cols-[minmax(0,1fr)_clamp(300px,27%,330px)]">
-        {/* phones: the board keeps a readable size and scrolls sideways */}
-        <div className="-mx-5 overflow-x-auto px-5 pb-2 tablet:mx-0 tablet:overflow-visible tablet:px-0 tablet:pb-0 desktop:relative desktop:aspect-[800/480]">
-          <div className="w-[640px] tablet:w-full desktop:absolute desktop:inset-0 desktop:h-full">
+        {/* the whole board scales with the column at every width, phones included */}
+        <div className="desktop:relative desktop:aspect-[800/480]">
+          <div className="w-full desktop:absolute desktop:inset-0 desktop:h-full">
             <LampBoard />
           </div>
         </div>
