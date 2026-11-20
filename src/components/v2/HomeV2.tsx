@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { SelectedWork } from "@/components/home/SelectedWork";
 import type { WorkCardProps } from "@/components/home/WorkCard";
-import { AboutMe } from "@/components/v2/AboutMe";
 import { IntroBento } from "@/components/v2/Bento";
 import { HeroRibbon } from "@/components/v2/HeroRibbon";
 import { KindWords } from "@/components/v2/KindWords";
@@ -14,8 +13,8 @@ import { PROJECTS } from "@/lib/projects";
  * `/v2-preview`, where it was drafted, now redirects here).
  *
  * Sections sit side by side in bento grids rather than one row each:
- * orange wordmark (top left) → original hero with an ink flower → about me
- * pegboard → Selected Work cards (the home page's own design: IBM large, then
+ * orange wordmark (top left) → original hero with an ink flower →
+ * Selected Work (About me moved to /about on 2026-11-20) cards (the home page's own design: IBM large, then
  * Taipei Metro and BudgetCart side by side) → [lamp + testimonials bento] → peelable sticker
  * board → latest moves on a polaroid clothesline → dark footer with 鈺 in
  * red calligraphy and the make-a-wish candle. The footer is the site-wide ink footer from the root layout (site/Footer.tsx).
@@ -55,11 +54,6 @@ export function HomeV2() {
         Anne Lin
       </Link>
       <HeroRibbon />
-      {/* the hero is one screen tall, so About me can sit closer to it and
-          still stay below the first screen */}
-      <div className="tablet:-mt-[70px]">
-        <AboutMe />
-      </div>
       <SelectedWork work={WORK} flush hideDescription moreLabel="View More" />
       {/* closer to Selected Work above (70px) and a little more room before My toolkit (84px) */}
       <div className="v2-words-gap">
