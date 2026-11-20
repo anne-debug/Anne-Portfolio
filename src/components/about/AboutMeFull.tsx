@@ -38,7 +38,7 @@ export function AboutMeFull() {
               M.S. in UX @UMICH ’27
             </p>
             {/* Anne's IBM internship, as a second credential under the degree (2026-11-20) */}
-            <p className="-mt-1 text-[15px] font-medium leading-[1.3] text-dark-charcoal" style={sans}>
+            <p className="-mt-1 text-[15px] font-bold leading-[1.3] text-dark-charcoal" style={sans}>
               Prev. Design Intern @IBM
             </p>
             <div className="flex flex-col gap-4 text-[15px] leading-[1.5] text-dark-charcoal" style={sans}>
