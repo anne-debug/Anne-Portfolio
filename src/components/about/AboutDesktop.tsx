@@ -2,7 +2,9 @@
 
 import Image from "next/image";
 import { AnimatePresence } from "motion/react";
-import { useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+
+import { OPEN_FOLDER_EVENT } from "@/components/v2/FigmaPinboard";
 
 import { AboutMeCard, NotesContent } from "./AboutPanels";
 import { Carousel } from "./Carousel";
@@ -292,6 +294,21 @@ export function AboutDesktop() {
   const [front, setFront] = useState<string | null>(null);
   const desk = useRef<HTMLDivElement>(null);
   const folder = FOLDERS.find((f) => f.key === open);
+
+  // Photos on the About me pinboard above open a folder here: scroll the
+  // desktop into view and open that folder's window.
+  useEffect(() => {
+    const onOpen = (e: Event) => {
+      const key = (e as CustomEvent<string>).detail;
+      if (!FOLDERS.some((f) => f.key === key)) return;
+      setOpen(key);
+      setFront(key);
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      desk.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    };
+    window.addEventListener(OPEN_FOLDER_EVENT, onOpen);
+    return () => window.removeEventListener(OPEN_FOLDER_EVENT, onOpen);
+  }, []);
 
   // Full bleed: the wallpaper has to fill the viewport on every screen, so the
   // desktop is not held inside the 1200px reading column and carries no rounded
