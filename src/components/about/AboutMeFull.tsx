@@ -11,14 +11,11 @@ const sans = { fontFamily: "var(--font-dm-sans)" };
 export function AboutMeFull() {
   return (
     <section aria-labelledby="about-title" className="flex w-full flex-col gap-6">
-      <div>
-        <p className="inline-block -rotate-[4deg] text-[22px] leading-[1.2] text-orange" style={mansalva}>
-          hi again ✎
-        </p>
-        <h2 id="about-title" className="ts-heading-2 mt-1 text-deep-blue">
-          About me
-        </h2>
-      </div>
+      {/* Anne took the visible "hi again / About me" title off the About page
+          (2026-11-20); the heading stays for screen readers */}
+      <h2 id="about-title" className="sr-only">
+        About me
+      </h2>
 
       <div className="grid w-full grid-cols-1 gap-5 desktop:grid-cols-[minmax(0,1fr)_clamp(300px,27%,330px)]">
         {/* the whole board scales with the column at every width, phones included */}

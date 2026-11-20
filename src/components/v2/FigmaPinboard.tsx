@@ -8,25 +8,15 @@ import { FairyLights } from "./FairyLights";
 import { Zoomable } from "@/components/case/Zoomable";
 
 const imgClipBrwon1 = "/images/about/figma/db18c.png";
-const imgFrT46H4O9HE2GghYtusQjRja58Png = "/images/about/figma/0f176.png";
-const imgSticker2 = "/images/about/figma/d5246.png";
 const imgDNbePbtfEUrh2WFhTqTeh9Sh88Png = "/images/about/figma/b1b11.png";
 const imgClip1 = "/images/about/figma/097cd.png";
 const imgClip2 = "/images/about/figma/62121.png";
 const imgClip3 = "/images/about/figma/a8f63.png";
-const imgKeychain2 = "/images/about/figma/13287.png";
-const imgW7HsK1OaSnYxJVi81FjpD7TmDeePng = "/images/about/figma/ae1c1.png";
-const imgFlower = "/images/about/figma/1c6ad.png";
-const img8GsgDiMwbp8Oq7FhXsJwVhrCjMPng = "/images/about/figma/0fb31.png";
 const imgIImFs22UxbIck58AmePssyz6LrEPng = "/images/about/figma/cd5dd.png";
 const imgChainClip = "/images/about/figma/b35e0.png";
 const imgCAyHBde2ZJo13Y7GNEfyDe1AWlsPng = "/images/about/figma/c6f9f.png";
-const imgHi661NDih1RBaIcc4A0Qp5Cd18Png = "/images/about/figma/831cb.png";
 const imgMinimalistWhitePencil1 = "/images/about/figma/e85bd.png";
 const imgSticker1 = "/images/about/figma/bc03b.png";
-const imgGroup2 = "/images/about/figma/135e8.svg";
-const imgGroup3 = "/images/about/figma/43ed3.svg";
-const imgSvg15895522381237A1928Z = "/images/about/figma/a5f18.svg";
 
 /* Anne's own photos (2026-11-16): from her About page folders and the IBM
    internship. Re-encoded without location data in public/images/about/mine. */
@@ -71,38 +61,6 @@ function PinboardArt() {
             <div className="-translate-x-1/2 absolute h-[60.31px] left-1/2 top-0 w-[41.6px]" data-node-id="194:195" data-name="Clip brwon1">
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <img alt="" className="absolute h-full left-[-0.97%] max-w-none top-0 w-[101.94%]" src={imgClipBrwon1} />
-              </div>
-            </div>
-          </div>
-          <div className="absolute bg-[var(--color\/red\/20,#5e0a0a)] content-stretch flex flex-col gap-[var(--item-spacing\/8,8px)] h-[80.8px] items-center justify-end overflow-clip pb-[4.8px] px-[4.8px] right-[18.4px] rounded-[var(--opacity\/12,12px)] top-[78.4px] w-[142.4px]" data-node-id="194:197" data-name="Name Tag">
-            <div className="content-stretch flex flex-col items-start relative shrink-0" data-node-id="194:201" data-name="div.framer-11w6wyu">
-              <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-node-id="194:202" data-name="p.framer-text">
-                <div className="[word-break:break-word] flex flex-col font-[family-name:var(--font-family\/font-3,var(--font-inter),sans-serif)] font-[var(--font-weight\/700,700)] justify-center leading-[0] not-italic relative shrink-0 text-[12.8px] text-[color:var(--color\/grey\/91,#f7ecda)] whitespace-nowrap" data-node-id="194:203">
-                  <p className="leading-[var(--line-height\/15_36,15.36px)]">MY NAME TAG</p>
-                </div>
-              </div>
-            </div>
-            <div className="h-[44.8px] overflow-clip relative rounded-[var(--corner-radius\/4,4px)] shrink-0 w-full" data-node-id="194:208" data-name="div.framer-1lm9r66">
-              <div className="absolute inset-0 rounded-[var(--corner-radius\/4,4px)]" data-node-id="194:210" data-name="frT46H4O9hE2gghYTUSQjRja58.png">
-                <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[var(--corner-radius\/4,4px)]">
-                  <img alt="" className="absolute h-[161.69%] left-0 max-w-none top-0 w-full" src={imgFrT46H4O9HE2GghYtusQjRja58Png} />
-                </div>
-              </div>
-              <div className="absolute content-stretch flex flex-col inset-[7.3%_29.82%_9.29%_29.83%] items-start" data-node-id="194:211" data-name="div.framer-q9no3s">
-                <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-node-id="194:212" data-name="p.framer-text">
-                  <div className="[word-break:break-word] flex flex-col font-[family-name:var(--font-family\/font-4,var(--pinboard-hand))] justify-center leading-[0] not-italic relative shrink-0 text-[30.4px] text-[color:var(--token\/ffb0ff11-cab3-40ad-af6c-69f4ede46c1e,black)] w-full" data-node-id="194:213">
-                    <p className="leading-[var(--line-height\/36_48,36.48px)]">ANNE</p>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute bottom-[0.37px] flex h-[25.339px] items-center justify-center left-[110.5px] w-[22.199px]" data-node-id="194:216">
-                <div className="flex-none rotate-8">
-                  <div className="h-[22.89px] relative w-[19.2px]" data-name="Sticker 2">
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                      <img alt="" className="absolute h-full left-[-0.02%] max-w-none top-0 w-[100.03%]" src={imgSticker2} />
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -185,63 +143,6 @@ function PinboardArt() {
               </div>
             </div>
           </div>
-          <div className="absolute bottom-[4.8px] h-[132.49px] left-[337.6px] w-[118.4px]" data-node-id="194:274" data-name="Keychain 2">
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <img alt="" className="absolute h-[100.01%] left-0 max-w-none top-[-0.01%] w-full" src={imgKeychain2} />
-            </div>
-            <div className="absolute content-stretch flex flex-col h-[19.2px] items-start justify-center left-[60px] top-[9.6px] w-[6.4px]" data-node-id="194:276" data-name="div.framer-vib21s">
-              <div className="flex-[1_0_0] min-h-px relative w-full" data-node-id="194:278" data-name="Frame">
-                <div className="absolute inset-0 opacity-[calc(var(--opacity\/100,100)/100)] overflow-clip" data-node-id="194:279" data-name="svg-1810177694_1237">
-                  <div className="absolute contents inset-[-56.7%_-195%_-56.6%_-195%]" data-node-id="194:280" data-name="Group">
-                    <div className="absolute contents inset-[-56.7%_-195%_-56.6%_-195%]" data-node-id="194:286" data-name="Mask group">
-                      <div className="absolute inset-0 mask-intersect mask-luminance mask-no-clip mask-no-repeat mask-position-[-12.48px_-10.886px] mask-size-[31.36px_40.954px] opacity-[calc(var(--opacity\/100,100)/100)]" data-node-id="194:281" style={{ maskImage: `url("${imgGroup2}")` }} data-name="Group">
-                        <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgGroup3} />
-                      </div>
-                    </div>
-                    <div className="absolute inset-0 opacity-[calc(var(--opacity\/100,100)/100)]" data-node-id="194:287" data-name="svg-1810177694_1237_a1936z">
-                      <img alt="" className="absolute block inset-0 max-w-none size-full" src={imgSvg15895522381237A1928Z} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="absolute flex h-[70.925px] items-center justify-center right-[136.37px] top-[4.6px] w-[55.254px]" data-node-id="194:288">
-            <div className="flex-none rotate-10">
-              <div className="h-[64.12px] relative w-[44.8px]" data-name="2">
-                <div className="absolute inset-[0_0_-0.01px_0]" data-node-id="194:289" data-name="w7hsK1OaSnYxJVi81fjpD7TmDEE.png">
-                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <img alt="" className="absolute h-[100.06%] left-0 max-w-none top-[-0.03%] w-full" src={imgW7HsK1OaSnYxJVi81FjpD7TmDeePng} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="absolute flex h-[64.79px] items-center justify-center right-[59.35px] top-[13.15px] w-[48.512px]" data-node-id="194:290">
-            <div className="-rotate-6 flex-none">
-              <div className="h-[60.69px] relative w-[42.4px]" data-name="2">
-                <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                  <img alt="" className="absolute h-[100.06%] left-0 max-w-none top-[-0.03%] w-full" src={imgW7HsK1OaSnYxJVi81FjpD7TmDeePng} />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="absolute h-[60.92px] right-[96px] top-[12.8px] w-[56.8px]" data-node-id="194:292" data-name="Flower">
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <img alt="" className="absolute h-full left-[-0.01%] max-w-none top-0 w-[100.03%]" src={imgFlower} />
-            </div>
-          </div>
-          <div className="absolute flex h-[72.452px] items-center justify-center right-[8.99px] top-[7.7px] w-[63.618px]" data-node-id="194:294">
-            <div className="flex-none rotate-19">
-              <div className="h-[60.65px] relative w-[46.4px]" data-name="6">
-                <div className="absolute inset-[0_0_-0.01px_0]" data-node-id="194:295" data-name="8gsgDiMwbp8Oq7FhXsJwVHRCjM.png">
-                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <img alt="" className="absolute h-[100.04%] left-0 max-w-none top-[-0.02%] w-full" src={img8GsgDiMwbp8Oq7FhXsJwVhrCjMPng} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div className="absolute h-[77.6px] left-[262px] top-[26.4px] w-[172.8px]" data-node-id="194:296" data-name="Live clock">
             <PreviousPinboardClock />
           </div>
@@ -279,18 +180,7 @@ function PinboardArt() {
               </div>
             </div>
           </div>
-          <div className="absolute bottom-[127.36px] flex h-[114.621px] items-center justify-center right-[313.01px] w-[83.578px]" data-node-id="194:378">
-            <div className="flex-none rotate-5">
-              <div className="h-[108.55px] relative w-[74.4px]" data-name="soft toy">
-                <div className="absolute inset-[0_0_0.01px_0]" data-node-id="194:379" data-name="hi661NDih1rBAIcc4a0Qp5CD18.png">
-                  <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                    <img alt="" className="absolute h-[100.02%] left-0 max-w-none top-[-0.01%] w-full" src={imgHi661NDih1RBaIcc4A0Qp5Cd18Png} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* typed weather line, right-aligned in the gap under the name tag and above the kitchen photos */}
+          {/* typed weather line, right-aligned above the kitchen photos */}
           <div className="absolute right-[20px] top-[188px] w-[260px]" data-name="Weather">
             <WeatherCard />
           </div>
