@@ -64,7 +64,8 @@ export function StickerPile() {
   const reduce = useReducedMotion() ?? false;
 
   return (
-    <div className="relative mx-auto h-[76px] w-full max-w-[960px] tablet:h-[88px] desktop:h-[100px]">
+    <div className="relative mx-auto h-[96px] w-full max-w-[960px] tablet:h-[124px] desktop:h-[148px]">
+      {/* taller than the first version (76/88/100) so the stickers have air above them (Anne, 2026-11-20) */}
       {/* the row watches the viewport as a whole; each sticker follows */}
       <motion.ul
         aria-label="Tools I use"

@@ -21,7 +21,8 @@ const sans = { fontFamily: "var(--font-dm-sans)" };
 export function IntroBento() {
   return (
     <section aria-labelledby="skills-title" className="w-full">
-      <div className="flex flex-col gap-6">
+      {/* more room between the heading and the stickers so the section reads less flat (Anne, 2026-11-20) */}
+      <div className="flex flex-col gap-10 tablet:gap-14">
         <div className="flex items-end justify-between gap-4">
           <div>
             <h2 id="skills-title" className="ts-heading-2 text-deep-blue">

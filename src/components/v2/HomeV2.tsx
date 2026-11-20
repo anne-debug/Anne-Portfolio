@@ -54,12 +54,19 @@ export function HomeV2() {
         Anne Lin
       </Link>
       <HeroRibbon />
-      <SelectedWork work={WORK} flush hideDescription moreLabel="View More" />
-      {/* closer to Selected Work above (70px) and a little more room before My toolkit (84px) */}
+      {/* the hero fills a screen and its content ends well above that, so
+          Selected Work comes up 80px from 810 up; its heading still lands
+          below the first screen */}
+      <div className="tablet:-mt-[80px]">
+        <SelectedWork work={WORK} flush hideDescription moreLabel="View More" />
+      </div>
+      {/* 160px from Selected Work above and from My toolkit below (120px on phones) */}
       <div className="v2-words-gap">
         <KindWords />
       </div>
-      <IntroBento />
+      <div className="v2-toolkit-gap">
+        <IntroBento />
+      </div>
       <RecentMoves />
     </main>
   );

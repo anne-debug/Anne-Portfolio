@@ -1864,12 +1864,23 @@ body {
   }
 }
 
-/* v2 home: "What others say" sits 70px under Selected Work and 84px above
-   My toolkit (the page's own gap is 100px from 810 up). */
+/* v2 home: Selected Work, What others say, My toolkit and Recent life are
+   120px apart on phones and 160px from 810 up (the page's own gap is 80px,
+   then 100px). Anne, 2026-11-20. */
+.v2-words-gap {
+  margin-top: 40px;
+}
+.v2-words-gap,
+.v2-toolkit-gap {
+  margin-bottom: 40px;
+}
 @media (min-width: 810px) {
   .v2-words-gap {
-    margin-top: -30px;
-    margin-bottom: -16px;
+    margin-top: 60px;
+    margin-bottom: 60px;
+  }
+  .v2-toolkit-gap {
+    margin-bottom: 60px;
   }
 }
 
