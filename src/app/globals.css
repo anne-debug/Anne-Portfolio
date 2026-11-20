@@ -1673,7 +1673,8 @@ body:has(.ibm-intro) #case-sections {
   /* fairy lights on the About me board: unlit when the board is light */
   --fairy-glow: 0;
   --v2-ring: rgba(0, 22, 102, 0.12);
-  --v2-board: #f0f0f0;
+  /* darker than the page (rgb 248,246,243) so the board reads as its own surface; was #f0f0f0 (Anne, 2026-11-20) */
+  --v2-board: #e8e5df;
   --v2-board-hole: #f8f6f3;
   --v2-sticker-board: #f1efe7;
   --v2-avatar: #e3e0da;
@@ -1757,7 +1758,8 @@ body:has(.ibm-intro) #case-sections {
   /* fairy lights on the About me board: unlit when the board is light */
   --fairy-glow: 0;
   --v2-ring: rgba(0, 22, 102, 0.12);
-  --v2-board: #f0f0f0;
+  /* darker than the page (rgb 248,246,243) so the board reads as its own surface; was #f0f0f0 (Anne, 2026-11-20) */
+  --v2-board: #e8e5df;
   --v2-board-hole: #f8f6f3;
   --v2-sticker-board: #f1efe7;
   --v2-avatar: #e3e0da;

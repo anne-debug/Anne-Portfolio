@@ -43,22 +43,26 @@ function folderLink(key: string, label: string) {
     },
   } as const;
 }
-/* Clickable photos lift off the board on hover (Anne's spec, 2026-11-20).
+/* Clickable photos on hover (Anne's reference video, 2026-11-20): the photo
+   turns straight, grows a little, picks up a white outline and a deeper
+   shadow, and its picture dims slightly, over 200ms ease-out.
    The outer element keeps the position, the click target and the drag, and
    never moves, so the hover area stays put and cannot flicker. The photo,
-   its frame and caption sit in an inner layer that rises 5px and grows to
-   1.025; the clip or pin is a sibling of that layer and stays where it is.
-   Rotation is on the inner layer too, and Tailwind's separate translate,
-   rotate and scale properties keep the lift straight up without undoing
-   the tilt. Only on fine pointers that can hover; reduced motion keeps
-   the deeper shadow but drops the movement. */
+   its frame and caption sit in an inner layer that does the motion; the clip
+   or pin is a sibling of that layer and stays where it is, at its old tilt.
+   Only on fine pointers that can hover; reduced motion keeps the outline,
+   shadow and dimming but drops the turn and the scale. */
 const linkRing =
   "group cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-orange)]";
 const photoShadow = "shadow-[0px_1.4px_1.4px_-2.5px_rgba(0,0,0,0.16),0px_6px_6px_-3.75px_rgba(0,0,0,0.1)]";
 const lift =
-  "transition-[translate,scale,box-shadow] duration-[220ms] ease-out " +
-  "[@media(pointer:fine)]:group-hover:shadow-[0px_3px_4px_-2px_rgba(0,0,0,0.18),0px_14px_18px_-8px_rgba(0,0,0,0.3)] " +
-  "motion-safe:[@media(pointer:fine)]:group-hover:-translate-y-[5px] motion-safe:[@media(pointer:fine)]:group-hover:scale-[1.025]";
+  "outline-2 outline-transparent transition-[rotate,scale,box-shadow,outline-color] duration-200 ease-out " +
+  "[@media(pointer:fine)]:group-hover:outline [@media(pointer:fine)]:group-hover:outline-white " +
+  "[@media(pointer:fine)]:group-hover:shadow-[0px_4px_6px_-2px_rgba(0,0,0,0.2),0px_16px_22px_-8px_rgba(0,0,0,0.32)] " +
+  "motion-safe:[@media(pointer:fine)]:group-hover:rotate-0 motion-safe:[@media(pointer:fine)]:group-hover:scale-[1.06]";
+/** The soft dark wash over a photo while its card is hovered. */
+const dim =
+  "pointer-events-none absolute rounded-[3px] bg-black/0 transition-colors duration-200 ease-out [@media(pointer:fine)]:group-hover:bg-black/15";
 
 function PinboardArt() {
   return (
@@ -78,6 +82,7 @@ function PinboardArt() {
             {/* was the to-do list (Anne, 2026-11-16): her dance photo now hangs from the same clip */}
             <div className={`absolute bottom-0 left-0 right-0 h-[152.8px] rounded-[6px] bg-white p-[4px] ${photoShadow} ${lift}`} data-name="Dance photo">
               <img alt="Anne dancing with rainbow silk wings" className="size-full rounded-[3px] object-cover" src={mine("rainbow-dance")} />
+              <span aria-hidden className={`${dim} inset-[4px]`} />
             </div>
             <div className="-translate-x-1/2 absolute h-[60.31px] left-1/2 top-0 w-[41.6px]" data-node-id="194:195" data-name="Clip brwon1">
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -98,6 +103,7 @@ function PinboardArt() {
               <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[var(--corner-radius\/2,2px)]">
                 <img alt="" className="absolute inset-0 size-full max-w-none object-cover" src={mine("figma-converge")} />
               </div>
+              <span aria-hidden className={`${dim} inset-0`} />
             </div>
             <div className="absolute bottom-[4.12px] flex h-[31.069px] items-center justify-center left-[4.54px] w-[89.4px]" data-node-id="194:225">
               <div className="-rotate-4 flex-none">
@@ -220,6 +226,7 @@ function PinboardArt() {
           <div className={`absolute bottom-[30px] left-[262px] h-[132px] w-[190px] ${linkRing}`} data-name="Boathouse photo" {...folderLink("photo", "Olympus mju ii")}>
             <div className={`size-full -rotate-2 rounded-[6px] bg-white p-[4px] ${photoShadow} ${lift}`}>
               <img alt="A wooden boathouse on the water with small boats docked, shot on film" className="size-full rounded-[3px] object-cover" src="/about/SNGpQ8nDqJTTEcA7vwHci25LY.jpg" />
+              <span aria-hidden className={`${dim} inset-[4px]`} />
             </div>
             <div className="pointer-events-none absolute inset-0 -rotate-2">
               <div className="absolute left-1/2 top-[-24px] h-[46px] w-[21.5px] -translate-x-1/2">
@@ -231,6 +238,7 @@ function PinboardArt() {
           <div className={`absolute left-[592px] top-[22px] h-[150px] w-[118px] ${linkRing}`} data-name="Snow photo" {...folderLink("traveling", "Miles & Memories")}>
             <div className={`size-full rotate-3 rounded-[6px] bg-white p-[4px] ${photoShadow} ${lift}`}>
               <img alt="Anne pointing at the sky on a snowy mountain" className="size-full rounded-[3px] object-cover" src="/about/YrWjpCsxBSUt4gNrJmrCSDplGvA.jpg" />
+              <span aria-hidden className={`${dim} inset-[4px]`} />
             </div>
             <div className="pointer-events-none absolute inset-0 rotate-3">
               <div className="absolute left-1/2 top-[-26px] h-[48px] w-[26px] -translate-x-1/2">
@@ -242,6 +250,7 @@ function PinboardArt() {
           <div className={`absolute bottom-[52px] left-[650px] h-[132px] w-[132px] ${linkRing}`} data-name="Cookie photo" {...folderLink("baking", "Anne's Bakery")}>
             <div className={`size-full -rotate-3 rounded-[6px] bg-white p-[4px] ${photoShadow} ${lift}`}>
               <img alt="Chocolate cookies topped with toasted marshmallow on a baking tray" className="size-full rounded-[3px] object-cover" src="/about/K93eVCtTdlLdLSr5mpXu5jL98KQ.jpg" />
+              <span aria-hidden className={`${dim} inset-[4px]`} />
             </div>
             <div className="pointer-events-none absolute inset-0 -rotate-3">
               <div className="absolute left-1/2 top-[-24px] h-[46px] w-[21px] -translate-x-1/2">

@@ -19,6 +19,10 @@ interface DockButton {
   href?: string;
   /** Text to put on the clipboard instead of opening anything. */
   copy?: string;
+  /** Scale for art with empty space around it, so every icon reads as the same size. */
+  zoom?: number;
+  /** Draw the dock's divider to the left of this icon. */
+  dividerBefore?: boolean;
 }
 
 const EMAIL = "annelin.yuen@gmail.com";
@@ -47,6 +51,8 @@ const ICONS: DockButton[] = [
     key: "about-me",
     image: "/about/Dsm5XfIQxbO5rMU6BOgDb5WqE.png",
     tooltip: "About Me",
+    // the memoji fills 417 of the image's 529px height
+    zoom: 1.27,
   },
   {
     key: "notes",
@@ -58,6 +64,7 @@ const ICONS: DockButton[] = [
     image: "/about/mail-icon.svg",
     tooltip: "Copy email",
     copy: EMAIL,
+    dividerBefore: true,
   },
   {
     key: "linkedin",
@@ -109,7 +116,7 @@ export function Dock({
       role="toolbar"
       aria-label="Dock"
     >
-      {ICONS.map((icon, i) => {
+      {ICONS.map((icon) => {
         const content = (
           <>
             <Image
@@ -118,6 +125,7 @@ export function Dock({
               width={48}
               height={48}
               className="size-12 object-contain"
+              style={icon.zoom ? { scale: icon.zoom } : undefined}
             />
             <Tooltip
               label={copied === icon.key ? "Copied email" : icon.tooltip}
@@ -137,8 +145,11 @@ export function Dock({
 
         return (
           <div key={icon.key} className="flex items-center gap-4">
-            {i === ICONS.length - 1 ? (
-              <span className="h-8 w-px bg-white/50" aria-hidden />
+            {icon.dividerBefore ? (
+              <span
+                className={`h-8 w-px ${inline ? "bg-[var(--v2-ring)]" : "bg-white/50"}`}
+                aria-hidden
+              />
             ) : null}
             <motion.div
               whileHover={{ y: -6, scale: 1.08 }}
