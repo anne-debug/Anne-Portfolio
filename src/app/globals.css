@@ -1866,18 +1866,19 @@ body {
 
 /* v2 home: Selected Work, What others say, My toolkit and Recent life are
    120px apart on phones and 160px from 810 up (the page's own gap is 80px,
-   then 100px). Anne, 2026-11-20. */
+   then 100px), except What others say to My toolkit, a little closer at
+   100px and 120px. Anne, 2026-11-20. */
 .v2-words-gap {
   margin-top: 40px;
+  margin-bottom: 20px;
 }
-.v2-words-gap,
 .v2-toolkit-gap {
   margin-bottom: 40px;
 }
 @media (min-width: 810px) {
   .v2-words-gap {
     margin-top: 60px;
-    margin-bottom: 60px;
+    margin-bottom: 20px;
   }
   .v2-toolkit-gap {
     margin-bottom: 60px;

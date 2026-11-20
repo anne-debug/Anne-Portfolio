@@ -60,7 +60,7 @@ export function HomeV2() {
       <div className="tablet:-mt-[80px]">
         <SelectedWork work={WORK} flush hideDescription moreLabel="View More" />
       </div>
-      {/* 160px from Selected Work above and from My toolkit below (120px on phones) */}
+      {/* 160px from Selected Work above, 120px to My toolkit below (120 and 100 on phones) */}
       <div className="v2-words-gap">
         <KindWords />
       </div>
