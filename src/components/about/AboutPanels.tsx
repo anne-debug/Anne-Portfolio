@@ -81,14 +81,6 @@ export function AboutMeCard() {
           <strong className="font-semibold">3 words to describe me</strong>: Curious 👀.
           Adventurous 🥾. Thoughtful 💓.
         </p>
-
-        {/* Framer's "Contact Button" inside the card, opening a mail client */}
-        <a
-          href="mailto:annelin.yuen@gmail.com"
-          className="mt-1 inline-flex w-fit items-center justify-center rounded-full bg-dark-charcoal px-6 py-2.5 text-off-white transition hover:brightness-125"
-        >
-          <span className="ts-button text-off-white">Contact me</span>
-        </a>
       </div>
     </div>
   );

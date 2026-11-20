@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 
 /**
@@ -15,6 +15,31 @@ import { animate, motion, useMotionValue, useReducedMotion, useTransform } from 
 
 /** how far a drag has to pull before it counts */
 const CLICK_AT = 26;
+
+/**
+ * Until a visitor has pulled the cord once, it nudges itself down 6px and
+ * back a few times so they notice it (Anne, 2026-11-20). The first pull is
+ * remembered in this browser and the nudge never runs again.
+ */
+const PULLED_KEY = "site-cord-pulled";
+const NUDGE_FIRST_MS = 1500;
+const NUDGE_EVERY_MS = 7000;
+const NUDGES = 3;
+
+function hasPulled() {
+  try {
+    return window.localStorage.getItem(PULLED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+function rememberPull() {
+  try {
+    window.localStorage.setItem(PULLED_KEY, "1");
+  } catch {
+    // private mode or blocked storage: the nudge just comes back next visit
+  }
+}
 
 function Pull() {
   const id = useId();
@@ -51,10 +76,32 @@ export function PullCord({
   const reduce = useReducedMotion() ?? false;
   const y = useMotionValue(0);
   const height = useTransform(y, (v) => `calc(${cord} + ${Math.max(0, v)}px)`);
+  const pulled = useRef(false);
+
+  useEffect(() => {
+    if (reduce || hasPulled()) return;
+    let count = 0;
+    let timer = 0;
+    const nudge = () => {
+      if (pulled.current || dragged.current) return;
+      // the cord stretches by y and the pull shifts by y, so y = 3 shows as 6px
+      animate(y, [0, 3, 0], { duration: 0.7, ease: "easeInOut" });
+      count += 1;
+      if (count < NUDGES) timer = window.setTimeout(nudge, NUDGE_EVERY_MS);
+    };
+    timer = window.setTimeout(nudge, NUDGE_FIRST_MS);
+    return () => window.clearTimeout(timer);
+  }, [reduce, y]);
+
+  const toggle = () => {
+    pulled.current = true;
+    rememberPull();
+    onToggle();
+  };
 
   /** a tap still shows the tug */
   const tug = () => {
-    onToggle();
+    toggle();
     if (!reduce) animate(y, [0, CLICK_AT + 6, 0], { duration: 0.45, ease: "easeOut" });
   };
 
@@ -79,7 +126,7 @@ export function PullCord({
           dragged.current = true;
         }}
         onDragEnd={(_, info) => {
-          if (info.offset.y > CLICK_AT) onToggle();
+          if (info.offset.y > CLICK_AT) toggle();
           // a drag doesn't always end in a click (pointer released off the
           // pull); clear the flag after this event so the next tap counts
           window.setTimeout(() => {
