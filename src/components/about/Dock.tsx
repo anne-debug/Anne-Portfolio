@@ -7,8 +7,9 @@ import { useState } from "react";
 /**
  * Framer component "Dock" with its "OverlayIcon" and "LinkIcon" children: a
  * frosted bar pinned near the bottom of the desktop. The first two icons open
- * panels, the last opens LinkedIn in a new tab. Each lifts and shows a tooltip
- * on hover, as Framer's overlay icons do.
+ * panels, Mail copies Anne's email address (added 2026-11-20, her own icon
+ * rather than Framer's), and the last opens LinkedIn in a new tab. Each lifts
+ * and shows a tooltip on hover, as Framer's overlay icons do.
  */
 
 interface DockButton {
@@ -16,6 +17,29 @@ interface DockButton {
   image: string;
   tooltip: string;
   href?: string;
+  /** Text to put on the clipboard instead of opening anything. */
+  copy?: string;
+}
+
+const EMAIL = "annelin.yuen@gmail.com";
+
+async function copyText(text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    // older browsers, or a page without clipboard permission
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.opacity = "0";
+    document.body.appendChild(area);
+    area.select();
+    const ok = document.execCommand("copy");
+    area.remove();
+    return ok;
+  }
 }
 
 const ICONS: DockButton[] = [
@@ -28,6 +52,12 @@ const ICONS: DockButton[] = [
     key: "notes",
     image: "/about/4ar8CL6aUtjymV8jTsXrcPzXCM.svg",
     tooltip: "Notes",
+  },
+  {
+    key: "mail",
+    image: "/about/mail-icon.svg",
+    tooltip: "Copy email",
+    copy: EMAIL,
   },
   {
     key: "linkedin",
@@ -65,6 +95,7 @@ export function Dock({
   inline?: boolean;
 }) {
   const [hovered, setHovered] = useState<string | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
 
   return (
     <div
@@ -88,7 +119,10 @@ export function Dock({
               height={48}
               className="size-12 object-contain"
             />
-            <Tooltip label={icon.tooltip} shown={hovered === icon.key} />
+            <Tooltip
+              label={copied === icon.key ? "Copied email" : icon.tooltip}
+              shown={hovered === icon.key || copied === icon.key}
+            />
           </>
         );
 
@@ -110,7 +144,23 @@ export function Dock({
               whileHover={{ y: -6, scale: 1.08 }}
               transition={{ type: "spring", duration: 0.3, bounce: 0.3 }}
             >
-              {icon.href ? (
+              {icon.copy ? (
+                <button
+                  {...shared}
+                  type="button"
+                  aria-label={copied === icon.key ? `Copied ${icon.copy}` : `${icon.tooltip}: ${icon.copy}`}
+                  onClick={async () => {
+                    if (!(await copyText(icon.copy!))) return;
+                    setCopied(icon.key);
+                    window.setTimeout(() => setCopied((c) => (c === icon.key ? null : c)), 1800);
+                  }}
+                >
+                  {content}
+                  <span className="sr-only" aria-live="polite">
+                    {copied === icon.key ? "Email copied" : ""}
+                  </span>
+                </button>
+              ) : icon.href ? (
                 <a
                   {...shared}
                   href={icon.href}
