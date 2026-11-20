@@ -10,19 +10,20 @@ export const metadata: Metadata = {
 };
 
 /**
- * Framer page "About" (/about): the folder desktop, then the home page's
- * original About me section with its pinboard. `v2-home` gives the section
+ * Framer page "About" (/about): the home page's original About me section
+ * with its pinboard first, then the folder desktop. `v2-home` gives the section
  * the same heading size it had on the home page.
  */
 export default function AboutPage() {
   return (
     <>
-      <AboutDesktop />
+      {/* top padding clears the floating nav pill */}
       <div className="v2-home flex w-full justify-center">
-        <div className="w-full max-w-[1280px] px-5 py-[100px] tablet:px-10">
+        <div className="w-full max-w-[1280px] px-5 pb-[80px] pt-[110px] tablet:px-10">
           <AboutMeFull />
         </div>
       </div>
+      <AboutDesktop />
     </>
   );
 }
