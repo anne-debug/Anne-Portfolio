@@ -12,10 +12,10 @@ import Image from "next/image";
  */
 
 const FACTS: [string, string][] = [
-  ["Name", "Anne"],
-  ["Degree", "Computer Science B.S. & UCAD (UX+SDE) M.S."],
+  ["Name", "Yu En Lin (Anne)"],
+  ["Degree", "Computer Science B.S.\nUCAD (UX+SDE) M.S."],
   ["School", "University of Michigan '27"],
-  ["Location", "Ann Arbor "],
+  ["Location", "Ann Arbor, MI"],
   ["Contact", "annelin.yuen@gmail.com"],
 ];
 
@@ -36,7 +36,7 @@ export function AboutMeCard() {
           {FACTS.map(([label, value]) => (
             <div key={label} className="flex flex-col">
               <dt className="ts-body-small-light">{label}</dt>
-              <dd className="ts-body-small">{value}</dd>
+              <dd className="ts-body-small whitespace-pre-line">{value}</dd>
             </div>
           ))}
         </dl>
