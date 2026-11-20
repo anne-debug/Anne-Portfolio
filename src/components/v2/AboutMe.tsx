@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LampBoard } from "./LampBoard";
+import { ClockPanel } from "./ClockPanel";
 const mansalva = { fontFamily: "var(--font-mansalva)" };
 const sans = { fontFamily: "var(--font-dm-sans)" };
 
@@ -16,10 +16,11 @@ export function AboutMe() {
       </div>
 
       <div className="grid w-full grid-cols-1 gap-5 desktop:grid-cols-[minmax(0,1fr)_clamp(300px,27%,330px)]">
-        {/* the whole board scales with the column at every width, phones included */}
-        <div className="desktop:relative desktop:aspect-[800/480]">
-          <div className="w-full desktop:absolute desktop:inset-0 desktop:h-full">
-            <LampBoard />
+        {/* the pinboard is gone; the panel keeps its 800:480 shape and its
+            clock, and holds the space for the new design */}
+        <div className="relative aspect-[800/480]">
+          <div className="absolute inset-0">
+            <ClockPanel />
           </div>
         </div>
 
