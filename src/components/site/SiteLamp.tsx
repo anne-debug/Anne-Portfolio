@@ -1,6 +1,8 @@
 "use client";
 
-import { PullCord } from "./PullCord";
+import { useEffect, useState } from "react";
+
+import { hasPulled, PullCord } from "./PullCord";
 import { setSiteDark, useSiteDark } from "./theme";
 
 /**
@@ -12,6 +14,14 @@ import { setSiteDark, useSiteDark } from "./theme";
  */
 export function SiteLamp() {
   const dark = useSiteDark();
+  // The hint shows until the visitor has pulled the cord once, then fades out
+  // and stays gone on later visits (same remembered flag as the nudge). It
+  // starts hidden so the server render and a returning visitor never flash it.
+  const [hint, setHint] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reads localStorage, only available after mount
+    setHint(!hasPulled());
+  }, []);
   return (
     <div className="pointer-events-none fixed right-1 top-0 z-[70] flex flex-col items-center [--site-cord:88px] tablet:right-12 tablet:[--site-cord:96px]">
       {/* handwritten hint beside the pull, with a curled arrow pointing at it
@@ -19,7 +29,9 @@ export function SiteLamp() {
           the hero, under the nav pill. */}
       <span
         aria-hidden
-        className="absolute right-[calc(100%+6px)] top-[calc(var(--site-cord)+2px)] hidden items-start gap-0.5 whitespace-nowrap text-orange tablet:flex"
+        className={`absolute right-[calc(100%+6px)] top-[calc(var(--site-cord)+2px)] hidden items-start gap-0.5 whitespace-nowrap text-orange transition-opacity duration-500 ease-out tablet:flex ${
+          hint ? "opacity-100" : "opacity-0"
+        }`}
       >
         <span className="-rotate-[5deg] text-[17px] leading-none" style={{ fontFamily: "var(--font-mansalva)" }}>
           Pull to switch the lights
@@ -34,6 +46,7 @@ export function SiteLamp() {
         pressed={dark}
         label={dark ? "Pull the cord to switch the site to light mode" : "Pull the cord to switch the site to dark mode"}
         onToggle={() => setSiteDark(!dark)}
+        onFirstPull={() => setHint(false)}
       />
     </div>
   );

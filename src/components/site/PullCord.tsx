@@ -26,7 +26,7 @@ const NUDGE_FIRST_MS = 1500;
 const NUDGE_EVERY_MS = 7000;
 const NUDGES = 3;
 
-function hasPulled() {
+export function hasPulled() {
   try {
     return window.localStorage.getItem(PULLED_KEY) === "1";
   } catch {
@@ -65,12 +65,15 @@ export function PullCord({
   pressed,
   label,
   onToggle,
+  onFirstPull,
 }: {
   /** cord length at rest, any CSS length */
   cord: string;
   pressed: boolean;
   label: string;
   onToggle: () => void;
+  /** called when the visitor pulls, so the parent can retire its hint */
+  onFirstPull?: () => void;
 }) {
   const dragged = useRef(false);
   const reduce = useReducedMotion() ?? false;
@@ -96,6 +99,7 @@ export function PullCord({
   const toggle = () => {
     pulled.current = true;
     rememberPull();
+    onFirstPull?.();
     onToggle();
   };
 
