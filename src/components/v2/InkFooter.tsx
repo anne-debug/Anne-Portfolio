@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
 
@@ -11,9 +11,7 @@ import { LIN, YU_CLIP, YU_JIN, YU_JIN_TRANSFORM, YU_RIGHT, YU_RIGHT_TRANSFORM } 
  * Site footer, v2: a dark band with Anne's name 鈺 (traditional) in red
  * brush calligraphy (Zhi Mang Xing), signed with a small 林 seal.
  *
- * Left: the character. Middle: the main links with the LinkedIn and email
- * icons beside them (LinkedIn opens in a new tab; the mail icon copies the
- * address and shows "Email copied"). Right: the ink-wash floor lamp (tap it to switch it on
+ * Left: the character. Middle: the main links. Right: the ink-wash floor lamp (tap it to switch it on
  * or off), which throws a warm halo across the footer while it is lit, with a few
  * fireflies drifting around it (they stay when the lamp is off).
  *
@@ -32,7 +30,6 @@ const BG = "#1B1A19";
 const DROP = { x: 684, y: -190 };
 /** the site's paragraph font */
 const sans = { fontFamily: "var(--font-dm-sans)" };
-const EMAIL = "annelin.yuen@gmail.com";
 
 const LINKS = [
   { href: "/my-projects", label: "Work" },
@@ -113,22 +110,6 @@ function Yu({ className }: { className?: string }) {
   );
 }
 
-function Icon({ kind }: { kind: "linkedin" | "mail" }) {
-  return (
-    <svg viewBox="0 0 20 20" width={20} height={20} aria-hidden fill="none" stroke="currentColor" strokeWidth={1.5}>
-      <rect x={1.5} y={1.5} width={17} height={17} rx={3} />
-      {kind === "linkedin" ? (
-        <>
-          <path d="M6 8.5V14 M6 5.8V6" strokeLinecap="round" />
-          <path d="M9.5 14V8.5 M9.5 10.8C9.5 9.4 10.4 8.4 11.7 8.4C13 8.4 13.8 9.3 13.8 10.8V14" strokeLinecap="round" />
-        </>
-      ) : (
-        <path d="M4.5 6.5L10 10.5L15.5 6.5" strokeLinecap="round" strokeLinejoin="round" />
-      )}
-    </svg>
-  );
-}
-
 /**
  * Fireflies drifting around the lamp. Each one wanders a closed loop (so the
  * repeat has no jump) and blinks on its own rhythm. x/y are px offsets from
@@ -170,37 +151,6 @@ function Fireflies({ still }: { still: boolean }) {
 export function InkFooter() {
   const [lit, setLit] = useState(true);
   const reduce = useReducedMotion() ?? false;
-  const [copied, setCopied] = useState(false);
-  const copiedTimer = useRef<number | undefined>(undefined);
-  /** copy the address: the clipboard API first, the old selection trick if
-   *  the browser refuses it, and a mail draft only if both fail */
-  const copyEmail = async () => {
-    let ok = false;
-    try {
-      await navigator.clipboard.writeText(EMAIL);
-      ok = true;
-    } catch {
-      const ta = document.createElement("textarea");
-      ta.value = EMAIL;
-      ta.setAttribute("readonly", "");
-      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0";
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        ok = document.execCommand("copy");
-      } catch {
-        ok = false;
-      }
-      ta.remove();
-    }
-    if (!ok) {
-      window.location.href = `mailto:${EMAIL}`;
-      return;
-    }
-    setCopied(true);
-    window.clearTimeout(copiedTimer.current);
-    copiedTimer.current = window.setTimeout(() => setCopied(false), 1800);
-  };
   return (
     <footer
       className="relative w-full overflow-hidden"
@@ -212,7 +162,8 @@ export function InkFooter() {
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center justify-items-center gap-7 px-10 py-8 tablet:grid-cols-3 tablet:gap-6 tablet:py-7">
         <Yu className="h-[92px] w-auto tablet:h-[104px] tablet:justify-self-start" />
 
-        {/* links and contact icons, grouped */}
+        {/* page links (the LinkedIn and email icons went on 2026-11-20; the
+            About page dock carries both) */}
         <div className="flex items-center gap-8">
           <nav aria-label="Footer" className="flex flex-col items-start gap-2.5">
             {LINKS.map((l) => (
@@ -221,29 +172,6 @@ export function InkFooter() {
               </Link>
             ))}
           </nav>
-          <div className="flex flex-col gap-3 text-[#CFCAC2]">
-            <a href="https://www.linkedin.com/in/annelin0513/" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="transition-colors hover:text-orange">
-              <Icon kind="linkedin" />
-            </a>
-<button
-              type="button"
-              onClick={copyEmail}
-              aria-label={`Copy email address ${EMAIL}`}
-              className="relative cursor-pointer transition-colors hover:text-orange"
-            >
-              <Icon kind="mail" />
-              <span role="status" className="sr-only">
-                {copied ? "Email copied" : ""}
-              </span>
-              <span
-                aria-hidden
-                className={`pointer-events-none absolute left-full top-1/2 ml-2.5 -translate-y-1/2 whitespace-nowrap rounded-full bg-white px-2.5 py-1 text-[12px] font-medium text-[#1B1A19] transition-opacity duration-200 ${copied ? "opacity-100" : "opacity-0"}`}
-                style={sans}
-              >
-                Email copied
-              </span>
-            </button>
-          </div>
         </div>
 
         {/* the floor lamp; while it is on, a warm halo spills over the dark footer */}
