@@ -117,7 +117,7 @@ function anchorsFor(f: Folder): CSSProperties {
   } as CSSProperties;
 }
 
-const FOLDERS: Folder[] = [
+export const FOLDERS: Folder[] = [
   {
     key: "painting",
     group: "Painting",

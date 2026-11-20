@@ -56,13 +56,26 @@ function Tooltip({ label, shown }: { label: string; shown: boolean }) {
   );
 }
 
-export function Dock({ onOpen }: { onOpen: (key: string) => void }) {
+export function Dock({
+  onOpen,
+  pinned = false,
+}: {
+  onOpen: (key: string) => void;
+  /** Stick to the bottom of the viewport instead of sitting on the desktop canvas. */
+  pinned?: boolean;
+}) {
   const [hovered, setHovered] = useState<string | null>(null);
 
   return (
     <div
-      /* Framer sits the dock 100px up on phone, 40px on tablet, 19px on desktop */
-      className="absolute bottom-[100px] left-1/2 z-30 flex -translate-x-1/2 items-center gap-4 rounded-2xl border border-white/40 bg-white/35 p-3 backdrop-blur-md tablet:bottom-10 desktop:bottom-[19px]"
+      /* Framer sits the dock 100px up on phone, 40px on tablet, 19px on
+         desktop. Pinned, it sticks 16px above the bottom of the screen while
+         its section is on screen, and stops before the footer. */
+      className={`z-30 flex items-center gap-4 rounded-2xl border border-white/40 bg-white/35 p-3 backdrop-blur-md ${
+        pinned
+          ? "sticky bottom-4 mx-auto w-fit shadow-[0_8px_24px_rgba(0,0,0,0.12)]"
+          : "absolute bottom-[100px] left-1/2 -translate-x-1/2 tablet:bottom-10 desktop:bottom-[19px]"
+      }`}
       role="toolbar"
       aria-label="Dock"
     >
