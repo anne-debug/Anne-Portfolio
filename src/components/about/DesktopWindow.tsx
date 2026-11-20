@@ -68,15 +68,29 @@ export function DesktopWindow({
           onPointerDown={(e) => dragControls.start(e)}
           className="flex shrink-0 cursor-grab items-center gap-3 border-b border-grey-100 bg-grey-50 p-4 active:cursor-grabbing"
         >
+          {/* macOS traffic lights, 18px with their glyphs always showing so the
+              close button reads as one (Anne, 2026-11-20). Only red does anything. */}
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
               aria-label={`Close ${pageName}`}
-              className="size-3 rounded-full bg-[#ff5f57] transition hover:brightness-95"
-            />
-            <span className="size-3 rounded-full bg-[#febc2e]" aria-hidden />
-            <span className="size-3 rounded-full bg-[#28c840]" aria-hidden />
+              className="flex size-[18px] items-center justify-center rounded-full border border-black/10 bg-[#ff5f57] transition hover:brightness-95"
+            >
+              <svg viewBox="0 0 10 10" className="size-[10px]" aria-hidden>
+                <path d="M2 2L8 8M8 2L2 8" stroke="#4d0000" strokeWidth={1.6} strokeLinecap="round" />
+              </svg>
+            </button>
+            <span className="flex size-[18px] items-center justify-center rounded-full border border-black/10 bg-[#febc2e]" aria-hidden>
+              <svg viewBox="0 0 10 10" className="size-[10px]">
+                <path d="M1.5 5H8.5" stroke="#995700" strokeWidth={1.6} strokeLinecap="round" />
+              </svg>
+            </span>
+            <span className="flex size-[18px] items-center justify-center rounded-full border border-black/10 bg-[#28c840]" aria-hidden>
+              <svg viewBox="0 0 10 10" className="size-[10px]">
+                <path d="M1.6 8.4V2.9L7.1 8.4Z M8.4 1.6V7.1L2.9 1.6Z" fill="#006500" />
+              </svg>
+            </span>
           </div>
           <span
             className="text-dark-charcoal"
