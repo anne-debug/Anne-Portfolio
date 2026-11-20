@@ -6,8 +6,8 @@ import { animate, motion, useMotionValue, useReducedMotion, useTransform } from 
 /**
  * A lamp pull cord: a thin cord ending in a cream plastic pull. Tug it down
  * (drag, or tap/Enter) and it springs back and calls `onToggle`. The cord
- * stretches with the drag. Used over the About me board (LampBoard) and
- * pinned to the top right of every page (SiteLamp).
+ * stretches with the drag, and dips 5px on hover. Pinned to the top right
+ * of every page (SiteLamp).
  *
  * Renders the cord and the pull one under the other; the parent places them
  * (a flex column whose top is where the cord hangs from).
@@ -19,7 +19,8 @@ const CLICK_AT = 26;
 function Pull() {
   const id = useId();
   return (
-    <svg viewBox="0 0 24 40" width={22} height={36} aria-hidden className="drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)]">
+    // 30% larger than the first version (22x36), with a deeper shadow, so it is easier to spot (Anne, 2026-11-20)
+    <svg viewBox="0 0 24 40" width={29} height={47} aria-hidden className="drop-shadow-[0_4px_5px_rgba(0,0,0,0.38)]">
       <defs>
         <linearGradient id={id} x1="0" x2="1">
           <stop offset="0" stopColor="#E9E1D2" />
@@ -66,6 +67,9 @@ export function PullCord({
         aria-label={label}
         className="pointer-events-auto -mt-px shrink-0 cursor-grab touch-none rounded-full outline-offset-4 active:cursor-grabbing"
         style={{ y }}
+        // a hover tugs it 5px, a hint that it moves. The cord above stretches by
+        // y and the pull also shifts by y, so y = 2.5 moves the pull 5px.
+        whileHover={reduce ? undefined : { y: 2.5, transition: { duration: 0.22, ease: "easeOut" } }}
         drag={reduce ? false : "y"}
         dragConstraints={{ top: 0, bottom: 60 }}
         dragElastic={0.15}
