@@ -198,6 +198,13 @@ function PinboardArt() {
               <img alt="" className="size-full" src={imgClip2} />
             </div>
           </div>
+          {/* added 2026-11-20: Anne's own film photo (a boathouse) opens Olympus mju ii */}
+          <div className={`absolute bottom-[30px] left-[262px] h-[132px] w-[190px] -rotate-2 rounded-[6px] bg-white p-[4px] shadow-[0px_1.4px_1.4px_-2.5px_rgba(0,0,0,0.16),0px_6px_6px_-3.75px_rgba(0,0,0,0.1)] ${linkRing}`} data-name="Boathouse photo" {...folderLink("photo", "Olympus mju ii")}>
+            <img alt="A wooden boathouse on the water with small boats docked, shot on film" className="size-full rounded-[3px] object-cover" src="/about/SNGpQ8nDqJTTEcA7vwHci25LY.jpg" />
+            <div className="absolute left-1/2 top-[-24px] h-[46px] w-[21.5px] -translate-x-1/2">
+              <img alt="" className="size-full" src={imgClip2} />
+            </div>
+          </div>
           {/* added 2026-11-20: snow photo opens Miles & Memories */}
           <div className={`absolute left-[592px] top-[22px] h-[150px] w-[118px] rotate-3 rounded-[6px] bg-white p-[4px] shadow-[0px_1.4px_1.4px_-2.5px_rgba(0,0,0,0.16),0px_6px_6px_-3.75px_rgba(0,0,0,0.1)] ${linkRing}`} data-name="Snow photo" {...folderLink("traveling", "Miles & Memories")}>
             <img alt="Anne pointing at the sky on a snowy mountain" className="size-full rounded-[3px] object-cover" src="/about/YrWjpCsxBSUt4gNrJmrCSDplGvA.jpg" />
