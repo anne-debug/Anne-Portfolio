@@ -101,11 +101,13 @@ export function DesktopIcon({
             className={`rounded px-1 text-off-white ${selected ? "bg-white/25" : ""}`}
             style={{
               fontFamily: "var(--font-inter)",
-              fontWeight: 400,
+              // 600 rather than Framer's 400: white labels at 400 were hard
+              // to read against the wallpaper
+              fontWeight: 600,
               fontSize: "var(--label)",
-              letterSpacing: "-0.04em",
+              letterSpacing: "-0.02em",
               lineHeight: "1.4em",
-              textShadow: "0 1px 3px rgba(0,0,0,0.45)",
+              textShadow: "0 1px 3px rgba(0,0,0,0.6)",
             }}
           >
             {label}
