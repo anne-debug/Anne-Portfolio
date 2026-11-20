@@ -17,7 +17,7 @@ export function AboutMeFull() {
           A little more about me
         </p>
         <h2 id="about-title" className="ts-heading-2 mt-1 text-deep-blue">
-          Hi again, I’m Anne.
+          I’m Anne.
         </h2>
       </div>
 

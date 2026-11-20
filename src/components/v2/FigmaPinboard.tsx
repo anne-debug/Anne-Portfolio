@@ -215,11 +215,16 @@ function PinboardArt() {
             <WeatherCard />
           </div>
           {/* the clear folder and its maple photo are gone (Anne, 2026-11-20); the
-              tufting photo stays on its own where the folder stood */}
-          <div className="absolute bottom-[40px] left-[492px] h-[178px] w-[140px] rotate-2 rounded-[6px] bg-white p-[4px] shadow-[0px_1.4px_1.4px_-2.5px_rgba(0,0,0,0.16),0px_6px_6px_-3.75px_rgba(0,0,0,0.1)]" data-name="Tufting photo">
-            <img alt="Anne tufting a rug" className="size-full rounded-[3px] object-cover" src={mine("tufting")} />
-            <div className="absolute left-1/2 top-[-22px] h-[46px] w-[21.5px] -translate-x-1/2">
-              <img alt="" className="size-full" src={imgClip2} />
+              tufting photo stays on its own where the folder stood and opens My Sketchbook */}
+          <div className={`absolute bottom-[40px] left-[492px] h-[178px] w-[140px] ${linkRing}`} data-name="Tufting photo" {...folderLink("painting", "My Sketchbook")}>
+            <div className={`size-full rotate-2 rounded-[6px] bg-white p-[4px] ${photoShadow} ${lift}`}>
+              <img alt="Anne tufting a rug" className="size-full rounded-[3px] object-cover" src={mine("tufting")} />
+              <span aria-hidden className={`${dim} inset-[4px]`} />
+            </div>
+            <div className="pointer-events-none absolute inset-0 rotate-2">
+              <div className="absolute left-1/2 top-[-22px] h-[46px] w-[21.5px] -translate-x-1/2">
+                <img alt="" className="size-full" src={imgClip2} />
+              </div>
             </div>
           </div>
           {/* added 2026-11-20: Anne's own film photo (a boathouse) opens Olympus mju ii */}
