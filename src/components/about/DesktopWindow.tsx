@@ -104,7 +104,7 @@ export function DesktopWindow({
           </span>
         </header>
 
-        <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4">
+        <div data-window-body className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-4">
           {children}
         </div>
       </motion.div>

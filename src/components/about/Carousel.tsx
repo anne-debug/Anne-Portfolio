@@ -22,6 +22,12 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
  * the step are taken from Framer's proportions of it, so the deck fits at any
  * size. The measurement happens before paint, and the component only ever
  * mounts after a click, so nothing is ever drawn at the wrong size.
+ *
+ * Inside a window the deck is also held to the window's height (Anne,
+ * 2026-11-20), so a photo is never cut off at the bottom: it takes the room
+ * left under the window's text, or, when that is too little (a window with
+ * several decks), the window's full visible height, so each deck can be
+ * scrolled to and seen whole.
  */
 
 /** Framer's design: a 385x380 slide, stepping 430px, on a 460px tray. */
@@ -31,6 +37,8 @@ const STEP = 430;
 const TRAY_H = 460;
 /** How much of a narrow tray the active slide is allowed to take. */
 const FILL = 0.88;
+/** Below this much room under the text, the deck sizes to the whole window instead. */
+const MIN_ROOM = 280;
 export function Carousel({
   images,
   alt,
@@ -43,7 +51,25 @@ export function Carousel({
   const [index, setIndex] = useState(0);
   const tray = useRef<HTMLDivElement>(null);
   const [trayWidth, setTrayWidth] = useState(SLIDE_W / FILL);
+  const [roomH, setRoomH] = useState(Infinity);
   const count = images.length;
+
+  useLayoutEffect(() => {
+    const node = tray.current;
+    const body = node?.closest<HTMLElement>("[data-window-body]");
+    if (!node || !body) return;
+    const measure = () => {
+      const pad = parseFloat(getComputedStyle(body).paddingBottom) || 0;
+      const top = node.getBoundingClientRect().top - body.getBoundingClientRect().top + body.scrollTop;
+      // 4px spare for text that settles after the measurement (late fonts, emoji)
+      const below = body.clientHeight - top - pad - 4;
+      setRoomH(below >= MIN_ROOM ? below : body.clientHeight - 2 * pad);
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(body);
+    measure();
+    return () => observer.disconnect();
+  }, []);
 
   useLayoutEffect(() => {
     const node = tray.current;
@@ -56,11 +82,15 @@ export function Carousel({
     return () => observer.disconnect();
   }, []);
 
-  const slideW = Math.min(SLIDE_W, trayWidth * FILL);
-  const slideH = slideW * (SLIDE_H / SLIDE_W);
+  const chrome = TRAY_H - SLIDE_H;
+  const slideH = Math.max(
+    120,
+    Math.min(Math.min(SLIDE_W, trayWidth * FILL) * (SLIDE_H / SLIDE_W), roomH - chrome),
+  );
+  const slideW = slideH * (SLIDE_W / SLIDE_H);
   const step = slideW * (STEP / SLIDE_W);
   // The tray keeps Framer's 80px of chrome around the slide for the dots.
-  const trayH = Math.min(height, Math.round(slideH + (TRAY_H - SLIDE_H)));
+  const trayH = Math.min(height, Math.round(slideH + chrome));
 
   const go = useCallback(
     (by: number) => setIndex((i) => (i + (by % count) + count) % count),

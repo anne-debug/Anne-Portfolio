@@ -44,32 +44,42 @@ export function AboutMeCard() {
 
       <div className="flex min-w-0 flex-1 flex-col gap-3">
         <h2 className="ts-heading-3">About me</h2>
-        <p className="ts-body">Hi, I’m Anne!</p>
+        {/* Anne's own words, 2026-11-20 */}
+        <p className="ts-body">Hi, I’m Anne! 👋</p>
         <p className="ts-body">
           I’m a UX designer with a background in engineering and product, and I love
-          turning complex systems into experiences that feel simple, intuitive, and
-          enjoyable to use. My past work spans urban transit apps, geospatial
-          dashboards, healthcare platforms, and e-commerce experiences, the kinds of
-          products with lots of moving pieces behind the scenes that I genuinely love
-          untangling.
+          untangling complex problems and turning them into experiences that feel
+          simple, intuitive, and enjoyable to use.
         </p>
         <p className="ts-body">
-          I originally came from a more technical background, but I then realized I
-          was always the most excited about the human side of technology such as
-          understanding behaviors, simplifying confusing workflows, and designing
-          products that people actually enjoy interacting with. That curiosity is what
-          led me into UX, and now I love working at the intersection of technology,
-          design, and human behavior to turn messy problems into thoughtful digital
-          experiences.
+          My work has taken me from healthcare platforms and urban transit apps to
+          enterprise AI products. Most recently, at IBM, I worked on watsonx
+          Orchestrate, designing experiences that help people monitor AI agents,
+          understand what’s happening behind the scenes, and know when they need to
+          step in.
+        </p>
+        <p className="ts-body">
+          Coming from a technical background, I’ve always enjoyed figuring out how
+          things work and how to make them better for the people using them. That’s
+          what drew me into UX design. Lately, I’ve been especially curious about
+          human-AI interaction: how we can make AI systems easier to understand, give
+          people meaningful control, and design better ways for humans and AI agents
+          to work together.
+        </p>
+        <p className="ts-body">
+          I also love getting hands-on with development, experimenting with
+          AI-assisted coding, and turning my designs into working prototypes.
+          There’s something really satisfying about seeing an idea come to life and
+          being able to interact with it.
         </p>
         <p className="ts-body">
           Outside of design, I’m usually experimenting with baking, painting, dancing
           (Traditional Chinese Dance, Ballet &amp; Contemporary), taking way too many
-          photos on my digital camera, or planning my next travel adventure!
+          photos with my digital camera, or planning my next travel adventure!
         </p>
         <p className="ts-body">
-          <strong className="font-semibold">3 words to describe me</strong>: Curious👀.
-          Adventurous🥾. Thoughtful💓.
+          <strong className="font-semibold">3 words to describe me</strong>: Curious 👀.
+          Adventurous 🥾. Thoughtful 💓.
         </p>
 
         {/* Framer's "Contact Button" inside the card, opening a mail client */}
