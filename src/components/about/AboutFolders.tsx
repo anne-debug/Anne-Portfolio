@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 
 import { OPEN_FOLDER_EVENT } from "@/components/v2/FigmaPinboard";
 
+const PANELS = ["about-me", "notes"];
+
 import { FOLDERS } from "./AboutDesktop";
 import { AboutMeCard, NotesContent } from "./AboutPanels";
 import { Carousel } from "./Carousel";
@@ -13,10 +15,10 @@ import { Dock } from "./Dock";
 
 /**
  * What is left of the About page's folder desktop once Anne took the desktop
- * itself out (2026-11-20): the dock, pinned to the bottom of the screen, and
- * the folder windows, which now open over the page. The pinboard's photos
- * open a folder through OPEN_FOLDER_EVENT; the dock opens the profile card
- * and the notes. The desktop and its data still live in AboutDesktop.tsx.
+ * itself out (2026-11-20): the folder windows, which now open over the page,
+ * and the dock (AboutDock), which sits among the About me cards. Both the
+ * pinboard's photos and the dock open windows through OPEN_FOLDER_EVENT. The
+ * desktop and its folder data still live in AboutDesktop.tsx.
  */
 export function AboutFolders() {
   const [open, setOpen] = useState<string | null>(null);
@@ -25,17 +27,15 @@ export function AboutFolders() {
   useEffect(() => {
     const onOpen = (e: Event) => {
       const key = (e as CustomEvent<string>).detail;
-      if (FOLDERS.some((f) => f.key === key)) setOpen(key);
+      if (FOLDERS.some((f) => f.key === key) || PANELS.includes(key)) setOpen(key);
     };
     window.addEventListener(OPEN_FOLDER_EVENT, onOpen);
     return () => window.removeEventListener(OPEN_FOLDER_EVENT, onOpen);
   }, []);
 
   return (
-    <>
-      <Dock onOpen={setOpen} pinned />
-      {/* windows open over the page, sized against the screen */}
-      <div className="pointer-events-none fixed inset-0 z-50">
+    /* windows open over the page, sized against the screen */
+    <div className="pointer-events-none fixed inset-0 z-50">
         <AnimatePresence>
           {folder ? (
             <DesktopWindow key={folder.key} pageName={folder.pageName} onClose={() => setOpen(null)}>
@@ -65,7 +65,17 @@ export function AboutFolders() {
             </DesktopWindow>
           ) : null}
         </AnimatePresence>
-      </div>
-    </>
+    </div>
+  );
+}
+
+/** The dock as one of the About me cards. It opens windows through the same
+ *  event the pinboard photos use, so AboutFolders draws them. */
+export function AboutDock() {
+  return (
+    <Dock
+      inline
+      onOpen={(key) => window.dispatchEvent(new CustomEvent(OPEN_FOLDER_EVENT, { detail: key }))}
+    />
   );
 }

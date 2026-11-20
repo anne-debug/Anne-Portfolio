@@ -12,17 +12,16 @@ export const metadata: Metadata = {
 /**
  * Framer page "About" (/about): the home page's original About me section
  * with its pinboard. The folder desktop is gone (2026-11-20); its dock sits
- * under the board, stuck to the bottom of the screen and its folders open over the page. `v2-home` gives the section
+ * among the About me cards and its folders open over the page. `v2-home` gives the section
  * the same heading size it had on the home page.
  */
 export default function AboutPage() {
   return (
     <>
       <h1 className="sr-only">About Anne Lin</h1>
-      {/* top padding clears the floating nav pill; the dock sticks to the
-          bottom of the screen until this block scrolls past */}
+      {/* top padding clears the floating nav pill */}
       <div className="v2-home flex w-full justify-center">
-        <div className="flex w-full max-w-[1280px] flex-col gap-10 px-5 pb-10 pt-[110px] tablet:px-10">
+        <div className="w-full max-w-[1280px] px-5 pb-[100px] pt-[110px] tablet:px-10">
           <AboutMeFull />
           <AboutFolders />
         </div>

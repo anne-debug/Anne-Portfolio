@@ -43,7 +43,9 @@ function folderLink(key: string, label: string) {
     },
   } as const;
 }
-const linkRing = "cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-orange)]";
+/* clickable photos lift a little on hover (Anne, 2026-11-20) */
+const linkRing =
+  "cursor-pointer outline-none transition-[translate,filter] duration-300 ease-out hover:-translate-y-2 hover:drop-shadow-[0_10px_10px_rgba(0,0,0,0.18)] focus-visible:ring-2 focus-visible:ring-[var(--color-orange)] motion-reduce:hover:translate-y-0";
 
 function PinboardArt() {
   return (
@@ -264,6 +266,14 @@ export function FigmaPinboard() {
     d.el.style.transition = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "none" : "translate 350ms ease-out";
     d.el.style.translate = "0px 0px";
     d.el.style.zIndex = "";
+    // hand translate back to the stylesheet once it has settled, so the hover lift works again
+    const el = d.el;
+    window.setTimeout(() => {
+      if (drag.current?.el !== el) {
+        el.style.translate = "";
+        el.style.transition = "";
+      }
+    }, 380);
     drag.current = null;
   }
   return (

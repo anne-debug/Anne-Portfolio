@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { LampBoard } from "@/components/v2/LampBoard";
+
+import { AboutDock } from "./AboutFolders";
 const mansalva = { fontFamily: "var(--font-mansalva)" };
 const sans = { fontFamily: "var(--font-dm-sans)" };
 
@@ -11,11 +12,14 @@ const sans = { fontFamily: "var(--font-dm-sans)" };
 export function AboutMeFull() {
   return (
     <section aria-labelledby="about-title" className="flex w-full flex-col gap-6">
-      {/* Anne took the visible "hi again / About me" title off the About page
-          (2026-11-20); the heading stays for screen readers */}
-      <h2 id="about-title" className="sr-only">
-        About me
-      </h2>
+      <div>
+        <p className="inline-block -rotate-[4deg] text-[22px] leading-[1.2] text-orange" style={mansalva}>
+          A little more about me
+        </p>
+        <h2 id="about-title" className="ts-heading-2 mt-1 text-deep-blue">
+          Hi again, I’m Anne.
+        </h2>
+      </div>
 
       <div className="grid w-full grid-cols-1 gap-5 desktop:grid-cols-[minmax(0,1fr)_clamp(300px,27%,330px)]">
         {/* the whole board scales with the column at every width, phones included */}
@@ -40,18 +44,8 @@ export function AboutMeFull() {
             </div>
           </div>
 
-          <Link
-            href="/resume"
-            className="flex -rotate-[1.5deg] flex-col gap-2 self-start rounded-[20px] bg-[var(--about-note)] px-6 py-[22px] transition-transform duration-300 hover:scale-[1.03] tablet:self-start desktop:self-auto"
-            style={{ boxShadow: "0 0 0 1px var(--v2-ring), 0 1px 2px rgba(0,0,0,0.10), 0 6px 14px rgba(0,0,0,0.06)" }}
-          >
-            <span className="text-[24px] leading-[1.2] text-deep-blue" style={mansalva}>
-              the short version
-            </span>
-            <span className="text-[15px] font-medium text-dark-charcoal" style={sans}>
-              Read my resume →
-            </span>
-          </Link>
+          {/* the dock (profile, notes, LinkedIn) takes the resume note's place (Anne, 2026-11-20) */}
+          <AboutDock />
         </div>
       </div>
     </section>
