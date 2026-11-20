@@ -43,9 +43,22 @@ function folderLink(key: string, label: string) {
     },
   } as const;
 }
-/* clickable photos lift a little on hover (Anne, 2026-11-20) */
+/* Clickable photos lift off the board on hover (Anne's spec, 2026-11-20).
+   The outer element keeps the position, the click target and the drag, and
+   never moves, so the hover area stays put and cannot flicker. The photo,
+   its frame and caption sit in an inner layer that rises 5px and grows to
+   1.025; the clip or pin is a sibling of that layer and stays where it is.
+   Rotation is on the inner layer too, and Tailwind's separate translate,
+   rotate and scale properties keep the lift straight up without undoing
+   the tilt. Only on fine pointers that can hover; reduced motion keeps
+   the deeper shadow but drops the movement. */
 const linkRing =
-  "cursor-pointer outline-none transition-[translate,filter] duration-300 ease-out hover:-translate-y-2 hover:drop-shadow-[0_10px_10px_rgba(0,0,0,0.18)] focus-visible:ring-2 focus-visible:ring-[var(--color-orange)] motion-reduce:hover:translate-y-0";
+  "group cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-orange)]";
+const photoShadow = "shadow-[0px_1.4px_1.4px_-2.5px_rgba(0,0,0,0.16),0px_6px_6px_-3.75px_rgba(0,0,0,0.1)]";
+const lift =
+  "transition-[translate,scale,box-shadow] duration-[220ms] ease-out " +
+  "[@media(pointer:fine)]:group-hover:shadow-[0px_3px_4px_-2px_rgba(0,0,0,0.18),0px_14px_18px_-8px_rgba(0,0,0,0.3)] " +
+  "motion-safe:[@media(pointer:fine)]:group-hover:-translate-y-[5px] motion-safe:[@media(pointer:fine)]:group-hover:scale-[1.025]";
 
 function PinboardArt() {
   return (
@@ -61,9 +74,9 @@ function PinboardArt() {
             )}
             <FairyLights />
           </div>
-          <div className={`absolute h-[200px] left-[292px] overflow-clip top-[101.59px] w-[140.8px] rounded-[6px] ${linkRing}`} data-node-id="194:129" data-name="div.framer-gaeb7p" {...folderLink("dancing", "Where I Found Myself")}>
+          <div className={`absolute h-[200px] left-[292px] top-[101.59px] w-[140.8px] ${linkRing}`} data-node-id="194:129" data-name="div.framer-gaeb7p" {...folderLink("dancing", "Where I Found Myself")}>
             {/* was the to-do list (Anne, 2026-11-16): her dance photo now hangs from the same clip */}
-            <div className="absolute bottom-0 left-0 right-0 h-[152.8px] rounded-[6px] bg-white p-[4px] shadow-[0px_1.4px_1.4px_-2.5px_rgba(0,0,0,0.16),0px_6px_6px_-3.75px_rgba(0,0,0,0.1)]" data-name="Dance photo">
+            <div className={`absolute bottom-0 left-0 right-0 h-[152.8px] rounded-[6px] bg-white p-[4px] ${photoShadow} ${lift}`} data-name="Dance photo">
               <img alt="Anne dancing with rainbow silk wings" className="size-full rounded-[3px] object-cover" src={mine("rainbow-dance")} />
             </div>
             <div className="-translate-x-1/2 absolute h-[60.31px] left-1/2 top-0 w-[41.6px]" data-node-id="194:195" data-name="Clip brwon1">
@@ -72,7 +85,9 @@ function PinboardArt() {
               </div>
             </div>
           </div>
-          <div className={`absolute content-stretch flex flex-col h-[127.2px] items-center justify-center left-[22.4px] pb-[36px] pt-[4px] px-[4px] rounded-[var(--corner-radius\/4,4px)] top-[42.4px] w-[91.2px] ${linkRing}`} style={{ scale: "1.35", transformOrigin: "0 0" }} data-node-id="194:218" data-name="Polaroid 1" {...folderLink("events", "Design Diary")}>
+          <div className={`absolute h-[127.2px] left-[22.4px] top-[42.4px] w-[91.2px] rounded-[var(--corner-radius\/4,4px)] ${linkRing}`} style={{ scale: "1.35", transformOrigin: "0 0" }} data-node-id="194:218" data-name="Polaroid 1" {...folderLink("events", "Design Diary")}>
+            {/* the polaroid, its photo and caption lift together; the clip below stays */}
+            <div className={`absolute inset-0 flex flex-col items-center justify-center rounded-[var(--corner-radius\/4,4px)] px-[4px] pb-[36px] pt-[4px] ${lift}`}>
             <div className="absolute bg-[var(--color\/white\/-0_2\%,rgba(255,255,255,0))] h-[127.2px] left-0 rounded-[var(--corner-radius\/4,4px)] shadow-[0px_0.361px_0.361px_-1.25px_rgba(0,0,0,0.18),0px_1.373px_1.373px_-2.5px_rgba(0,0,0,0.16),0px_6px_6px_-3.75px_rgba(0,0,0,0.06)] top-0 w-[91.2px]" data-node-id="194:219" data-name="Polaroid 1:shadow" />
             <div className="absolute inset-0 rounded-[var(--corner-radius\/4,4px)]" data-node-id="194:222" data-name="dNBEPbtfEUrh2WFhTqTeh9SH88.png">
               <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-[var(--corner-radius\/4,4px)]">
@@ -94,6 +109,7 @@ function PinboardArt() {
                   </div>
                 </div>
               </div>
+            </div>
             </div>
             <div className="absolute h-[58.19px] left-[18.4px] top-[-34.4px] w-[27.2px]" data-node-id="194:230" data-name="Clip 1">
               <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -201,24 +217,36 @@ function PinboardArt() {
             </div>
           </div>
           {/* added 2026-11-20: Anne's own film photo (a boathouse) opens Olympus mju ii */}
-          <div className={`absolute bottom-[30px] left-[262px] h-[132px] w-[190px] -rotate-2 rounded-[6px] bg-white p-[4px] shadow-[0px_1.4px_1.4px_-2.5px_rgba(0,0,0,0.16),0px_6px_6px_-3.75px_rgba(0,0,0,0.1)] ${linkRing}`} data-name="Boathouse photo" {...folderLink("photo", "Olympus mju ii")}>
-            <img alt="A wooden boathouse on the water with small boats docked, shot on film" className="size-full rounded-[3px] object-cover" src="/about/SNGpQ8nDqJTTEcA7vwHci25LY.jpg" />
-            <div className="absolute left-1/2 top-[-24px] h-[46px] w-[21.5px] -translate-x-1/2">
-              <img alt="" className="size-full" src={imgClip2} />
+          <div className={`absolute bottom-[30px] left-[262px] h-[132px] w-[190px] ${linkRing}`} data-name="Boathouse photo" {...folderLink("photo", "Olympus mju ii")}>
+            <div className={`size-full -rotate-2 rounded-[6px] bg-white p-[4px] ${photoShadow} ${lift}`}>
+              <img alt="A wooden boathouse on the water with small boats docked, shot on film" className="size-full rounded-[3px] object-cover" src="/about/SNGpQ8nDqJTTEcA7vwHci25LY.jpg" />
+            </div>
+            <div className="pointer-events-none absolute inset-0 -rotate-2">
+              <div className="absolute left-1/2 top-[-24px] h-[46px] w-[21.5px] -translate-x-1/2">
+                <img alt="" className="size-full" src={imgClip2} />
+              </div>
             </div>
           </div>
           {/* added 2026-11-20: snow photo opens Miles & Memories */}
-          <div className={`absolute left-[592px] top-[22px] h-[150px] w-[118px] rotate-3 rounded-[6px] bg-white p-[4px] shadow-[0px_1.4px_1.4px_-2.5px_rgba(0,0,0,0.16),0px_6px_6px_-3.75px_rgba(0,0,0,0.1)] ${linkRing}`} data-name="Snow photo" {...folderLink("traveling", "Miles & Memories")}>
-            <img alt="Anne pointing at the sky on a snowy mountain" className="size-full rounded-[3px] object-cover" src="/about/YrWjpCsxBSUt4gNrJmrCSDplGvA.jpg" />
-            <div className="absolute left-1/2 top-[-26px] h-[48px] w-[26px] -translate-x-1/2">
-              <img alt="" className="size-full object-contain" src={imgClip3} />
+          <div className={`absolute left-[592px] top-[22px] h-[150px] w-[118px] ${linkRing}`} data-name="Snow photo" {...folderLink("traveling", "Miles & Memories")}>
+            <div className={`size-full rotate-3 rounded-[6px] bg-white p-[4px] ${photoShadow} ${lift}`}>
+              <img alt="Anne pointing at the sky on a snowy mountain" className="size-full rounded-[3px] object-cover" src="/about/YrWjpCsxBSUt4gNrJmrCSDplGvA.jpg" />
+            </div>
+            <div className="pointer-events-none absolute inset-0 rotate-3">
+              <div className="absolute left-1/2 top-[-26px] h-[48px] w-[26px] -translate-x-1/2">
+                <img alt="" className="size-full object-contain" src={imgClip3} />
+              </div>
             </div>
           </div>
           {/* added 2026-11-20: cookie photo opens Anne's Bakery */}
-          <div className={`absolute bottom-[52px] left-[650px] h-[132px] w-[132px] -rotate-3 rounded-[6px] bg-white p-[4px] shadow-[0px_1.4px_1.4px_-2.5px_rgba(0,0,0,0.16),0px_6px_6px_-3.75px_rgba(0,0,0,0.1)] ${linkRing}`} data-name="Cookie photo" {...folderLink("baking", "Anne's Bakery")}>
-            <img alt="Chocolate cookies topped with toasted marshmallow on a baking tray" className="size-full rounded-[3px] object-cover" src="/about/K93eVCtTdlLdLSr5mpXu5jL98KQ.jpg" />
-            <div className="absolute left-1/2 top-[-24px] h-[46px] w-[21px] -translate-x-1/2">
-              <img alt="" className="size-full" src={imgClip1} />
+          <div className={`absolute bottom-[52px] left-[650px] h-[132px] w-[132px] ${linkRing}`} data-name="Cookie photo" {...folderLink("baking", "Anne's Bakery")}>
+            <div className={`size-full -rotate-3 rounded-[6px] bg-white p-[4px] ${photoShadow} ${lift}`}>
+              <img alt="Chocolate cookies topped with toasted marshmallow on a baking tray" className="size-full rounded-[3px] object-cover" src="/about/K93eVCtTdlLdLSr5mpXu5jL98KQ.jpg" />
+            </div>
+            <div className="pointer-events-none absolute inset-0 -rotate-3">
+              <div className="absolute left-1/2 top-[-24px] h-[46px] w-[21px] -translate-x-1/2">
+                <img alt="" className="size-full" src={imgClip1} />
+              </div>
             </div>
           </div>
         </div>
